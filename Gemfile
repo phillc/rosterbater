@@ -43,3 +43,16 @@ end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+gem 'faraday'
+gem 'omniauth'
+gem 'omniauth-yahoo'
+gem "bootstrap-sass", "~> 3.0.2"
+gem "haml"
+
+group :development, :test do
+  gem 'dotenv-rails'
+  gem 'rspec-rails', '~> 2.0'
+  # gem 'webmock'
+  gem 'vcr'
+end
