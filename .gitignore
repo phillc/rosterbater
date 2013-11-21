@@ -17,3 +17,5 @@
 
 .env
 .env.development
+
+coverage

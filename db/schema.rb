@@ -11,17 +11,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131119012910) do
+ActiveRecord::Schema.define(version: 20131120014504) do
 
-  create_table "users", force: true do |t|
-    t.string   "provider"
-    t.string   "email"
-    t.string   "uid"
-    t.string   "name"
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+  enable_extension "uuid-ossp"
+
+  create_table "managers", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+    t.string   "guid"
+    t.integer  "yahoo_manager_id", null: false
+    t.string   "nickname"
+    t.boolean  "is_commissioner"
+    t.uuid     "team_id"
+    t.uuid     "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
+  create_table "teams", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+    t.string   "name"
+    t.integer  "yahoo_game_key"
+    t.integer  "yahoo_league_id"
+    t.integer  "yahoo_team_id"
+    t.integer  "yahoo_division_id"
+    t.string   "url"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+    t.string   "provider"
+    t.string   "email"
+    t.string   "uid"
+    t.string   "name"
+    t.text     "yahoo_token"
+    t.string   "yahoo_token_secret"
+    t.string   "yahoo_session_handle"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

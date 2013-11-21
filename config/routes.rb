@@ -1,8 +1,18 @@
 Fantasyplayoffs::Application.routes.draw do
+  get "leagues/index"
+  get "leagues/show"
+  get "league/show"
   root to: "welcome#index"
 
-  resources :teams, only: [:index]
   get 'auth/:provider/callback', to: 'sessions#create_from_omniauth'
+  get 'logout', to: 'sessions#destroy'
+
+  resources :teams, only: [:index] do
+    post :refresh, on: :collection
+  end
+
+  resources :leagues, only: [:index, :show]
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

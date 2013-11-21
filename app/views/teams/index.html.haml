@@ -1,2 +1,8 @@
-%p hi
+%h3 Your teams
+
+%ul
+  - @teams.each do |team|
+    %li
+      = link_to team.name, team_path(team)
+      = team.url
 

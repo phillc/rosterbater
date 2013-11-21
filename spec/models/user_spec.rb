@@ -1,5 +1,22 @@
 require 'spec_helper'
 
 describe User do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe "validations" do
+    subject(:user) { build(:user) }
+    it { should be_valid }
+
+    describe "with no uid" do
+      before do
+        user.uid = nil
+      end
+      it { should be_invalid }
+    end
+
+    describe "with a duplicate uid" do
+      before do
+        user.uid = create(:user).uid
+      end
+      it { should be_invalid }
+    end
+  end
 end

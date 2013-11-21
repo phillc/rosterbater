@@ -44,15 +44,25 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem 'faraday'
+gem "bootstrap-sass", "~> 3.0.2"
+gem "haml-rails"
+gem 'oauth'
 gem 'omniauth'
 gem 'omniauth-yahoo'
-gem "bootstrap-sass", "~> 3.0.2"
-gem "haml"
+gem 'pg'
 
 group :development, :test do
   gem 'dotenv-rails'
+  gem 'factory_girl_rails'
+  gem 'guard-bundler'
+  gem 'guard-rspec'
+  gem 'guard-spork', '~> 1.5.1'
   gem 'rspec-rails', '~> 2.0'
-  # gem 'webmock'
+  gem 'spork-rails'
   gem 'vcr'
+end
+
+group :test do
+  gem 'webmock'
+  gem 'simplecov', require: false
 end
