@@ -1,0 +1,5 @@
+--ignore-dir=public/assets
+--ignore-dir=log
+--ignore-dir=coverage
+--ignore-dir=tmp
+

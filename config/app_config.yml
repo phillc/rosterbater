@@ -1,5 +1,0 @@
-defaults:
-  yahoo:
-    key: <%= ENV['YAHOO_KEY'] %>
-    secret: <%= ENV['YAHOO_SECRET'] %>
-

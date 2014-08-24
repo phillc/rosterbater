@@ -1,4 +1,4 @@
-require "spec_helper"
+require "rails_helper"
 
 describe "YahooService" do
   let(:user) { create(:user) }
@@ -14,7 +14,7 @@ describe "YahooService" do
     end
 
     it "returns the count" do
-      expect(service.teams).to have(2).items
+      expect(service.teams.size).to eq 2
     end
 
     it "returns the team attributes" do

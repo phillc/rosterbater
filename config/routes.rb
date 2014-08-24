@@ -1,4 +1,4 @@
-Fantasyplayoffs::Application.routes.draw do
+Rails.application.routes.draw do
   get "leagues/index"
   get "leagues/show"
   get "league/show"
