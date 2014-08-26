@@ -24,6 +24,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
 gem 'factory_girl_rails'
+gem 'foundation-rails'
 gem 'haml-rails'
 gem 'oauth'
 gem 'omniauth'
@@ -38,6 +39,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'dotenv-rails'
   gem 'rspec-rails', '~> 3.0.0'
   gem 'webmock', require: false
 end

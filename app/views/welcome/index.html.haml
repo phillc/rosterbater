@@ -1,9 +1,7 @@
-.jumbotron
+.row
   %h1 kapsh
-  %p This example is a quick exercise to illustrate how the default, static and fixed to top navbar work. It includes the responsive CSS and HTML, so it also adapts to your viewport and device.
-  %p To see the difference between static and fixed top navbars, just scroll.
   %p
     - if current_user
-      %a.btn.btn-lg.btn-primary{href: teams_path, role: "button"} Look at your teams now »
+      %a.button{href: teams_path} Look at your teams now »
     - else
-      %a.btn.btn-lg.btn-primary{href: "/auth/yahoo", role: "button"} Sign in with yahoo »
+      %a.button{href: "/auth/yahoo"} Sign in with yahoo »

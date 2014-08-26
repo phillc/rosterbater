@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  get "leagues/index"
-  get "leagues/show"
-  get "league/show"
   root to: "welcome#index"
 
   get 'auth/:provider/callback', to: 'sessions#create_from_omniauth'
