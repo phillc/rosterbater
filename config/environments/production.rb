@@ -1,4 +1,7 @@
 Rails.application.configure do
+  config.middleware.use("::Rack::Auth::Basic") do |u, p|
+    [u, p] == [ENV['BASIC_AUTH_USERNAME'], ENV['BASIC_AUTH_PASSWORD']]
+  end
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
