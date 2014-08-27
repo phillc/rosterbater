@@ -1,3 +1,3 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :yahoo, ENV['YAHOO_KEY'], ENV['YAHOO_SECRET']
+  provider :yahoo, APP_CONFIG[:yahoo][:key], APP_CONFIG[:yahoo][:secret]
 end

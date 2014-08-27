@@ -1,60 +1,156 @@
 class YahooService
+  GAME_CODES = {
+    2014 => "331",
+    2013 => "314"
+  }
+
   def initialize(user)
     @user = user
   end
 
-  def teams
-    data = get "/users;use_login=1/teams?format=json"
-    teams_info = data["fantasy_content"]["users"]["0"]["user"].detect{|hash| hash.keys.first == "teams"}["teams"]
-    Enumerator.new(teams_info["count"].to_i) do |yielder|
-      teams_info.except("count").each do |i, team_info|
+  def get_yahoo_user_leagues
+    get "/users;use_login=1/games;game_keys=#{GAME_CODES.values.join(",")}/leagues"
+  end
 
-        yielder << YahooTeam.new(team_info)
+  def leagues
+    doc = get_yahoo_user_leagues
+    league_docs = doc.search("league")
+
+    league_docs.map{ |league_doc| YahooLeague.new(league_doc) }
+  end
+
+  def refresh_leagues
+    leagues.map do |yahoo_league|
+      league = League
+                 .where(yahoo_league_key: yahoo_league.league_key)
+                 .first_or_initialize
+
+      yahoo_league.update(league)
+      league.users << @user unless league.users.include?(@user)
+      league.save!
+      league
+    end
+  end
+
+  def sync_league(league)
+    sync_league_details(league)
+
+    #must make direct calls for sub-resources
+    sync_players(league)
+    sync_rosters(league)
+  end
+
+  def get_yahoo_league_details(league)
+    get "/league/#{league.yahoo_league_key};out=teams,draftresults"
+  end
+
+  def league_details(league)
+    league_doc = get_yahoo_league_details(league)
+    YahooLeagueDetails.new(league_doc)
+  end
+
+  def sync_league_details(league)
+    details = league_details(league)
+
+    details.teams.each do |yahoo_team|
+      team = league
+               .teams
+               .where(yahoo_team_key: yahoo_team.team_key)
+               .first_or_initialize
+
+      yahoo_team.update(team)
+
+      team.managers.each do |manager|
+        if !yahoo_team.managers.map(&:guid).include?(manager.yahoo_guid)
+          manager.mark_for_destruction
+        end
+      end
+      yahoo_team.managers.each do |yahoo_manager|
+        manager =
+          team.managers.detect{ |manager| manager.yahoo_guid == yahoo_manager.guid } ||
+          team.managers.build
+
+        yahoo_manager.update(manager)
+      end
+
+      team.save!
+    end
+  end
+
+  def get_yahoo_league_teams(league, team, week)
+    get "/league/#{league.yahoo_league_key}/teams;out=roster"
+  end
+
+  def sync_rosters(league)
+    #for each week... or perhaps just two most recent.
+  end
+
+  def get_yahoo_league_players(league, offset)
+    get "/league/#{league.yahoo_league_key}/players;start=#{offset}"
+  end
+
+  def players(league)
+    page_size = 25
+
+    Enumerator.new do |yielder|
+      offset = 0
+      loop do
+        player_docs = get_yahoo_league_players(league, offset).search("player")
+        player_docs.each do |player_doc|
+          # yielder << YahooLeague.new(league_doc)
+          yielder << player_doc
+        end
+
+        break if player_docs.size < page_size
       end
     end
   end
 
-  # def leagues
-  #   data = get "/leagues;league_keys=#{teams.map(&:league_key).join(",")};out=standings?format=json"
-  #   leagues_info = data["fantasy_content"]["leagues"]
-  #   Enumerator.new(leagues_info["count"].to_i) do |yielder|
-  #     leagues_info.except("count").each do |i, leagues_info|
-  #       yielder << YahooLeague.new(leagues_info)
+  def sync_players(league)
+  end
+
+  # def teams(league)
+  #   data = get "/users;use_login=1/teams?format=json"
+  #   teams_info = data["fantasy_content"]["users"]["0"]["user"].detect{|hash| hash.keys.first == "teams"}["teams"]
+  #   Enumerator.new(teams_info["count"].to_i) do |yielder|
+  #     teams_info.except("count").each do |i, team_info|
+
+  #       yielder << YahooTeam.new(team_info)
   #     end
   #   end
   # end
 
-  def refresh_teams
-    teams.each do |yahoo_team|
-      ActiveRecord::Base.transaction do
-        team = Team.where(yahoo_game_key: yahoo_team.game_key,
-                          yahoo_league_id: yahoo_team.league_id,
-                          yahoo_team_id: yahoo_team.team_id,
-                          yahoo_division_id: yahoo_team.division_id)
-                   .first_or_initialize
+  # def refresh_teams
+  #   teams.each do |yahoo_team|
+  #     ActiveRecord::Base.transaction do
+  #       team = Team.where(yahoo_game_key: yahoo_team.game_key,
+  #                         yahoo_league_id: yahoo_team.league_id,
+  #                         yahoo_team_id: yahoo_team.team_id,
+  #                         yahoo_division_id: yahoo_team.division_id)
+  #                  .first_or_initialize
 
-        team.name = yahoo_team.name
-        team.url = yahoo_team.url
-        team.save!
+  #       team.name = yahoo_team.name
+  #       team.url = yahoo_team.url
+  #       team.save!
 
-        managers = yahoo_team.managers.map do |yahoo_manager|
-          manager = team
-                      .managers
-                      .where(yahoo_manager_id: yahoo_manager.manager_id)
-                      .first_or_initialize
+  #       managers = yahoo_team.managers.map do |yahoo_manager|
+  #         manager = team
+  #                     .managers
+  #                     .where(yahoo_manager_id: yahoo_manager.manager_id)
+  #                     .first_or_initialize
 
-          manager.guid = yahoo_manager.guid
-          manager.nickname = yahoo_manager.nickname
-          manager.user = @user
+  #         manager.guid = yahoo_manager.guid
+  #         manager.nickname = yahoo_manager.nickname
+  #         manager.user = @user
 
-          manager.save!
-          manager
-        end
+  #         manager.save!
+  #         manager
+  #       end
 
-        team.managers = managers
-      end
-    end
-  end
+  #       team.managers = managers
+  #     end
+  #   end
+  # end
 
   protected
 
@@ -71,7 +167,7 @@ class YahooService
         raise
       end
     end
-    JSON.parse(response.body)
+    Nokogiri::XML(response.body)
   end
 
   def oauth_consumer
@@ -119,87 +215,125 @@ class YahooService
     @user.update(yahoo_token: access_token.token, yahoo_token_secret: access_token.secret)
   end
 
-  class YahooLeague
-    attr_reader :info
-    def initialize(info)
-      @info = info
+  class Base
+    def self.attributes(*attrs)
+      attrs.each do |attr|
+        self.class_eval <<-CODE, __FILE__, __LINE__ + 1
+          def #{attr}
+            at("#{attr}").presence
+          end
+        CODE
+      end
+    end
+
+    def initialize(doc)
+      @doc = doc
     end
 
     protected
 
-    def attributes
-      @attributes ||= begin
-        @info["league"]
+    def at(key)
+      @doc.at(key).try(:text)
+    end
+  end
+
+  class YahooLeague < Base
+    attributes *%w(name
+                   league_key
+                   league_id
+                   url
+                   scoring_type
+                   renew
+                   renewed
+                   num_teams
+                   current_week
+                   start_week
+                   end_week
+                   start_date
+                   end_date)
+
+    def update(league)
+      league.yahoo_league_id = league_id
+      %w(
+        name
+        url
+        num_teams
+        scoring_type
+        renew
+        renewed
+        current_week
+        start_week
+        end_week
+        start_date
+        end_date
+      ).each do |attribute|
+        league.public_send("#{attribute}=", self.public_send(attribute))
       end
     end
   end
 
-  class YahooTeam
-    attr_reader :game_key, :league_id, :team_id
-
-    def initialize(info)
-      @info = info
-      @game_key, _, @league_id, _, @team_id = attributes[:team_key].split(".")
+  class YahooLeagueDetails < Base
+    def teams
+      @doc.search("league/teams/team").map{ |team_doc| YahooTeam.new(team_doc) }
     end
+  end
 
-    def league_key
-      "#{game_key}.l.#{league_id}"
-    end
-
-    def division_id
-      attributes[:division_id]
-    end
-
-    def name
-      attributes[:name]
-    end
-
-    def url
-      attributes[:url]
+  class YahooTeam < Base
+    attributes *%w(name
+                   team_key
+                   team_id
+                   url
+                   waiver_priority
+                   faab_balance
+                   number_of_moves
+                   number_of_trades
+                  )
+    def logo_url
+      @doc.search("team_logo").at(:url).text
     end
 
     def managers
-      attributes[:managers].map do |yahoo_manager|
-        YahooManager.new(yahoo_manager)
-      end
+      @doc.search("manager").map{ |manager_doc| YahooManager.new(manager_doc) }
     end
 
-    protected
-
-    def attributes
-      @attributes ||= begin
-        @info["team"].first.inject({}) do |acc, v|
-          if v.is_a?(Hash)
-            acc.merge(v)
-          else
-            acc
-          end
-        end.with_indifferent_access
+    def update(team)
+      team.yahoo_team_id = team_id
+      %w(
+        name
+        url
+        logo_url
+        waiver_priority
+        faab_balance
+        number_of_moves
+        number_of_trades
+      ).each do |attribute|
+        team.public_send("#{attribute}=", self.public_send(attribute))
       end
     end
   end
 
-  class YahooManager
-    def initialize(info)
-      @info = info
+  class YahooManager < Base
+    attributes *%w(image_url
+                   guid
+                   email)
+    def name
+      at(:nickname)
     end
 
-    def manager_id
-      attributes[:manager_id]
+    def is_commissioner
+      at(:is_commissioner) == "1"
     end
 
-    def guid
-      attributes[:guid]
-    end
-
-    def nickname
-      attributes[:nickname]
-    end
-
-    protected
-
-    def attributes
-      @info["manager"].with_indifferent_access
+    def update(manager)
+      manager.yahoo_guid = guid
+      %w(
+        name
+        image_url
+        email
+        is_commissioner
+      ).each do |attribute|
+        manager.public_send("#{attribute}=", self.public_send(attribute))
+      end
     end
   end
 end

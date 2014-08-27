@@ -1,2 +1,19 @@
-%h1 Leagues#show
-%p Find me in app/views/leagues/show.html.haml
+%h3= @league.name
+
+= link_to "Sync", sync_league_path(@league), method: :post, class: "button small"
+
+
+- if @league.teams.empty?
+  No teams present. Please refresh.
+- else
+  %table
+    %thead
+      %tr
+        %th(width="33%") Name
+    %tbody
+      - @league.teams.each do |team|
+        %tr
+          %td
+            = team.name
+
+

@@ -1,0 +1,7 @@
+- if flash.any?
+  .row
+    .columns.large-12
+      - flash.each do |name, msg|
+        %div(data-alert class="alert-box #{name.to_s == 'notice' ? 'success' : 'alert'}")
+          = msg
+          %a(href="#" class="close") &times;

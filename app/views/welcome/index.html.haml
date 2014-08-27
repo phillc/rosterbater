@@ -1,7 +1,7 @@
 .row
-  %h1 kapsh
+  %h1 Welcome
   %p
     - if current_user
-      %a.button{href: teams_path} Look at your teams now »
+      %a.button{href: leagues_path} Look at your teams now »
     - else
       %a.button{href: "/auth/yahoo"} Sign in with yahoo »

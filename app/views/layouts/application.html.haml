@@ -14,7 +14,7 @@
       %ul(class="title-area")
         %li(class="name")
           %h1
-            %a(href="#") Kapsh
+            = link_to "Kapsh", root_path
         %li(class="toggle-topbar menu-icon")
           %a(href="#")
             %span Menu
@@ -31,5 +31,8 @@
               %li(class="active")
                 %a(href="#") Active link in dropdown
 
-    = yield
+    = render "layouts/messages"
+    .row
+      .columns.large-12
+        = yield
     = javascript_include_tag "application", "data-turbolinks-track" => true

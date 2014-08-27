@@ -1,2 +1,34 @@
-%h1 Leagues#index
-%p Find me in app/views/leagues/index.html.haml
+%h3 Your leagues
+= link_to "Refresh", refresh_leagues_path, method: :post, class: "button small"
+
+- if @leagues.empty?
+  No leagues present. Please refresh.
+- else
+  %table
+    %thead
+      %tr
+        %th Year
+        %th(width="33%") Name
+        %th Url
+        %th Number of teams
+        %th Current Week
+        %th Start Date
+        %th End Date
+    %tbody
+      - @leagues.each do |league|
+        %tr
+          %td
+            = league.start_date.year
+          %td
+            = link_to league.name, league_path(league)
+          %td
+            = link_to "Link", league.url
+          %td
+            = league.num_teams
+          %td
+            = league.current_week
+          %td
+            = league.start_date
+          %td
+            = league.end_date
+

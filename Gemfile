@@ -26,6 +26,7 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 gem 'factory_girl_rails'
 gem 'foundation-rails'
 gem 'haml-rails'
+gem 'nokogiri'
 gem 'oauth'
 gem 'omniauth'
 gem 'omniauth-yahoo'
@@ -40,6 +41,8 @@ end
 
 group :development, :test do
   gem 'dotenv-rails'
+  gem 'faker'
+  gem 'pry-rails'
   gem 'rspec-rails', '~> 3.0.0'
   gem 'webmock', require: false
 end

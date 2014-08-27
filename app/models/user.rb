@@ -1,14 +1,5 @@
 class User < ActiveRecord::Base
-  has_many :teams, through: :managers
-  has_many :managers
+  has_and_belongs_to_many :leagues
 
-  validates :uid, presence: true, uniqueness: true
-
-  def remote_teams
-    @remote_teams = service.get_teams
-  end
-
-  def service
-    @service ||= YahooService.new(self)
-  end
+  validates :yahoo_uid, presence: true, uniqueness: true
 end

@@ -1,5 +1,5 @@
 require 'rails_helper'
 
 describe Team do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "must be unique to the league"
 end

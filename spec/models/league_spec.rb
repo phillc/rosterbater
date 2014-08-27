@@ -1,4 +1,4 @@
 require 'rails_helper'
 
-describe LeaguesHelper do
+describe League do
 end

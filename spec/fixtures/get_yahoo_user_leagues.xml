@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng" xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/users;use_login=1/games;game_keys=331,314/leagues" time="66.96891784668ms" copyright="Data provided by Yahoo! and STATS, LLC" refresh_rate="60">
+ <users count="1">
+  <user>
+   <guid>JBAMN3TTXS5EN3SAWHYJKRRGNU</guid>
+   <games count="2">
+    <game>
+     <game_key>331</game_key>
+     <game_id>331</game_id>
+     <name>Football</name>
+     <code>nfl</code>
+     <type>full</type>
+     <url>http://football.fantasysports.yahoo.com/f1</url>
+     <season>2014</season>
+     <leagues count="1">
+      <league>
+       <league_key>331.l.6781</league_key>
+       <league_id>6781</league_id>
+       <name>Stay Thirsty My Friends</name>
+       <url>http://football.fantasysports.yahoo.com/f1/6781</url>
+       <password/>
+       <draft_status>postdraft</draft_status>
+       <num_teams>12</num_teams>
+       <edit_key>1</edit_key>
+       <weekly_deadline/>
+       <league_update_timestamp/>
+       <scoring_type>head</scoring_type>
+       <league_type>private</league_type>
+       <renew>314_31580</renew>
+       <renewed/>
+       
+       <is_pro_league>0</is_pro_league>
+       <current_week>1</current_week>
+       <start_week>1</start_week>
+       <start_date>2014-09-04</start_date>
+       <end_week>16</end_week>
+       <end_date>2014-12-22</end_date>
+      </league>
+     </leagues>
+    </game>
+    <game>
+     <game_key>314</game_key>
+     <game_id>314</game_id>
+     <name>Football</name>
+     <code>nfl</code>
+     <type>full</type>
+     <url>http://football.fantasysports.yahoo.com/f1</url>
+     <season>2013</season>
+     <leagues count="2">
+      <league>
+       <league_key>314.l.31580</league_key>
+       <league_id>31580</league_id>
+       <name>Stay thirsty my friends</name>
+       <url>http://football.fantasysports.yahoo.com/archive/nfl/2013/31580</url>
+       <password/>
+       <draft_status>postdraft</draft_status>
+       <num_teams>14</num_teams>
+       <edit_key>17</edit_key>
+       <weekly_deadline/>
+       <league_update_timestamp>1388396403</league_update_timestamp>
+       <scoring_type>head</scoring_type>
+       <league_type>private</league_type>
+       <renew>273_592842</renew>
+       <renewed>331_6781</renewed>
+       
+       <is_pro_league>0</is_pro_league>
+       <current_week>16</current_week>
+       <start_week>1</start_week>
+       <start_date>2013-09-05</start_date>
+       <end_week>16</end_week>
+       <end_date>2013-12-23</end_date>
+       <is_finished>1</is_finished>
+      </league>
+      <league>
+       <league_key>314.l.1158259</league_key>
+       <league_id>1158259</league_id>
+       <name>Late start experiment</name>
+       <url>http://football.fantasysports.yahoo.com/archive/nfl/2013/1158259</url>
+       <password/>
+       <draft_status>postdraft</draft_status>
+       <num_teams>8</num_teams>
+       <edit_key>17</edit_key>
+       <weekly_deadline/>
+       <league_update_timestamp>1388394513</league_update_timestamp>
+       <scoring_type>head</scoring_type>
+       <league_type>private</league_type>
+       <renew/>
+       <renewed/>
+       
+       <is_pro_league>0</is_pro_league>
+       <current_week>16</current_week>
+       <start_week>4</start_week>
+       <start_date>2013-09-24</start_date>
+       <end_week>16</end_week>
+       <end_date>2013-12-23</end_date>
+       <is_finished>1</is_finished>
+      </league>
+     </leagues>
+    </game>
+   </games>
+  </user>
+ </users>
+</fantasy_content>
+<!-- fan1218.sports.bf1.yahoo.com compressed/chunked Wed Aug 27 07:06:55 PDT 2014 -->

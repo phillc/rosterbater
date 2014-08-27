@@ -5,16 +5,16 @@ describe User do
     subject(:user) { build(:user) }
     it { should be_valid }
 
-    describe "with no uid" do
+    describe "with no yahoo_uid" do
       before do
-        user.uid = nil
+        user.yahoo_uid = nil
       end
       it { should be_invalid }
     end
 
-    describe "with a duplicate uid" do
+    describe "with a duplicate yahoo_uid" do
       before do
-        user.uid = create(:user).uid
+        user.yahoo_uid = create(:user).yahoo_uid
       end
       it { should be_invalid }
     end
