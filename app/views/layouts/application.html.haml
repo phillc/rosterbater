@@ -21,15 +21,8 @@
 
       %section(class="top-bar-section")
         %ul(class="right")
-          %li(class="active")
-            %a(href="#") Right Button Active
-          %li(class="has-dropdown")
-            %a(href="#") Right Button Dropdown
-            %ul(class="dropdown")
-              %li
-                %a(href="#") First link in dropdown
-              %li(class="active")
-                %a(href="#") Active link in dropdown
+          - if policy(:game).index?
+            %li= link_to "Game Admin", games_path
 
     = render "layouts/messages"
     .row

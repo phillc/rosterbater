@@ -4,6 +4,12 @@ Rails.application.routes.draw do
   get 'auth/:provider/callback', to: 'sessions#create_from_omniauth'
   get 'logout', to: 'sessions#destroy'
 
+  resources :games, only: [:index, :show] do
+    collection do
+      post :refresh
+    end
+  end
+
   resources :leagues, only: [:index, :show] do
     collection do
       post :refresh

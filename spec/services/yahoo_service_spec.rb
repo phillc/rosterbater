@@ -4,69 +4,49 @@ describe "YahooService" do
   let(:user) { create(:user) }
   let(:service) { YahooService.new(user) }
 
-  # describe "#teams" do
-  #   before do
-  #     expect(service).to receive(:get).and_return(user_teams_response)
-  #   end
+  describe "games" do
+    let(:response) { double("response", body: fixture("get_yahoo_games.xml")) }
+    let(:token) { double("token", get: response) }
 
-  #   it "returns the count" do
-  #     expect(service.teams.size).to eq 2
-  #   end
+    before do
+      expect(service).to receive(:token).and_return(token).at_least(:once)
+    end
 
-  #   it "returns the team attributes" do
-  #     team = service.teams.first
-  #     expect(team.name).to eq("foo")
-  #     expect(team.team_id).to eq("4")
-  #   end
-  # end
+    describe "#games" do
+      it "returns the count" do
+        expect(service.games.size).to eq 3
+      end
+    end
 
-  # describe "#refresh_teams" do
-  #   before do
-  #     expect(service).to receive(:get)
-  #                          .and_return(user_teams_response)
-  #                          .at_least(1).times
-  #   end
+    describe "#sync_games" do
+      it "saves the games" do
+        expect {
+          service.sync_games
+        }.to change{ Game.count }.by(3)
+      end
 
-  #   it "saves the teams" do
-  #     expect {
-  #       service.refresh_teams
-  #     }.to change(Team, :count).by(2)
-  #   end
+      it "does not duplicate" do
+        service.sync_games
 
-  #   it "saves the managers" do
-  #     expect {
-  #       service.refresh_teams
-  #     }.to change(Manager, :count).by(2)
-  #   end
+        expect {
+          service.sync_games
+        }.to change{ Game.count }.by(0)
+      end
 
-  #   it "stores the attributes" do
-  #     service.refresh_teams
+      it "stores the attributes" do
+        service.sync_games
 
-  #     team = Team.find_by(yahoo_league_id: 111, yahoo_team_id: 4)
-  #     expect(team.name).to eq("foo")
-  #     expect(team.url).to eq("http://example.com")
-  #     expect(team.yahoo_division_id).to eq(2)
+        game = Game.find_by(season: "2013")
 
-  #     expect(team.managers.first.nickname).to eq("PC")
-  #     expect(team.managers.first.yahoo_manager_id).to eq(4)
-  #   end
-
-  #   it "associates the current user" do
-  #     service.refresh_teams
-
-  #     team = Team.find_by(yahoo_league_id: 111, yahoo_team_id: 4)
-  #     expect(team.managers.first.user).to eq(user)
-
-  #   end
-
-  #   it "does not duplicate" do
-  #     service.refresh_teams
-
-  #     expect {
-  #       service.refresh_teams
-  #     }.to change{Team.count + Manager.count}.by(0)
-  #   end
-  # end
+        expect(game.yahoo_game_key).to eq 314
+        expect(game.yahoo_game_id).to eq 314
+        expect(game.name).to eq "Football"
+        expect(game.code).to eq "nfl"
+        expect(game.game_type).to eq "full"
+        expect(game.url).to eq "http://football.fantasysports.yahoo.com/f1"
+      end
+    end
+  end
 
   describe "user leagues" do
     let(:response) { double("response", body: fixture("get_yahoo_user_leagues.xml")) }
@@ -138,33 +118,33 @@ describe "YahooService" do
       end
     end
 
-    describe "#refresh_leagues" do
+    describe "#sync_leagues" do
       it "saves the leagues" do
         expect {
-          service.refresh_leagues
+          service.sync_leagues
         }.to change{ League.count }.by(3)
       end
 
       it "returns the leagues" do
-        expect(service.refresh_leagues.size).to eq 3
+        expect(service.sync_leagues.size).to eq 3
       end
 
       it "associates the current user" do
-        service.refresh_leagues.each do |league|
+        service.sync_leagues.each do |league|
           expect(league.users).to include(user)
         end
       end
 
       it "does not duplicate" do
-        service.refresh_leagues
+        service.sync_leagues
 
         expect {
-          service.refresh_leagues
+          service.sync_leagues
         }.to change{ League.count }.by(0)
       end
 
       it "stores the attributes" do
-        service.refresh_leagues
+        service.sync_leagues
 
         league = League.find_by(yahoo_league_key: "314.l.31580")
 
@@ -221,7 +201,17 @@ describe "YahooService" do
     end
 
     describe "#draft_results" do
-      it "shows them"
+      it "returns the count" do
+        expect(league_details.draft_results.size).to eq 210
+      end
+
+      it "retains the attributes" do
+        result = league_details.draft_results.first
+        expect(result.pick).to eq "1"
+        expect(result.round).to eq "1"
+        expect(result.team_key).to eq "314.l.31580.t.6"
+        expect(result.player_key).to eq "314.p.8261"
+      end
     end
 
     describe "#sync_league_details" do

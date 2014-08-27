@@ -1,30 +1,26 @@
 class LeaguesController < ApplicationController
-  before_action :authenticate_user!, except: :show
-
   def index
+    authorize :league, :index?
     @leagues = current_user.leagues
   end
 
   def refresh
-    service.refresh_leagues
+    authorize :league, :refresh?
+    service.sync_leagues
 
     redirect_to leagues_path, notice: "Refreshed leagues"
   end
 
   def show
     @league = League.find(params[:id])
+    authorize @league, :show?
   end
 
   def sync
     league = current_user.leagues.find(params[:id])
+    authorize league, :sync?
     service.sync_league(league)
 
     redirect_to league_path(league), notice: "Synced league"
-  end
-
-  protected
-
-  def service
-    YahooService.new(current_user)
   end
 end

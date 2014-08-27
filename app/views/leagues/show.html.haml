@@ -14,6 +14,9 @@
       - @league.teams.each do |team|
         %tr
           %td
-            = team.name
+            - if team.managers.map(&:yahoo_guid).include?(current_user.yahoo_uid)
+              %strong= team.name
+            - else
+              = team.name
 
 

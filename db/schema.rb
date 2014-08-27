@@ -11,11 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140824152040) do
+ActiveRecord::Schema.define(version: 20140827112547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
+
+  create_table "games", force: true do |t|
+    t.integer  "yahoo_game_key", null: false
+    t.integer  "yahoo_game_id",  null: false
+    t.string   "name",           null: false
+    t.string   "code",           null: false
+    t.string   "game_type"
+    t.string   "url"
+    t.integer  "season",         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "games", ["code", "season"], name: "index_games_on_code_and_season", unique: true, using: :btree
+  add_index "games", ["yahoo_game_id"], name: "index_games_on_yahoo_game_id", unique: true, using: :btree
+  add_index "games", ["yahoo_game_key"], name: "index_games_on_yahoo_game_key", unique: true, using: :btree
 
   create_table "leagues", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
     t.string  "name",             null: false

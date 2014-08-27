@@ -1,25 +1,39 @@
 class YahooService
-  GAME_CODES = {
-    2014 => "331",
-    2013 => "314"
-  }
-
   def initialize(user)
     @user = user
   end
 
+  def get_yahoo_games
+    get "/games;game_codes=nfl;seasons=2014,2013,2012"
+  end
+
+  def games
+    doc = get_yahoo_games
+    doc.search("game").map{ |game_doc| YahooGame.new(game_doc) }
+  end
+
+  def sync_games
+    games.map do |yahoo_game|
+      game = Game
+               .where(yahoo_game_key: yahoo_game.game_key)
+               .first_or_initialize
+      yahoo_game.update(game)
+
+      game.save!
+      game
+    end
+  end
+
   def get_yahoo_user_leagues
-    get "/users;use_login=1/games;game_keys=#{GAME_CODES.values.join(",")}/leagues"
+    get "/users;use_login=1/games;game_keys=#{Game.all.map(&:yahoo_game_key).join(",")}/leagues"
   end
 
   def leagues
     doc = get_yahoo_user_leagues
-    league_docs = doc.search("league")
-
-    league_docs.map{ |league_doc| YahooLeague.new(league_doc) }
+    doc.search("league").map{ |league_doc| YahooLeague.new(league_doc) }
   end
 
-  def refresh_leagues
+  def sync_leagues
     leagues.map do |yahoo_league|
       league = League
                  .where(yahoo_league_key: yahoo_league.league_key)
@@ -36,8 +50,8 @@ class YahooService
     sync_league_details(league)
 
     #must make direct calls for sub-resources
-    sync_players(league)
-    sync_rosters(league)
+    # sync_rosters(league)
+    # sync_players(league) # perhaps sync any remaining players I need?
   end
 
   def get_yahoo_league_details(league)
@@ -52,6 +66,11 @@ class YahooService
   def sync_league_details(league)
     details = league_details(league)
 
+    sync_league_teams(league, details)
+    sync_league_draft_results(league, details)
+  end
+
+  def sync_league_teams(league, details)
     details.teams.each do |yahoo_team|
       team = league
                .teams
@@ -77,9 +96,13 @@ class YahooService
     end
   end
 
-  def get_yahoo_league_teams(league, team, week)
-    get "/league/#{league.yahoo_league_key}/teams;out=roster"
+  def sync_league_draft_results(league, details)
+
   end
+
+  # def get_yahoo_league_teams(league, team, week)
+  #   get "/league/#{league.yahoo_league_key}/teams;out=roster"
+  # end
 
   def sync_rosters(league)
     #for each week... or perhaps just two most recent.
@@ -108,49 +131,6 @@ class YahooService
 
   def sync_players(league)
   end
-
-  # def teams(league)
-  #   data = get "/users;use_login=1/teams?format=json"
-  #   teams_info = data["fantasy_content"]["users"]["0"]["user"].detect{|hash| hash.keys.first == "teams"}["teams"]
-  #   Enumerator.new(teams_info["count"].to_i) do |yielder|
-  #     teams_info.except("count").each do |i, team_info|
-
-  #       yielder << YahooTeam.new(team_info)
-  #     end
-  #   end
-  # end
-
-  # def refresh_teams
-  #   teams.each do |yahoo_team|
-  #     ActiveRecord::Base.transaction do
-  #       team = Team.where(yahoo_game_key: yahoo_team.game_key,
-  #                         yahoo_league_id: yahoo_team.league_id,
-  #                         yahoo_team_id: yahoo_team.team_id,
-  #                         yahoo_division_id: yahoo_team.division_id)
-  #                  .first_or_initialize
-
-  #       team.name = yahoo_team.name
-  #       team.url = yahoo_team.url
-  #       team.save!
-
-  #       managers = yahoo_team.managers.map do |yahoo_manager|
-  #         manager = team
-  #                     .managers
-  #                     .where(yahoo_manager_id: yahoo_manager.manager_id)
-  #                     .first_or_initialize
-
-  #         manager.guid = yahoo_manager.guid
-  #         manager.nickname = yahoo_manager.nickname
-  #         manager.user = @user
-
-  #         manager.save!
-  #         manager
-  #       end
-
-  #       team.managers = managers
-  #     end
-  #   end
-  # end
 
   protected
 
@@ -237,6 +217,29 @@ class YahooService
     end
   end
 
+  class YahooGame < Base
+    attributes *%w(game_key
+                   game_id
+                   name
+                   code
+                   type
+                   url
+                   season)
+
+    def update(game)
+      game.yahoo_game_id = game_id
+      game.game_type = type
+      %w(
+        name
+        code
+        url
+        season
+      ).each do |attribute|
+        game.public_send("#{attribute}=", self.public_send(attribute))
+      end
+    end
+  end
+
   class YahooLeague < Base
     attributes *%w(name
                    league_key
@@ -275,6 +278,12 @@ class YahooService
   class YahooLeagueDetails < Base
     def teams
       @doc.search("league/teams/team").map{ |team_doc| YahooTeam.new(team_doc) }
+    end
+
+    def draft_results
+      @doc
+        .search("league/draft_results/draft_result")
+        .map{ |result_doc| YahooDraftResult.new(result_doc) }
     end
   end
 
@@ -335,5 +344,12 @@ class YahooService
         manager.public_send("#{attribute}=", self.public_send(attribute))
       end
     end
+  end
+
+  class YahooDraftResult < Base
+    attributes *%w(pick
+                   round
+                   team_key
+                   player_key)
   end
 end

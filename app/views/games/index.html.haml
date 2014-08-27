@@ -1,0 +1,30 @@
+%h3 Games
+= link_to "Refresh", refresh_games_path, method: :post, class: "button small"
+
+- if @games.empty?
+  No games present. Please refresh.
+- else
+  %table
+    %thead
+      %tr
+        %td Yahoo Game Key
+        %td Yahoo Game ID
+        %td Name
+        %td Code
+        %td Game Type
+        %td Url
+        %td Season
+        %td Created At
+        %td Updated At
+    %tbody
+      - @games.each do |game|
+        %tr
+          %td= game.yahoo_game_key
+          %td= game.yahoo_game_id
+          %td= game.name
+          %td= game.code
+          %td= game.game_type
+          %td= link_to "link", game.url
+          %td= game.season
+          %td= game.created_at
+          %td= game.updated_at

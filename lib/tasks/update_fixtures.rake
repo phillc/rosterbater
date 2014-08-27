@@ -15,6 +15,8 @@ task update_fixtures: :environment do
     File.open("spec/fixtures/#{name}.xml", 'w') {|f| f.write(doc.to_s) }
   }
 
+  save.(:get_yahoo_games, service.get_yahoo_games)
+
   league = user.leagues.where(yahoo_league_id: 31580).first
   save.(:get_yahoo_user_leagues, service.get_yahoo_user_leagues)
   save.(:get_yahoo_league_details, service.get_yahoo_league_details(league))

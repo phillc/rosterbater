@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fantasy_content xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng" xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/games;game_codes=nfl;seasons=2014,2013,2012" time="66.385984420776ms" copyright="Data provided by Yahoo! and STATS, LLC" refresh_rate="60">
+ <games count="3">
+  <game>
+   <game_key>273</game_key>
+   <game_id>273</game_id>
+   <name>Football</name>
+   <code>nfl</code>
+   <type>full</type>
+   <url>http://football.fantasysports.yahoo.com/f1</url>
+   <season>2012</season>
+  </game>
+  <game>
+   <game_key>314</game_key>
+   <game_id>314</game_id>
+   <name>Football</name>
+   <code>nfl</code>
+   <type>full</type>
+   <url>http://football.fantasysports.yahoo.com/f1</url>
+   <season>2013</season>
+  </game>
+  <game>
+   <game_key>331</game_key>
+   <game_id>331</game_id>
+   <name>Football</name>
+   <code>nfl</code>
+   <type>full</type>
+   <url>http://football.fantasysports.yahoo.com/f1</url>
+   <season>2014</season>
+  </game>
+ </games>
+</fantasy_content>
+<!-- fan1255.sports.bf1.yahoo.com compressed/chunked Wed Aug 27 10:33:07 PDT 2014 -->

@@ -30,6 +30,7 @@ gem 'nokogiri'
 gem 'oauth'
 gem 'omniauth'
 gem 'omniauth-yahoo'
+gem 'pundit'
 
 group :development do
   gem 'guard'
