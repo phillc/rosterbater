@@ -33,8 +33,8 @@ class LeaguesController < ApplicationController
         .order(pick: :asc)
         .each
         .with_object({}) do |draft_pick, acc|
-          acc[draft_pick.yahoo_team_key] ||= []
-          acc[draft_pick.yahoo_team_key] << draft_pick.yahoo_player_key
+          acc[draft_pick.team] ||= []
+          acc[draft_pick.team] << draft_pick
         end
   end
 

@@ -8,6 +8,10 @@ Rails.application.routes.draw do
     collection do
       post :refresh
     end
+
+    member do
+      post :sync
+    end
   end
 
   resources :leagues, only: [:index, :show] do

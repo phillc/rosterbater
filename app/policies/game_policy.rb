@@ -6,4 +6,8 @@ class GamePolicy < ApplicationPolicy
   def refresh?
     admin?
   end
+
+  def sync?
+    admin?
+  end
 end

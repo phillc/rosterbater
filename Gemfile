@@ -31,6 +31,7 @@ gem 'oauth'
 gem 'omniauth'
 gem 'omniauth-yahoo'
 gem 'pundit'
+gem 'thin'
 
 group :development do
   gem 'guard'

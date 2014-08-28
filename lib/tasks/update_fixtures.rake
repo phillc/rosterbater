@@ -19,11 +19,12 @@ task update_fixtures: :environment do
 
   league = user.leagues.where(yahoo_league_id: 31580).first
   save.(:get_yahoo_user_leagues, service.get_yahoo_user_leagues)
-  save.(:get_yahoo_league_details, service.get_yahoo_league_details(league))
-  # save.(:get_yahoo_league_teams, service.get_yahoo_league_teams(league))
-  save.(:get_yahoo_league_players_1, service.get_yahoo_league_players(league, 0))
-  save.(:get_yahoo_league_players_2, service.get_yahoo_league_players(league, 25))
-  shortened_page = service.get_yahoo_league_players(league, 50)
+  save.(:get_yahoo_league_details, service.get_yahoo_league_details(league)) #tests take a long time, reduce draft picks size?
+
+  game = Game.find_by(yahoo_game_key: 314) # 2013 fantasy football
+  save.(:get_yahoo_game_players_1, service.get_yahoo_game_players(game, 0))
+  save.(:get_yahoo_game_players_2, service.get_yahoo_game_players(game, 25))
+  shortened_page = service.get_yahoo_game_players(game, 50)
   shortened_page.search(:player).last.remove
-  save.(:get_yahoo_league_players_3, shortened_page)
+  save.(:get_yahoo_game_players_3, shortened_page)
 end

@@ -1,0 +1,35 @@
+.draft-board {
+  .legend {
+    background-color: #CCCCCC;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .good-5 { background-color: #006400; }
+  .good-4 { background-color: #228B22; }
+  .good-3 { background-color: #3CB371; }
+  .good-2 { background-color: #00FF7F ; }
+  .good-1 { background-color: #98FB98; }
+  .even   { background-color: #FFFFFF; }
+  .bad-1  { background-color: #E9967A; }
+  .bad-2  { background-color: #F08080; }
+  .bad-3  { background-color: #CD5C5C; }
+  .bad-4  { background-color: #B22222; }
+  .bad-5  { background-color: #8B0000; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 0.7rem;
+
+    .round-number {
+      width: 25px;
+    }
+
+    th, td {
+      overflow: hidden;
+      border: 1px solid #000000;
+      text-align: center;
+    }
+  }
+}

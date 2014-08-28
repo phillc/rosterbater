@@ -1,6 +1,6 @@
 class CreateGames < ActiveRecord::Migration
   def change
-    create_table :games do |t|
+    create_table :games, id: :uuid do |t|
       t.integer :yahoo_game_key, null: false
       t.integer :yahoo_game_id,  null: false
       t.string :name,            null: false

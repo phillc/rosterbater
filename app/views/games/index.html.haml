@@ -4,9 +4,10 @@
 - if @games.empty?
   No games present. Please refresh.
 - else
-  %table
+  %table.table
     %thead
       %tr
+        %td
         %td Yahoo Game Key
         %td Yahoo Game ID
         %td Name
@@ -19,6 +20,7 @@
     %tbody
       - @games.each do |game|
         %tr
+          %td= link_to "Sync Players", sync_game_path(game), method: :post, class: "button small"
           %td= game.yahoo_game_key
           %td= game.yahoo_game_id
           %td= game.name

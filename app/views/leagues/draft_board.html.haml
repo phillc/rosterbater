@@ -3,16 +3,37 @@
   = @league.start_date.year
 %h3 Draft Board
 
-%table
-  %thead
-    %tr
-      %th #
-      - @picks.each do |(team_key, _)|
-        %th= team_key
-  %tbody
-    - @picks.first.last.size.times do |i|
+.draft-board
+  %div.legend
+    %span.good-5 25+
+    %span.good-4 13-24
+    %span.good-3 7-12
+    %span.good-2 4-6
+    %span.good-1 1-3
+    %span.even Even
+    %span.bad-1 1-3
+    %span.bad-2 4-6
+    %span.bad-3 7-12
+    %span.bad-4 13-24
+    %span.bad-5 25+
+
+  %table
+    %thead
       %tr
-        %th= i + 1
-        - @picks.each do |(_, players)|
-          %td= players[i]
+        %th.round-number #
+        - @picks.each do |(team, _)|
+          %th= team.name
+    %tbody
+      - @picks.first.last.size.times do |i|
+        %tr
+          %td.round-number= i + 1
+          - @picks.each do |(_, picks)|
+            - pick = picks[i]
+            %td{class: ranking_class(pick)}
+              %div
+                = pick.player.full_name
+              %div
+                = pick.pick
+                vs
+                = pick.drafted_player.draft_average_pick
 

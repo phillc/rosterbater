@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  skip_after_action :verify_authorized
+
   def create_from_omniauth
     auth = request.env["omniauth.auth"]
 

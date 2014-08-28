@@ -48,6 +48,116 @@ describe "YahooService" do
     end
   end
 
+  describe "players" do
+    let(:game) { create(:game) }
+    let(:league) { create(:league, game: game) }
+    let(:response) { double("response") }
+    let(:token) { double("token", get: response) }
+
+    before do
+      expect(service).to receive(:token).and_return(token).at_least(:once)
+    end
+
+    describe "#players" do
+      it "goes through the pages" do
+        expect(response).to receive(:body)
+                              .and_return fixture("get_yahoo_game_players_1.xml"),
+                                          fixture("get_yahoo_game_players_2.xml"),
+                                          fixture("get_yahoo_game_players_3.xml")
+        expect(service.players(game).to_a.size).to eq 74
+      end
+
+      it "retains the player attributes" do
+        expect(response).to receive(:body)
+                              .and_return fixture("get_yahoo_game_players_1.xml")
+        player = service.players(game).first
+        expect(player.player_key).to eq "314.p.8261"
+        expect(player.player_id).to eq "8261"
+        expect(player.full_name).to eq "Adrian Peterson"
+        expect(player.first_name).to eq "Adrian"
+        expect(player.last_name).to eq "Peterson"
+        expect(player.ascii_first_name).to eq "Adrian"
+        expect(player.ascii_last_name).to eq "Peterson"
+        expect(player.status).to eq "O"
+        expect(player.editorial_player_key).to eq "nfl.p.8261"
+        expect(player.editorial_team_key).to eq "nfl.t.16"
+        expect(player.editorial_team_full_name).to eq "Minnesota Vikings"
+        expect(player.editorial_team_abbr).to eq "Min"
+        expect(player.bye_weeks).to eq ["5"]
+        expect(player.uniform_number).to eq "28"
+        expect(player.display_position).to eq "RB"
+        expect(player.image_url).to eq "http://l.yimg.com/iu/api/res/1.2/7gLeB7TR77HalMeJv.iDVA--/YXBwaWQ9eXZpZGVvO2NoPTg2MDtjcj0xO2N3PTY1OTtkeD0xO2R5PTE7Zmk9dWxjcm9wO2g9NjA7cT0xMDA7dz00Ng--/http://l.yimg.com/j/assets/i/us/sp/v/nfl/players_l/20120913/8261.jpg"
+        expect(player.is_undroppable).to eq false
+        expect(player.position_type).to eq "O"
+        expect(player.eligible_positions).to eq ["RB"]
+        expect(player.has_player_notes).to eq true
+        expect(player.draft_average_pick).to eq "1.1"
+        expect(player.draft_average_round).to eq "1.0"
+        expect(player.draft_average_cost).to eq "72.6"
+        expect(player.draft_percent_drafted).to eq "1.00"
+      end
+    end
+
+    describe "#sync_game" do
+      before do
+        expect(response).to receive(:body)
+                              .and_return fixture("get_yahoo_game_players_1.xml"),
+                                          fixture("get_yahoo_game_players_2.xml"),
+                                          fixture("get_yahoo_game_players_3.xml")
+      end
+
+      it "saves the players" do
+        expect {
+          service.sync_game(game)
+        }.to change{ game.players.count }.by(74)
+      end
+
+      it "does not duplicate" do
+        service.sync_game(game)
+
+        expect(response).to receive(:body)
+                              .and_return fixture("get_yahoo_game_players_1.xml"),
+                                          fixture("get_yahoo_game_players_2.xml"),
+                                          fixture("get_yahoo_game_players_3.xml")
+
+        expect {
+          service.sync_game(game)
+        }.to change{ Player.count }.by(0)
+      end
+
+      it "stores the attributes" do
+        service.sync_game(game)
+
+        player = game.players.find_by(yahoo_player_key: "314.p.8261")
+
+        expect(player.yahoo_player_key).to eq "314.p.8261"
+        expect(player.yahoo_player_id).to eq "8261"
+        expect(player.full_name).to eq "Adrian Peterson"
+        expect(player.first_name).to eq "Adrian"
+        expect(player.last_name).to eq "Peterson"
+        expect(player.ascii_first_name).to eq "Adrian"
+        expect(player.ascii_last_name).to eq "Peterson"
+        expect(player.status).to eq "O"
+        expect(player.editorial_player_key).to eq "nfl.p.8261"
+        expect(player.editorial_team_key).to eq "nfl.t.16"
+        expect(player.editorial_team_full_name).to eq "Minnesota Vikings"
+        expect(player.editorial_team_abbr).to eq "Min"
+        expect(player.bye_weeks).to eq ["5"]
+        expect(player.uniform_number).to eq "28"
+        expect(player.display_position).to eq "RB"
+        expect(player.image_url).to eq "http://l.yimg.com/iu/api/res/1.2/7gLeB7TR77HalMeJv.iDVA--/YXBwaWQ9eXZpZGVvO2NoPTg2MDtjcj0xO2N3PTY1OTtkeD0xO2R5PTE7Zmk9dWxjcm9wO2g9NjA7cT0xMDA7dz00Ng--/http://l.yimg.com/j/assets/i/us/sp/v/nfl/players_l/20120913/8261.jpg"
+        expect(player.is_undroppable).to eq false
+        expect(player.position_type).to eq "O"
+        expect(player.eligible_positions).to eq ["RB"]
+        expect(player.has_player_notes).to eq true
+        expect(player.draft_average_pick).to eq "1.1"
+        expect(player.draft_average_round).to eq "1.0"
+        expect(player.draft_average_cost).to eq "72.6"
+        expect(player.draft_percent_drafted).to eq "1.00"
+      end
+    end
+  end
+
   describe "user leagues" do
     let(:response) { double("response", body: fixture("get_yahoo_user_leagues.xml")) }
     let(:token) { double("token", get: response) }
@@ -61,60 +171,22 @@ describe "YahooService" do
         expect(service.leagues.size).to eq 3
       end
 
-      describe "attributes" do
-        let(:league) { service.leagues.first }
+      it "retains the attributes" do
+        league = service.leagues.first
 
-        it "should have the league name" do
-          expect(league.name).to eq "Stay Thirsty My Friends"
-        end
-
-        it "should have the league key" do
-          expect(league.league_key).to eq "331.l.6781"
-        end
-
-        it "should have the league id" do
-          expect(league.league_id).to eq "6781"
-        end
-
-        it "should have the url" do
-          expect(league.url).to eq "http://football.fantasysports.yahoo.com/f1/6781"
-        end
-
-        it "should have the number of teams" do
-          expect(league.num_teams).to eq "12"
-        end
-
-        it "should have the scoring type" do
-          expect(league.scoring_type).to eq "head"
-        end
-
-        it "should have the renew" do
-          expect(league.renew).to eq "314_31580"
-        end
-
-        it "should have the renewed" do
-          expect(league.renewed).to be_nil
-        end
-
-        it "should have the current week" do
-          expect(league.current_week).to eq "1"
-        end
-
-        it "should have the start week" do
-          expect(league.start_week).to eq "1"
-        end
-
-        it "should have the end week" do
-          expect(league.end_week).to eq "16"
-        end
-
-        it "should have the start date" do
-          expect(league.start_date).to eq "2014-09-04"
-        end
-
-        it "should have the end date" do
-          expect(league.end_date).to eq "2014-12-22"
-        end
+        expect(league.name).to eq "Stay Thirsty My Friends"
+        expect(league.league_key).to eq "331.l.6781"
+        expect(league.league_id).to eq "6781"
+        expect(league.url).to eq "http://football.fantasysports.yahoo.com/f1/6781"
+        expect(league.num_teams).to eq "12"
+        expect(league.scoring_type).to eq "head"
+        expect(league.renew).to eq "314_31580"
+        expect(league.renewed).to be_nil
+        expect(league.current_week).to eq "1"
+        expect(league.start_week).to eq "1"
+        expect(league.end_week).to eq "16"
+        expect(league.start_date).to eq "2014-09-04"
+        expect(league.end_date).to eq "2014-12-22"
       end
     end
 
@@ -306,23 +378,4 @@ describe "YahooService" do
     end
   end
 
-  describe "players" do
-    let(:league) { create(:league) }
-    let(:response) { double("response") }
-    let(:token) { double("token", get: response) }
-
-    before do
-      expect(service).to receive(:token).and_return(token).at_least(:once)
-      expect(response).to receive(:body)
-                            .and_return fixture("get_yahoo_league_players_1.xml"),
-                                        fixture("get_yahoo_league_players_2.xml"),
-                                        fixture("get_yahoo_league_players_3.xml")
-    end
-
-    describe "#players" do
-      it "goes through the pages" do
-        expect(service.players(league).to_a.size).to eq 74
-      end
-    end
-  end
 end

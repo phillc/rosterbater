@@ -10,4 +10,13 @@ class GamesController < ApplicationController
 
     redirect_to games_path, notice: "Refreshed games"
   end
+
+  def sync
+    game = Game.find(params[:id])
+    authorize game, :sync?
+
+    service.sync_game(game)
+
+    redirect_to games_path, notice: "Synced game"
+  end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140827115301) do
+ActiveRecord::Schema.define(version: 20140827230830) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 20140827115301) do
 
   add_index "draft_picks", ["league_id", "pick"], name: "index_draft_picks_on_league_id_and_pick", unique: true, using: :btree
 
-  create_table "games", force: true do |t|
+  create_table "games", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
     t.integer  "yahoo_game_key", null: false
     t.integer  "yahoo_game_id",  null: false
     t.string   "name",           null: false
@@ -78,6 +78,38 @@ ActiveRecord::Schema.define(version: 20140827115301) do
   end
 
   add_index "managers", ["yahoo_guid", "team_id"], name: "index_managers_on_yahoo_guid_and_team_id", unique: true, using: :btree
+
+  create_table "players", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+    t.string   "yahoo_player_key",                      null: false
+    t.string   "yahoo_player_id",                       null: false
+    t.string   "full_name"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "ascii_first_name"
+    t.string   "ascii_last_name"
+    t.string   "status"
+    t.string   "editorial_player_key"
+    t.string   "editorial_team_key"
+    t.string   "editorial_team_full_name"
+    t.string   "editorial_team_abbr"
+    t.text     "bye_weeks",                default: [],              array: true
+    t.string   "uniform_number"
+    t.string   "display_position"
+    t.string   "image_url"
+    t.boolean  "is_undroppable"
+    t.string   "position_type"
+    t.text     "eligible_positions",       default: [],              array: true
+    t.boolean  "has_player_notes"
+    t.string   "draft_average_pick"
+    t.string   "draft_average_round"
+    t.string   "draft_average_cost"
+    t.string   "draft_percent_drafted"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.uuid     "game_id",                               null: false
+  end
+
+  add_index "players", ["yahoo_player_key"], name: "index_players_on_yahoo_player_key", unique: true, using: :btree
 
   create_table "teams", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
     t.string   "name",             null: false

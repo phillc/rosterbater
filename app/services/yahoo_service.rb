@@ -24,6 +24,39 @@ class YahooService
     end
   end
 
+  def get_yahoo_game_players(game, offset)
+    get "/game/#{game.yahoo_game_key}/players;out=draft_analysis;start=#{offset}"
+  end
+
+  def players(game)
+    page_size = 25
+
+    Enumerator.new do |yielder|
+      offset = 0
+      loop do
+        player_docs = get_yahoo_game_players(game, offset).search("player")
+        player_docs.each do |player_doc|
+          yielder << YahooPlayer.new(player_doc)
+        end
+
+        break if player_docs.size < page_size
+        offset = offset + page_size
+      end
+    end
+  end
+
+  def sync_game(game)
+    players(game).map do |yahoo_player|
+      player = game
+                 .players
+                 .where(yahoo_player_key: yahoo_player.player_key)
+                 .first_or_initialize
+      yahoo_player.update(player)
+
+      player.save!
+    end
+  end
+
   def get_yahoo_user_leagues
     get "/users;use_login=1/games;game_keys=#{Game.all.map(&:yahoo_game_key).join(",")}/leagues"
   end
@@ -51,7 +84,6 @@ class YahooService
 
     #must make direct calls for sub-resources
     # sync_rosters(league)
-    # sync_players(league) # perhaps sync any remaining players I need?
   end
 
   def get_yahoo_league_details(league)
@@ -114,30 +146,6 @@ class YahooService
 
   def sync_rosters(league)
     #for each week... or perhaps just two most recent.
-  end
-
-  def get_yahoo_league_players(league, offset)
-    get "/league/#{league.yahoo_league_key}/players;start=#{offset}"
-  end
-
-  def players(league)
-    page_size = 25
-
-    Enumerator.new do |yielder|
-      offset = 0
-      loop do
-        player_docs = get_yahoo_league_players(league, offset).search("player")
-        player_docs.each do |player_doc|
-          # yielder << YahooLeague.new(league_doc)
-          yielder << player_doc
-        end
-
-        break if player_docs.size < page_size
-      end
-    end
-  end
-
-  def sync_players(league)
   end
 
   protected
@@ -244,6 +252,103 @@ class YahooService
         season
       ).each do |attribute|
         game.public_send("#{attribute}=", self.public_send(attribute))
+      end
+    end
+  end
+
+  class YahooPlayer < Base
+    attributes *%w(player_key
+                   player_id
+                   status
+                   editorial_player_key
+                   editorial_team_key
+                   editorial_team_full_name
+                   editorial_team_abbr
+                   uniform_number
+                   display_position
+                   image_url
+                   position_type
+                   )
+
+    def full_name
+      at("name/full")
+    end
+
+    def first_name
+      at("name/first")
+    end
+
+    def last_name
+      at("name/last")
+    end
+
+    def ascii_first_name
+      at("name/ascii_first")
+    end
+
+    def ascii_last_name
+      at("name/ascii_last")
+    end
+
+    def bye_weeks
+      @doc.search("bye_weeks/week").map(&:text)
+    end
+
+    def is_undroppable
+      at("is_undroppable") == "1"
+    end
+
+    def eligible_positions
+      @doc.search("eligible_positions/position").map(&:text)
+    end
+
+    def has_player_notes
+      at("has_player_notes") == "1"
+    end
+
+    def draft_average_pick
+      at("draft_analysis/average_pick")
+    end
+
+    def draft_average_round
+      at("draft_analysis/average_round")
+    end
+
+    def draft_average_cost
+      at("draft_analysis/average_cost")
+    end
+
+    def draft_percent_drafted
+      at("draft_analysis/percent_drafted")
+    end
+
+    def update(player)
+      player.yahoo_player_id = player_id
+      %w(
+        status
+        editorial_player_key
+        editorial_team_key
+        editorial_team_full_name
+        editorial_team_abbr
+        uniform_number
+        display_position
+        image_url
+        position_type
+        full_name
+        first_name
+        last_name
+        ascii_first_name
+        ascii_last_name
+        bye_weeks
+        is_undroppable
+        eligible_positions
+        has_player_notes
+        draft_average_pick
+        draft_average_round
+        draft_average_cost
+        draft_percent_drafted
+      ).each do |attribute|
+        player.public_send("#{attribute}=", self.public_send(attribute))
       end
     end
   end

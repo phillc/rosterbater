@@ -24,6 +24,10 @@ describe LeaguesController do
 
   describe "GET 'draft_board'" do
     it "has the picks sorted out" do
+      team1 = create(:team, yahoo_team_key: "teamkey1", league: league)
+      team2 = create(:team, yahoo_team_key: "teamkey2", league: league)
+      team3 = create(:team, yahoo_team_key: "teamkey3", league: league)
+
       create(:draft_pick, pick: 9, yahoo_team_key: "teamkey3", yahoo_player_key: "pick9", league: league)
       create(:draft_pick, pick: 8, yahoo_team_key: "teamkey2", yahoo_player_key: "pick8", league: league)
       create(:draft_pick, pick: 7, yahoo_team_key: "teamkey1", yahoo_player_key: "pick7", league: league)
@@ -36,7 +40,13 @@ describe LeaguesController do
 
       get 'draft_board', id: league
 
-      expect(assigns(:picks).first).to eq ["teamkey1", ["pick1", "pick6", "pick7"]]
+      team, players = assigns(:picks).first
+      expect(team).to eq team1
+      expect(players.map(&:yahoo_player_key)).to eq ["pick1", "pick6", "pick7"]
+
+      team, players = assigns(:picks).to_a.last
+      expect(team).to eq team3
+      expect(players.map(&:yahoo_player_key)).to eq ["pick3", "pick4", "pick9"]
     end
   end
 end
