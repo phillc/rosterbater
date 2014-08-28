@@ -11,11 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140827112547) do
+ActiveRecord::Schema.define(version: 20140827115301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
+
+  create_table "draft_picks", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+    t.integer "pick",             null: false
+    t.integer "round",            null: false
+    t.string  "yahoo_team_key",   null: false
+    t.string  "yahoo_player_key", null: false
+    t.uuid    "league_id",        null: false
+  end
+
+  add_index "draft_picks", ["league_id", "pick"], name: "index_draft_picks_on_league_id_and_pick", unique: true, using: :btree
 
   create_table "games", force: true do |t|
     t.integer  "yahoo_game_key", null: false

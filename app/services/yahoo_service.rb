@@ -97,7 +97,15 @@ class YahooService
   end
 
   def sync_league_draft_results(league, details)
+    details.draft_results.each do |yahoo_draft_result|
+      pick = league
+               .draft_picks
+               .where(pick: yahoo_draft_result.pick)
+               .first_or_initialize
 
+      yahoo_draft_result.update(pick)
+      pick.save!
+    end
   end
 
   # def get_yahoo_league_teams(league, team, week)
@@ -351,5 +359,16 @@ class YahooService
                    round
                    team_key
                    player_key)
+
+    def update(draft_pick)
+      draft_pick.yahoo_team_key = team_key
+      draft_pick.yahoo_player_key = player_key
+      %w(
+        pick
+        round
+      ).each do |attribute|
+        draft_pick.public_send("#{attribute}=", self.public_send(attribute))
+      end
+    end
   end
 end

@@ -216,6 +216,10 @@ describe "YahooService" do
 
     describe "#sync_league_details" do
       describe "teams" do
+        before do
+          allow(service).to receive(:sync_league_draft_results) # slow
+        end
+
         it "saves the teams" do
           expect {
             service.sync_league_details(league)
@@ -275,7 +279,30 @@ describe "YahooService" do
         end
       end
 
-      it "updates the draft results"
+      describe "draft results" do
+        it "saves the picks" do
+          expect {
+            service.sync_league_details(league)
+          }.to change{ league.draft_picks.count }.by(210)
+        end
+
+        it "does not duplicate" do
+          service.sync_league_details(league)
+
+          expect {
+            service.sync_league_details(league)
+          }.to change{ DraftPick.count }.by(0)
+        end
+
+        it "stores the attributes" do
+          service.sync_league_details(league)
+
+          pick = league.draft_picks.where(pick: 1).first
+          expect(pick.round).to eq 1
+          expect(pick.yahoo_team_key).to eq "314.l.31580.t.6"
+          expect(pick.yahoo_player_key).to eq "314.p.8261"
+        end
+      end
     end
   end
 

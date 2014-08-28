@@ -1,4 +1,5 @@
 class LeaguesController < ApplicationController
+  before_action :find_league, only: [:show, :draft_board]
   def index
     authorize :league, :index?
     @leagues = current_user.leagues
@@ -12,7 +13,6 @@ class LeaguesController < ApplicationController
   end
 
   def show
-    @league = League.find(params[:id])
     authorize @league, :show?
   end
 
@@ -22,5 +22,25 @@ class LeaguesController < ApplicationController
     service.sync_league(league)
 
     redirect_to league_path(league), notice: "Synced league"
+  end
+
+  def draft_board
+    authorize @league, :show?
+
+    @picks =
+      @league
+        .draft_picks
+        .order(pick: :asc)
+        .each
+        .with_object({}) do |draft_pick, acc|
+          acc[draft_pick.yahoo_team_key] ||= []
+          acc[draft_pick.yahoo_team_key] << draft_pick.yahoo_player_key
+        end
+  end
+
+  protected
+
+  def find_league
+    @league = League.find(params[:id])
   end
 end

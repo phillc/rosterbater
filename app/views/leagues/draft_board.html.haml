@@ -1,0 +1,18 @@
+%h3
+  = @league.name
+  = @league.start_date.year
+%h3 Draft Board
+
+%table
+  %thead
+    %tr
+      %th #
+      - @picks.each do |(team_key, _)|
+        %th= team_key
+  %tbody
+    - @picks.first.last.size.times do |i|
+      %tr
+        %th= i + 1
+        - @picks.each do |(_, players)|
+          %td= players[i]
+
