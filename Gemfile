@@ -33,6 +33,7 @@ gem 'oauth'
 gem 'omniauth'
 gem 'omniauth-yahoo'
 gem 'pundit'
+gem 'raygun4ruby'
 gem 'spreadsheet', '0.9.8'
 gem 'thin'
 
