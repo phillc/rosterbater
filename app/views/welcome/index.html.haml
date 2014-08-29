@@ -1,7 +1,26 @@
 .row
   %h1 Welcome
   %p
+    Right now this is just a simple tool that shows your leagues draft picks vs ECR.
+  %p
     - if current_user
       %a.button{href: leagues_path} Look at your teams now »
     - else
       %a.button{href: "/auth/yahoo"} Sign in with yahoo »
+
+
+  %h3 Other people's draft boards
+  %table.table
+    %thead
+      %tr
+        %th Name
+        %th Number of teams
+    %tbody
+      - @leagues.each do |league|
+        %tr
+          %td
+            = link_to league.name, draft_board_league_path(league)
+          %td
+            = league.num_teams
+
+
