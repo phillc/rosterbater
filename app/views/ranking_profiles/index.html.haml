@@ -1,0 +1,10 @@
+%h3 unlinked ranking profiles
+
+%table
+  - @unlinked_profiles.each do |profile|
+    %tr
+      %td= profile.id
+      %td= profile.name
+      %td= profile.rankings.map(&:position).uniq
+      %td= profile.rankings.map(&:team).uniq
+

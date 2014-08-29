@@ -14,6 +14,8 @@ Rails.application.routes.draw do
       post :sync_rankings
       post :link_players
     end
+
+    resources :ranking_profiles, only: [:index]
   end
 
   resources :leagues, only: [:index, :show] do

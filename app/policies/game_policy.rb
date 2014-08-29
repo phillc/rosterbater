@@ -10,4 +10,8 @@ class GamePolicy < ApplicationPolicy
   def sync?
     admin?
   end
+
+  def manage_ranking_profile?
+    admin?
+  end
 end
