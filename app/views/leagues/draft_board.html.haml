@@ -12,6 +12,9 @@
           = ranking_type.humanize
       - else
         = link_to "vs. #{ranking_type.humanize}", draft_board_league_path(@league, ranking: ranking_type), class: "button"
+  - if !current_user
+    %li
+      = link_to "Get your own draft visualized", root_path, class: "button alert"
 
 .draft-board
   %div.legend
@@ -50,3 +53,5 @@
               %div
                 #{info.team_abbr} - #{info.position}
 
+%br
+%br
