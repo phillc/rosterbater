@@ -1,5 +1,13 @@
 %h3 Your leagues
-= link_to "Refresh", refresh_leagues_path, method: :post, class: "button small"
+
+- if policy(:league).refresh?
+  = link_to "Refresh", refresh_leagues_path, method: :post, class: "button small"
+- else
+  %p
+    Cannot refresh right now
+
+- if current_user.synced_at
+  %p Last refreshed #{time_ago_in_words(current_user.synced_at)} ago.
 
 - if @leagues.empty?
   No leagues present. Please refresh.
@@ -9,7 +17,6 @@
       %tr
         %th Year
         %th(width="33%") Name
-        %th Url
         %th Number of teams
         %th Current Week
         %th Start Date
@@ -21,8 +28,6 @@
             = league.start_date.year
           %td
             = link_to league.name, league_path(league)
-          %td
-            = link_to "Link", league.url
           %td
             = league.num_teams
           %td

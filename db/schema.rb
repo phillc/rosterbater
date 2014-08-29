@@ -11,18 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140827230830) do
+ActiveRecord::Schema.define(version: 20140828231323) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
   create_table "draft_picks", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
-    t.integer "pick",             null: false
-    t.integer "round",            null: false
-    t.string  "yahoo_team_key",   null: false
-    t.string  "yahoo_player_key", null: false
-    t.uuid    "league_id",        null: false
+    t.integer  "pick",             null: false
+    t.integer  "round",            null: false
+    t.string   "yahoo_team_key",   null: false
+    t.string   "yahoo_player_key", null: false
+    t.uuid     "league_id",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "draft_picks", ["league_id", "pick"], name: "index_draft_picks_on_league_id_and_pick", unique: true, using: :btree
@@ -44,19 +46,23 @@ ActiveRecord::Schema.define(version: 20140827230830) do
   add_index "games", ["yahoo_game_key"], name: "index_games_on_yahoo_game_key", unique: true, using: :btree
 
   create_table "leagues", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
-    t.string  "name",             null: false
-    t.string  "yahoo_league_key", null: false
-    t.integer "yahoo_league_id",  null: false
-    t.string  "url"
-    t.integer "num_teams"
-    t.string  "scoring_type"
-    t.string  "renew"
-    t.string  "renewed"
-    t.integer "current_week"
-    t.integer "start_week"
-    t.integer "end_week"
-    t.date    "start_date"
-    t.date    "end_date"
+    t.string   "name",             null: false
+    t.string   "yahoo_league_key", null: false
+    t.integer  "yahoo_league_id",  null: false
+    t.string   "url"
+    t.integer  "num_teams"
+    t.string   "scoring_type"
+    t.string   "renew"
+    t.string   "renewed"
+    t.integer  "current_week"
+    t.integer  "start_week"
+    t.integer  "end_week"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.uuid     "game_id",          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "synced_at"
   end
 
   add_index "leagues", ["yahoo_league_key"], name: "index_leagues_on_yahoo_league_key", unique: true, using: :btree
@@ -69,12 +75,14 @@ ActiveRecord::Schema.define(version: 20140827230830) do
   add_index "leagues_users", ["league_id", "user_id"], name: "index_leagues_users_on_league_id_and_user_id", unique: true, using: :btree
 
   create_table "managers", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
-    t.string  "name"
-    t.string  "image_url"
-    t.string  "yahoo_guid"
-    t.boolean "is_commissioner"
-    t.string  "email"
-    t.uuid    "team_id",         null: false
+    t.string   "name"
+    t.string   "image_url"
+    t.string   "yahoo_guid"
+    t.boolean  "is_commissioner"
+    t.string   "email"
+    t.uuid     "team_id",         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "managers", ["yahoo_guid", "team_id"], name: "index_managers_on_yahoo_guid_and_team_id", unique: true, using: :btree
@@ -111,6 +119,45 @@ ActiveRecord::Schema.define(version: 20140827230830) do
 
   add_index "players", ["yahoo_player_key"], name: "index_players_on_yahoo_player_key", unique: true, using: :btree
 
+  create_table "ranking_profiles", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+    t.uuid     "game_id",          null: false
+    t.string   "name",             null: false
+    t.string   "yahoo_player_key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ranking_profiles", ["game_id", "name"], name: "index_ranking_profiles_on_game_id_and_name", unique: true, using: :btree
+
+  create_table "ranking_reports", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+    t.uuid     "game_id",      null: false
+    t.text     "original"
+    t.string   "title"
+    t.string   "ranking_type", null: false
+    t.string   "period",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "rankings", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+    t.integer  "rank",               null: false
+    t.string   "position"
+    t.string   "team"
+    t.integer  "bye_week"
+    t.string   "best_rank"
+    t.string   "worst_rank"
+    t.string   "ave_rank"
+    t.string   "std_dev"
+    t.string   "adp"
+    t.uuid     "ranking_report_id",  null: false
+    t.uuid     "ranking_profile_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "rankings", ["rank", "ranking_report_id"], name: "index_rankings_on_rank_and_ranking_report_id", unique: true, using: :btree
+  add_index "rankings", ["ranking_profile_id", "ranking_report_id"], name: "index_rankings_on_ranking_profile_id_and_ranking_report_id", unique: true, using: :btree
+
   create_table "teams", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
     t.string   "name",             null: false
     t.string   "yahoo_team_key",   null: false
@@ -138,6 +185,7 @@ ActiveRecord::Schema.define(version: 20140827230830) do
     t.string   "yahoo_session_handle"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "synced_at"
   end
 
   add_index "users", ["yahoo_uid"], name: "index_users_on_yahoo_uid", unique: true, using: :btree

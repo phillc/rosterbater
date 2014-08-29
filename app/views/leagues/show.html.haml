@@ -2,7 +2,8 @@
 
 %ul.button-group
   %li= link_to "Draft board", draft_board_league_path(@league), class: "button"
-  %li= link_to "Sync", sync_league_path(@league), method: :post, class: "button secondary"
+  - if policy(@league).sync?
+    %li= link_to "Sync", sync_league_path(@league), method: :post, class: "button secondary"
 
 - if @league.teams.empty?
   No teams present. Please refresh.

@@ -40,13 +40,13 @@ describe LeaguesController do
 
       get 'draft_board', id: league
 
-      team, players = assigns(:picks).first
+      team, infos = assigns(:picks).first
       expect(team).to eq team1
-      expect(players.map(&:yahoo_player_key)).to eq ["pick1", "pick6", "pick7"]
+      expect(infos.map(&:drafted_player).map(&:yahoo_player_key)).to eq ["pick1", "pick6", "pick7"]
 
       team, players = assigns(:picks).to_a.last
       expect(team).to eq team3
-      expect(players.map(&:yahoo_player_key)).to eq ["pick3", "pick4", "pick9"]
+      expect(infos.map(&:drafted_player).map(&:yahoo_player_key)).to eq ["pick3", "pick4", "pick9"]
     end
   end
 end

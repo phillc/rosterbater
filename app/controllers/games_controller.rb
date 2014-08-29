@@ -6,7 +6,7 @@ class GamesController < ApplicationController
 
   def refresh
     authorize :game, :refresh?
-    service.sync_games
+    YahooService.new(current_user).sync_games
 
     redirect_to games_path, notice: "Refreshed games"
   end
@@ -15,8 +15,29 @@ class GamesController < ApplicationController
     game = Game.find(params[:id])
     authorize game, :sync?
 
-    service.sync_game(game)
+    YahooService.new(current_user).sync_game(game)
 
     redirect_to games_path, notice: "Synced game"
+  end
+
+  def sync_rankings
+    game = Game.find(params[:id])
+    authorize game, :sync?
+
+    EcrRankingsService.new.tap do |service|
+      service.sync_standard_draft_rankings(game)
+      service.sync_ppr_draft_rankings(game)
+    end
+
+    redirect_to games_path, notice: "Synced rankings"
+  end
+
+  def link_players
+    game = Game.find(params[:id])
+    authorize game, :sync?
+
+    game.ranking_profiles.unlinked.map(&:link)
+
+    redirect_to games_path, notice: "Linked players"
   end
 end

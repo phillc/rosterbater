@@ -7,7 +7,8 @@ class LeaguesController < ApplicationController
 
   def refresh
     authorize :league, :refresh?
-    service.sync_leagues
+
+    YahooService.new(current_user).sync_leagues(Game.most_recent)
 
     redirect_to leagues_path, notice: "Refreshed leagues"
   end
@@ -19,13 +20,15 @@ class LeaguesController < ApplicationController
   def sync
     league = current_user.leagues.find(params[:id])
     authorize league, :sync?
-    service.sync_league(league)
+    YahooService.new(current_user).sync_league(league)
 
     redirect_to league_path(league), notice: "Synced league"
   end
 
   def draft_board
     authorize @league, :show?
+
+    @ranking_type = params[:ranking] || "yahoo_adp"
 
     @picks =
       @league
@@ -34,7 +37,14 @@ class LeaguesController < ApplicationController
         .each
         .with_object({}) do |draft_pick, acc|
           acc[draft_pick.team] ||= []
-          acc[draft_pick.team] << draft_pick
+
+          info = case @ranking_type
+            when "yahoo_adp"; draft_pick.yahoo_info
+            when "ecr_standard"; draft_pick.ecr_standard_info
+            when "ecr_ppr"; draft_pick.ecr_ppr_info
+            end
+
+          acc[draft_pick.team] << info
         end
   end
 

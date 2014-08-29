@@ -26,6 +26,8 @@ class CreateTeams < ActiveRecord::Migration
       t.string :email
 
       t.uuid :team_id, null: false
+
+      t.timestamps
     end
 
     add_index :managers, [:yahoo_guid, :team_id], unique: true

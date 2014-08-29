@@ -13,8 +13,4 @@ class ApplicationController < ActionController::Base
   # def authenticate_user!
   #   redirect_to :root unless current_user
   # end
-
-  def service
-    YahooService.new(current_user)
-  end
 end

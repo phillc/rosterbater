@@ -4,7 +4,7 @@ class LeaguePolicy < ApplicationPolicy
   end
 
   def refresh?
-    logged_in?
+    logged_in? && (!user.synced_at || user.synced_at < 30.minutes.ago)
   end
 
   def show?
@@ -12,6 +12,12 @@ class LeaguePolicy < ApplicationPolicy
   end
 
   def sync?
-    logged_in?
+    logged_in? && (!league.synced_at || league.synced_at < 30.minutes.ago)
+  end
+
+  protected
+
+  def league
+    record
   end
 end

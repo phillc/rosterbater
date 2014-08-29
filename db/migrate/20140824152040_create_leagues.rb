@@ -14,6 +14,10 @@ class CreateLeagues < ActiveRecord::Migration
       t.integer :end_week
       t.date    :start_date
       t.date    :end_date
+
+      t.uuid :game_id, null: false
+
+      t.timestamps
     end
 
     add_index :leagues, :yahoo_league_key, unique: true

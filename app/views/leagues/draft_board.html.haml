@@ -3,6 +3,16 @@
   = @league.start_date.year
 %h3 Draft Board
 
+%ul.button-group
+  - %w(yahoo_adp ecr_standard ecr_ppr).each do |ranking_type|
+    %li
+      - if @ranking_type == ranking_type
+        %span.button.disabled
+          vs.
+          = ranking_type.humanize
+      - else
+        = link_to "vs. #{ranking_type.humanize}", draft_board_league_path(@league, ranking: ranking_type), class: "button"
+
 .draft-board
   %div.legend
     %span.good-5 25+
@@ -16,6 +26,7 @@
     %span.bad-3 7-12
     %span.bad-4 13-24
     %span.bad-5 25+
+    %span.no-rank NA
 
   %table
     %thead
@@ -27,13 +38,15 @@
       - @picks.first.last.size.times do |i|
         %tr
           %td.round-number= i + 1
-          - @picks.each do |(_, picks)|
-            - pick = picks[i]
-            %td{class: ranking_class(pick)}
+          - @picks.each do |(_, pick_infos)|
+            - info = pick_infos[i]
+            %td{class: ranking_class(info)}
               %div
-                = pick.player.full_name
+                = info.name
               %div
-                = pick.pick
+                = info.actual_pick
                 vs
-                = pick.drafted_player.draft_average_pick
+                = info.rank_value
+              %div
+                = info.position
 

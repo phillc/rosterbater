@@ -161,6 +161,7 @@ describe "YahooService" do
   describe "user leagues" do
     let(:response) { double("response", body: fixture("get_yahoo_user_leagues.xml")) }
     let(:token) { double("token", get: response) }
+    let!(:game) { create(:game) }
 
     before do
       expect(service).to receive(:token).and_return(token).at_least(:once)
@@ -168,11 +169,11 @@ describe "YahooService" do
 
     describe "#leagues" do
       it "returns the count" do
-        expect(service.leagues.size).to eq 3
+        expect(service.leagues(game).size).to eq 3
       end
 
       it "retains the attributes" do
-        league = service.leagues.first
+        league = service.leagues(game).first
 
         expect(league.name).to eq "Stay Thirsty My Friends"
         expect(league.league_key).to eq "331.l.6781"
@@ -193,30 +194,37 @@ describe "YahooService" do
     describe "#sync_leagues" do
       it "saves the leagues" do
         expect {
-          service.sync_leagues
+          service.sync_leagues(game)
         }.to change{ League.count }.by(3)
       end
 
       it "returns the leagues" do
-        expect(service.sync_leagues.size).to eq 3
+        expect(service.sync_leagues(game).size).to eq 3
       end
 
-      it "associates the current user" do
-        service.sync_leagues.each do |league|
+      it "associates" do
+        service.sync_leagues(game).each do |league|
           expect(league.users).to include(user)
+          expect(league.game).to eq game
         end
       end
 
+      it "assigns synced_at" do
+        expect(user.reload.synced_at).to be nil
+        service.sync_leagues(game)
+        expect(user.reload.synced_at).to_not be nil
+      end
+
       it "does not duplicate" do
-        service.sync_leagues
+        service.sync_leagues(game)
 
         expect {
-          service.sync_leagues
+          service.sync_leagues(game)
         }.to change{ League.count }.by(0)
       end
 
       it "stores the attributes" do
-        service.sync_leagues
+        service.sync_leagues(game)
 
         league = League.find_by(yahoo_league_key: "314.l.31580")
 
@@ -245,7 +253,7 @@ describe "YahooService" do
     let(:league_details) { service.league_details(league) }
 
     before do
-      expect(service).to receive(:token).and_return(token).at_least(:once)
+      allow(service).to receive(:token).and_return(token)
     end
 
     describe "#teams" do
@@ -286,10 +294,22 @@ describe "YahooService" do
       end
     end
 
+    describe "#sync_league" do
+      before do
+        expect(service).to receive(:sync_league_details).at_least(:once) # slow
+      end
+
+      it "assigns synced_at" do
+        expect(league.reload.synced_at).to be nil
+        service.sync_league(league)
+        expect(league.reload.synced_at).to_not be nil
+      end
+    end
+
     describe "#sync_league_details" do
       describe "teams" do
         before do
-          allow(service).to receive(:sync_league_draft_results) # slow
+          expect(service).to receive(:sync_league_draft_results).at_least(:once) # slow
         end
 
         it "saves the teams" do

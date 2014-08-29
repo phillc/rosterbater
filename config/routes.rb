@@ -11,6 +11,8 @@ Rails.application.routes.draw do
 
     member do
       post :sync
+      post :sync_rankings
+      post :link_players
     end
   end
 

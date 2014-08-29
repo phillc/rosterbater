@@ -1,5 +1,6 @@
 class Player < ActiveRecord::Base
   belongs_to :game
+  has_one :ranking_profile, foreign_key: "yahoo_player_key", primary_key: "yahoo_player_key"
 
   class NullPlayer
     attr_reader :yahoo_player_key
@@ -10,6 +11,14 @@ class Player < ActiveRecord::Base
 
     def full_name
       "Unknown player #{yahoo_player_key}"
+    end
+
+    def display_position
+      "NA"
+    end
+
+    def draft_average_pick
+      "NA"
     end
   end
 

@@ -1,6 +1,6 @@
 module LeaguesHelper
-  def ranking_class(pick)
-    html_class = case rank = pick.vs_yahoo_ranking
+  def ranking_class(info)
+    html_class = case rank = info.vs_pick
     when 13..24
       "good-4"
     when 7..12
@@ -21,7 +21,7 @@ module LeaguesHelper
       "bad-4"
     else
       if !rank
-        ""
+        "no-rank"
       elsif rank >= 25
         "good-5"
       elsif rank <= -25

@@ -1,30 +1,55 @@
-desc "Update fixtures"
-task update_fixtures: :environment do
-  user = User.first
-  service = YahooService.new(user)
+namespace :fixtures do
+  class Recorder
+    def save(name, doc)
+      File.open("spec/fixtures/#{name}", 'w') {|f| f.write(doc.to_s) }
+    end
+  end
 
-  clean = ->(doc) {
-    doc.search("email").each do |node|
-      node.content = Faker::Internet.email
+  class XMLRecorder < Recorder
+    def clean(doc)
+      doc.search("email").each do |node|
+        node.content = Faker::Internet.email
+      end
+
+      doc.search("short_invitation_url").remove
+      doc.search("password").remove
     end
 
-    doc.search("short_invitation_url").remove
-  }
-  save = ->(name, doc) {
-    clean.(doc)
-    File.open("spec/fixtures/#{name}.xml", 'w') {|f| f.write(doc.to_s) }
-  }
+    def save(name, doc)
+      clean(doc)
+      super
+    end
+  end
 
-  save.(:get_yahoo_games, service.get_yahoo_games)
+  class XLSRecorder < Recorder
+  end
 
-  league = user.leagues.where(yahoo_league_id: 31580).first
-  save.(:get_yahoo_user_leagues, service.get_yahoo_user_leagues)
-  save.(:get_yahoo_league_details, service.get_yahoo_league_details(league)) #tests take a long time, reduce draft picks size?
+  desc "Update yahoo fixtures"
+  task update_yahoo: :environment do
+    user = User.first
+    service = YahooService.new(user)
+    recorder = XMLRecorder.new
 
-  game = Game.find_by(yahoo_game_key: 314) # 2013 fantasy football
-  save.(:get_yahoo_game_players_1, service.get_yahoo_game_players(game, 0))
-  save.(:get_yahoo_game_players_2, service.get_yahoo_game_players(game, 25))
-  shortened_page = service.get_yahoo_game_players(game, 50)
-  shortened_page.search(:player).last.remove
-  save.(:get_yahoo_game_players_3, shortened_page)
+    recorder.save("get_yahoo_games.xml", service.get_yahoo_games)
+
+    league = user.leagues.where(yahoo_league_id: 31580).first
+    recorder.save("get_yahoo_user_leagues.xml", service.get_yahoo_user_leagues)
+    recorder.save("get_yahoo_league_details.xml", service.get_yahoo_league_details(league)) #tests take a long time, reduce draft picks size?
+
+    game = Game.find_by(yahoo_game_key: 314) # 2013 fantasy football
+    recorder.save("get_yahoo_game_players_1.xml", service.get_yahoo_game_players(game, 0))
+    recorder.save("get_yahoo_game_players_2.xml", service.get_yahoo_game_players(game, 25))
+    shortened_page = service.get_yahoo_game_players(game, 50)
+    shortened_page.search(:player).last.remove
+    recorder.save("get_yahoo_game_players_3.xml", shortened_page)
+  end
+
+  desc "Update ECR fixtures"
+  task update_ecr: :environment do
+    service = EcrRankingsService.new
+    recorder = XLSRecorder.new
+
+    recorder.save("get_standard_draft_rankings.xls", service.get_standard_draft_rankings)
+    recorder.save("get_ppr_draft_rankings.xls", service.get_ppr_draft_rankings)
+  end
 end

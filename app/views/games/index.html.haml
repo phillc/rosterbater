@@ -7,7 +7,7 @@
   %table.table
     %thead
       %tr
-        %td
+        %td(width="40%")
         %td Yahoo Game Key
         %td Yahoo Game ID
         %td Name
@@ -20,7 +20,11 @@
     %tbody
       - @games.each do |game|
         %tr
-          %td= link_to "Sync Players", sync_game_path(game), method: :post, class: "button small"
+          %td
+            %ul.button-group
+              %li= link_to "Sync Players", sync_game_path(game), method: :post, class: "button tiny"
+              %li= link_to "Sync Ranking Report", sync_rankings_game_path(game), method: :post, class: "button tiny"
+              %li= link_to "Link Players", link_players_game_path(game), method: :post, class: "button tiny"
           %td= game.yahoo_game_key
           %td= game.yahoo_game_id
           %td= game.name

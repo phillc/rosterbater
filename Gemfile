@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-
+ruby '2.1.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.5'
@@ -26,11 +26,13 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 gem 'factory_girl_rails'
 gem 'foundation-rails'
 gem 'haml-rails'
+gem 'httparty'
 gem 'nokogiri'
 gem 'oauth'
 gem 'omniauth'
 gem 'omniauth-yahoo'
 gem 'pundit'
+gem 'spreadsheet', '0.9.8'
 gem 'thin'
 
 group :development do
