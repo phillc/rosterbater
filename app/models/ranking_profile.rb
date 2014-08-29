@@ -10,8 +10,14 @@ class RankingProfile < ActiveRecord::Base
       update(player: player)
     elsif rankings.map(&:position).include?("DST")
       player = game.players.find_by(display_position: "DEF", editorial_team_full_name: name)
+      update(player: player) if player
+    else
+      clean = ->(val){ "trim(both ' ' from
+                          regexp_replace(lower(#{val}), '(\\.|jr)', '', 'g')
+                        )" }
+      player = game.players.where("#{clean.("full_name")} = #{clean.("?")}", name).first
 
-      update(player: player)
+      update(player: player) if player
     end
   end
 end

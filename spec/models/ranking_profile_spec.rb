@@ -4,6 +4,16 @@ describe RankingProfile do
   let(:ranking_profile) { create(:ranking_profile) }
 
   describe "#link" do
+    it "can find nothing" do
+      player = create(:player, full_name: "unmatched", game: ranking_profile.game)
+      expect(ranking_profile.player).to eq nil
+
+      ranking_profile.link
+
+      ranking_profile.reload
+      expect(ranking_profile.player).to eq nil
+
+    end
     it "finds a player with the same name" do
       player = create(:player, full_name: ranking_profile.name, game: ranking_profile.game)
       expect(ranking_profile.player).to eq nil
@@ -25,7 +35,39 @@ describe RankingProfile do
 
       ranking_profile.reload
       expect(ranking_profile.player).to eq player
+    end
 
+    it "ignores dots in the player" do
+      ranking_profile.update! name: "Ty Hilton"
+      player = create(:player, full_name: "T.Y. Hilton", game: ranking_profile.game)
+      expect(ranking_profile.player).to eq nil
+
+      ranking_profile.link
+
+      ranking_profile.reload
+      expect(ranking_profile.player).to eq player
+    end
+
+    it "ignores dots in the profile" do
+      ranking_profile.update! name: "E.J. Manuel"
+      player = create(:player, full_name: "EJ Manuel", game: ranking_profile.game)
+      expect(ranking_profile.player).to eq nil
+
+      ranking_profile.link
+
+      ranking_profile.reload
+      expect(ranking_profile.player).to eq player
+    end
+
+    it "ignores Jr." do
+      ranking_profile.update! name: "Roy Helu"
+      player = create(:player, full_name: "Roy Helu Jr.", game: ranking_profile.game)
+      expect(ranking_profile.player).to eq nil
+
+      ranking_profile.link
+
+      ranking_profile.reload
+      expect(ranking_profile.player).to eq player
     end
   end
 end

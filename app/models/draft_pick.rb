@@ -46,6 +46,10 @@ class DraftPick < ActiveRecord::Base
       @draft_pick.drafted_player
     end
 
+    def team_abbr
+      @draft_pick.player.editorial_team_abbr
+    end
+
     protected
 
     def pick

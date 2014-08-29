@@ -42,7 +42,7 @@ describe LeaguesController do
 
       team, infos = assigns(:picks).first
       expect(team).to eq team1
-      expect(infos.map(&:drafted_player).map(&:yahoo_player_key)).to eq ["pick1", "pick6", "pick7"]
+      expect(infos.map(&:drafted_player)).to eq ["pick1", "pick6", "pick7"]
 
       team, players = assigns(:picks).to_a.last
       expect(team).to eq team3

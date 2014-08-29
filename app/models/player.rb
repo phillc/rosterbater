@@ -20,6 +20,10 @@ class Player < ActiveRecord::Base
     def draft_average_pick
       "NA"
     end
+
+    def editorial_team_abbr
+      "NA"
+    end
   end
 
   validates :yahoo_player_key,

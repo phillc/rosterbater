@@ -9,6 +9,9 @@ class LeaguesController < ApplicationController
     authorize :league, :refresh?
 
     YahooService.new(current_user).sync_leagues(Game.most_recent)
+    # Game.all.each do |game|
+    #   YahooService.new(current_user).sync_leagues(game)
+    # end
 
     redirect_to leagues_path, notice: "Refreshed leagues"
   end
