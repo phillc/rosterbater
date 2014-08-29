@@ -1,15 +1,17 @@
 .row
-  %h1 Welcome
+  %h1 Fantasy Football - Post Draft Visualization Board
   %p
     Right now this is just a simple tool that shows your leagues draft picks vs ECR.
-  %p
-    - if current_user
-      %a.button{href: leagues_path} Look at your teams now »
-    - else
+  - if current_user
+    %p
+      %a.button{href: leagues_path} Look at your leagues now »
+  - else
+    %p
+      By signing into yahoo, you will allow us to automatically import your draft results, and compare them to Yahoo's Average Draft Pick, and Expert Consensus Rankings.
+    %p
       %a.button{href: "/auth/yahoo"} Sign in with yahoo »
 
-
-  %h3 Other people's draft boards
+  %h3 Example Post Draft Visualization Boards
   %table.table
     %thead
       %tr

@@ -1,16 +1,16 @@
 %h3 Your leagues
 
 - if policy(:league).refresh?
-  = link_to "Refresh", refresh_leagues_path, method: :post, class: "button small"
+  = link_to "Sync your leagues with Yahoo", refresh_leagues_path, method: :post, class: "button small"
 - else
   %p
-    Cannot refresh right now
+    Cannot sync right now
 
 - if current_user.synced_at
   %p Last refreshed #{time_ago_in_words(current_user.synced_at)} ago.
 
 - if @leagues.empty?
-  No leagues present. Please refresh.
+  No leagues present. Please sync your leagues with Yahoo.
 - else
   %table.table
     %thead

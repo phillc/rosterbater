@@ -1,12 +1,12 @@
 %h3= @league.name
 
 %ul.button-group
-  %li= link_to "Draft board", draft_board_league_path(@league), class: "button"
+  %li= link_to "Post Draft Visualization Board", draft_board_league_path(@league), class: "button"
   - if policy(@league).sync?
-    %li= link_to "Sync", sync_league_path(@league), method: :post, class: "button secondary"
+    %li= link_to "Sync this league with Yahoo", sync_league_path(@league), method: :post, class: "button secondary"
 
 - if @league.teams.empty?
-  No teams present. Please refresh.
+  No teams present. Please sync this league with Yahoo.
 - else
   %table.table
     %thead

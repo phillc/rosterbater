@@ -26,6 +26,8 @@ class DraftPick < ActiveRecord::Base
   end
 
   class InfoBase
+    attr_reader :draft_pick
+
     def name
       @draft_pick.player.full_name
     end
@@ -42,15 +44,15 @@ class DraftPick < ActiveRecord::Base
       @draft_pick.player.display_position
     end
 
-    def drafted_player
-      @draft_pick.drafted_player
-    end
-
     def team_abbr
       @draft_pick.player.editorial_team_abbr
     end
 
     protected
+
+    def drafted_player
+      @draft_pick.drafted_player
+    end
 
     def pick
       @draft_pick.pick
@@ -63,7 +65,7 @@ class DraftPick < ActiveRecord::Base
     end
 
     def rank_value
-      drafted_player.draft_average_pick
+      @draft_pick.player.draft_average_pick
     end
   end
 
@@ -84,7 +86,8 @@ class DraftPick < ActiveRecord::Base
     end
 
     def _ranking
-      ranking_profile = drafted_player.ranking_profile
+      ranking_profile = drafted_player.try(:ranking_profile)
+      return unless ranking_profile
 
       report = @draft_pick
                  .league
