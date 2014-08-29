@@ -38,20 +38,21 @@
         - @picks.each do |(team, _)|
           %th= team.name
     %tbody
-      - @picks.first.last.size.times do |i|
-        %tr
-          %td.round-number= i + 1
-          - @picks.each do |(_, pick_infos)|
-            - info = pick_infos[i]
-            %td{class: ranking_class(info)}
-              %div
-                = info.name
-              %div
-                = info.actual_pick
-                vs
-                = info.rank_value
-              %div
-                #{info.team_abbr} - #{info.position}
+      - if !@picks.empty?
+        - @picks.first.last.size.times do |i|
+          %tr
+            %td.round-number= i + 1
+            - @picks.each do |(_, pick_infos)|
+              - info = pick_infos[i]
+              %td{class: ranking_class(info)}
+                %div
+                  = info.name
+                %div
+                  = info.actual_pick
+                  vs
+                  = info.rank_value
+                %div
+                  #{info.team_abbr} - #{info.position}
 
 %br
 %br
