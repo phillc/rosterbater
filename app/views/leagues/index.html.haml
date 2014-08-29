@@ -2,12 +2,9 @@
 
 - if policy(:league).refresh?
   = link_to "Sync your leagues with Yahoo", refresh_leagues_path, method: :post, class: "button small"
-- else
-  %p
-    Cannot sync right now
 
 - if current_user.synced_at
-  %p Last refreshed #{time_ago_in_words(current_user.synced_at)} ago.
+  %p Last synced #{time_ago_in_words(current_user.synced_at)} ago.
 
 - if @leagues.empty?
   No leagues present. Please sync your leagues with Yahoo.
@@ -15,8 +12,8 @@
   %table.table
     %thead
       %tr
-        %th Year
         %th(width="33%") Name
+        %th Year
         %th Number of teams
         %th Current Week
         %th Start Date
@@ -25,9 +22,10 @@
       - @leagues.each do |league|
         %tr
           %td
-            = league.start_date.year
-          %td
+            = link_to "Go", league_path(league), class: "button tiny"
             = link_to league.name, league_path(league)
+          %td
+            = league.start_date.year
           %td
             = league.num_teams
           %td

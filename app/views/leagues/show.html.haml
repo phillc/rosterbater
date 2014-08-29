@@ -4,6 +4,8 @@
   %li= link_to "Post Draft Visualization Board", draft_board_league_path(@league), class: "button"
   - if policy(@league).sync?
     %li= link_to "Sync this league with Yahoo", sync_league_path(@league), method: :post, class: "button secondary"
+- if @league.synced_at
+  %p Last synced #{time_ago_in_words(@league.synced_at)} ago.
 
 - if @league.teams.empty?
   No teams present. Please sync this league with Yahoo.
