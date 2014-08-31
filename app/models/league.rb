@@ -10,8 +10,9 @@ class League < ActiveRecord::Base
             :yahoo_league_id, presence: true
 
   def ppr?
-    settings && settings["stat_modifiers"]["stats"]["stat"].detect{ |stat| stat["stat_id"] == "11" }["value"]
-  rescue
-    false
+    return false unless settings && !settings.empty?
+
+    stat = settings["stat_modifiers"]["stats"]["stat"].detect{ |stat| stat["stat_id"] == "11" }
+    !!stat && (stat["value"] == "1")
   end
 end
