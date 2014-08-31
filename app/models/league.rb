@@ -11,5 +11,7 @@ class League < ActiveRecord::Base
 
   def ppr?
     settings && settings["stat_modifiers"]["stats"]["stat"].detect{ |stat| stat["stat_id"] == "11" }["value"]
+  rescue
+    false
   end
 end
