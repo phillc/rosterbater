@@ -3,18 +3,21 @@
   = @league.start_date.year
 %h3 Post Draft Visualization Board
 
-%ul.button-group
-  - %w(ecr_standard ecr_ppr yahoo_adp).each do |ranking_type|
-    %li
-      - if @ranking_type == ranking_type
-        %span.button.disabled
-          vs.
-          = ranking_type.humanize
-      - else
-        = link_to "vs. #{ranking_type.humanize}", draft_board_league_path(@league, ranking: ranking_type), class: "button"
-  - if !current_user
-    %li
-      = link_to "Get your own draft visualized", root_path, class: "button alert"
+.button-bar
+  %ul.button-group
+    - if !current_user
+      %li
+        = link_to "Get your own draft visualized", root_path, class: "button alert"
+  %ul.button-group.right
+    - ["Yahoo ADP", "ECR Standard" ,"ECR PPR"].each do |ranking_label|
+      - ranking_param = ranking_label.downcase.split(" ").join("_")
+      %li
+        - if @ranking_type == ranking_param
+          %span.button.disabled
+            vs.
+            = ranking_label
+        - else
+          = link_to "vs. #{ranking_label}", draft_board_league_path(@league, ranking: ranking_param), class: "button"
 
 %p This is a visualization of your draft. The colors represent the difference between where a player was picked, vs their ranking. Click the buttons above to compare draft picks against Yahoo's Average Draft Pick, or to #{link_to "Expert Consensus Rankings", "http://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"} in either PPR or standard. For example, If Jamaal Charles was picked 3rd overall in your league but was ranked second, it would show up light green for being a late pick. Green picks are late picks against the ranking, where purple picks are reaches for players too early according to the ranking.
 
