@@ -4,7 +4,7 @@
 %h3 Post Draft Visualization Board
 
 %ul.button-group
-  - %w(yahoo_adp ecr_standard ecr_ppr).each do |ranking_type|
+  - %w(ecr_standard ecr_ppr yahoo_adp).each do |ranking_type|
     %li
       - if @ranking_type == ranking_type
         %span.button.disabled

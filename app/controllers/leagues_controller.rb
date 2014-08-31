@@ -31,7 +31,7 @@ class LeaguesController < ApplicationController
   def draft_board
     authorize @league, :show?
 
-    @ranking_type = params[:ranking] || "yahoo_adp"
+    @ranking_type = params[:ranking] || (@league.ppr? ? "ecr_ppr" : "ecr_standard")
 
     @picks =
       @league
