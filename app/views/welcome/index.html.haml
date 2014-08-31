@@ -1,7 +1,8 @@
 .row
   %h1 Fantasy Football - Post Draft Visualization Board
   %p
-    Right now this is just a simple tool that shows your leagues draft picks vs ECR.
+    This is a simple tool that gives a visualization of your draft. The colors represent the difference between where a player was picked, vs their ranking. You can compare draft picks against Yahoo's Average Draft Pick, or to #{link_to "Expert Consensus Rankings", "http://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"} in either PPR or standard.
+
   - if current_user
     %p
       %a.button{href: leagues_path} Look at your leagues now »

@@ -16,6 +16,8 @@
     %li
       = link_to "Get your own draft visualized", root_path, class: "button alert"
 
+%p This is a visualization of your draft. The colors represent the difference between where a player was picked, vs their ranking. Click the buttons above to compare draft picks against Yahoo's Average Draft Pick, or to #{link_to "Expert Consensus Rankings", "http://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"} in either PPR or standard. For example, If Jamaal Charles was picked 3rd overall in your league, but ranked second, it would show up green. Green picks are good picks against the ranking, where purple picks are reaches for players too early according to the ranking.
+
 .draft-board
   %div.legend
     %span.good-5 25+
