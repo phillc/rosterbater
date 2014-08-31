@@ -49,5 +49,11 @@ describe League do
 
       expect(league.ppr?).to be false
     end
+
+    it "is false when the settings are nil" do
+      league.settings = nil
+
+      expect(league.ppr?).to be false
+    end
   end
 end
