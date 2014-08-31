@@ -25,6 +25,9 @@
             %li= link_to "Game Admin", games_path
           - if current_user
             %li= link_to "Logout", logout_path
+          - else
+            %li
+              %a{href: "/auth/yahoo"} Sign in with yahoo
 
     = render "layouts/messages"
     .row
