@@ -1,6 +1,10 @@
 %h3 Games
 = link_to "Refresh", refresh_games_path, method: :post, class: "button small"
 
+%p Users: #{User.count}
+%p Leagues: #{League.count}
+%p Unsynced Leagues: #{League.where(synced_at: nil).count}
+
 - if @games.empty?
   No games present. Please refresh.
 - else
