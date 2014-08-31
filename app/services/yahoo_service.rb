@@ -93,7 +93,7 @@ class YahooService
   end
 
   def get_yahoo_league_details(league)
-    get "/league/#{league.yahoo_league_key};out=teams,draftresults"
+    get "/league/#{league.yahoo_league_key};out=teams,draftresults,settings"
   end
 
   def league_details(league)
@@ -104,8 +104,14 @@ class YahooService
   def sync_league_details(league)
     details = league_details(league)
 
+    sync_league_settings(league, details)
     sync_league_teams(league, details)
     sync_league_draft_results(league, details)
+  end
+
+  def sync_league_settings(league, details)
+    details.settings.update(league)
+    league.save!
   end
 
   def sync_league_teams(league, details)
@@ -408,6 +414,28 @@ class YahooService
       @doc
         .search("league/draft_results/draft_result")
         .map{ |result_doc| YahooDraftResult.new(result_doc) }
+    end
+
+    def settings
+      YahooLeagueSettings.new(@doc.search("league/settings"))
+    end
+  end
+
+  class YahooLeagueSettings < Base
+    attributes *%w(trade_end_date
+                  )
+    def is_auction_draft
+      at(:is_auction_draft) == "1"
+    end
+
+    def update(league)
+      league.settings = Hash.from_xml(@doc.to_xml)["settings"]
+      %w(
+        is_auction_draft
+        trade_end_date
+      ).each do |attribute|
+        league.public_send("#{attribute}=", self.public_send(attribute))
+      end
     end
   end
 

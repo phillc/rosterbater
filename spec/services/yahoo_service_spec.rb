@@ -395,6 +395,20 @@ describe "YahooService" do
           expect(pick.yahoo_player_key).to eq "314.p.8261"
         end
       end
+
+      describe "settings" do
+        before do
+          expect(service).to receive(:sync_league_teams).at_least(:once) # slow
+          expect(service).to receive(:sync_league_draft_results).at_least(:once) # slow
+        end
+
+        it "stores settings" do
+          service.sync_league_details(league)
+          expect(league.is_auction_draft).to eq false
+          expect(league.trade_end_date).to eq Date.parse("2013-11-15")
+          expect(league.settings).to include({"draft_type" => "live", "max_teams" => "14"})
+        end
+      end
     end
   end
 

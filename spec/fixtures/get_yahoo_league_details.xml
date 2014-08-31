@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fantasy_content xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng" xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/314.l.31580;out=teams,draftresults" time="89.564085006714ms" copyright="Data provided by Yahoo! and STATS, LLC" refresh_rate="60">
+<fantasy_content xmlns:yahoo="http://www.yahooapis.com/v1/base.rng" xmlns="http://fantasysports.yahooapis.com/fantasy/v2/base.rng" xml:lang="en-US" yahoo:uri="http://fantasysports.yahooapis.com/fantasy/v2/league/314.l.31580;out=teams,draftresults,settings" time="93.522071838379ms" copyright="Data provided by Yahoo! and STATS, LLC" refresh_rate="60">
  <league>
   <league_key>314.l.31580</league_key>
   <league_id>31580</league_id>
   <name>Stay thirsty my friends</name>
   <url>http://football.fantasysports.yahoo.com/archive/nfl/2013/31580</url>
-  <password/>
+  
   <draft_status>postdraft</draft_status>
   <num_teams>14</num_teams>
   <edit_key>17</edit_key>
@@ -53,7 +53,7 @@
       <guid>JBAMN3TTXS5EN3SAWHYJKRRGNU</guid>
       <is_commissioner>1</is_commissioner>
       <is_current_login>1</is_current_login>
-      <email>heath@runolfsdottir.info</email>
+      <email>clare@bartell.info</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -83,7 +83,7 @@
       <manager_id>2</manager_id>
       <nickname>Drew</nickname>
       <guid>23AINT5F3DKUYYGT6INVZGWFRE</guid>
-      <email>mavis@anderson.com</email>
+      <email>curtis@croninrobel.org</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -113,7 +113,7 @@
       <manager_id>3</manager_id>
       <nickname>Paul</nickname>
       <guid>32ID2YFTZFOGV4JTMXVTB2ECDI</guid>
-      <email>shayna@collier.name</email>
+      <email>rogelio.cremin@nicolas.org</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -143,7 +143,7 @@
       <manager_id>4</manager_id>
       <nickname>Jeff</nickname>
       <guid>ICYNANLFYYAH6WLBEPE27ARO6A</guid>
-      <email>lelia_schmitt@kochmacgyver.info</email>
+      <email>tyler_dickens@oberbrunner.name</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -174,7 +174,7 @@
       <manager_id>5</manager_id>
       <nickname>Hallie</nickname>
       <guid>UHV6X55DAB443JMJWVRG625OIQ</guid>
-      <email>shaylee@leuschke.net</email>
+      <email>ashlynn_lang@leuschke.org</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -204,7 +204,7 @@
       <manager_id>6</manager_id>
       <nickname>Angela</nickname>
       <guid>KP27SEHFQRTTVASS4IYJC3VSJQ</guid>
-      <email>vito.donnelly@jones.org</email>
+      <email>ransom@hilllgleason.net</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -234,7 +234,7 @@
       <manager_id>7</manager_id>
       <nickname>ian</nickname>
       <guid>JDY5XJE6JOLC4CVRU5WJFTCN6I</guid>
-      <email>hosea@collins.biz</email>
+      <email>eryn.lynch@conroyledner.info</email>
       <image_url>https://s.yimg.com/dg/users/1iCoHZjn8AAEDy4Jc8CbEBQ==.64.png</image_url>
      </manager>
     </managers>
@@ -264,7 +264,7 @@
       <manager_id>8</manager_id>
       <nickname>Kris</nickname>
       <guid>PBXYXZX4KBQ46HGLZHMGTK5MPU</guid>
-      <email>lincoln@douglaslesch.name</email>
+      <email>ellie@hamill.com</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -294,7 +294,7 @@
       <manager_id>9</manager_id>
       <nickname>Dave</nickname>
       <guid>RED2KURGA3F6LY2TTL3GFNYAQU</guid>
-      <email>shyann@breitenberg.biz</email>
+      <email>keven@littleleffler.biz</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -324,7 +324,7 @@
       <manager_id>10</manager_id>
       <nickname>john</nickname>
       <guid>ZUXEZVTK6IFLYHB5JPDTF7SL34</guid>
-      <email>bertram_wolf@jones.org</email>
+      <email>alfreda@vonohara.info</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -355,7 +355,7 @@
       <manager_id>11</manager_id>
       <nickname>Corey</nickname>
       <guid>WSRXDUZLXL3J4YOGYK3EPABV7E</guid>
-      <email>dallas_mueller@heel.com</email>
+      <email>leland_lubowitz@mayert.com</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -415,7 +415,7 @@
       <manager_id>13</manager_id>
       <nickname>Carly</nickname>
       <guid>BPWO7AOOY4AFGQLNRMI4VSEXAI</guid>
-      <email>teie_larkin@bosco.info</email>
+      <email>wallace@muellerhudson.com</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -445,7 +445,7 @@
       <manager_id>14</manager_id>
       <nickname>Mike P</nickname>
       <guid>H5NFVJ2MHK3LCXST6TV66AG2P4</guid>
-      <email>antonetta@gutkowski.net</email>
+      <email>kaleigh_blick@sipes.net</email>
       <image_url>https://s.yimg.com/dh/ap/social/profile/profile_b64.png</image_url>
      </manager>
     </managers>
@@ -1713,6 +1713,638 @@
     <player_key>314.p.24813</player_key>
    </draft_result>
   </draft_results>
+  <settings>
+   <draft_type>live</draft_type>
+   <is_auction_draft>0</is_auction_draft>
+   <scoring_type>head</scoring_type>
+   <uses_playoff>1</uses_playoff>
+   <has_playoff_consolation_games>1</has_playoff_consolation_games>
+   <playoff_start_week>15</playoff_start_week>
+   <uses_playoff_reseeding>0</uses_playoff_reseeding>
+   <uses_lock_eliminated_teams>1</uses_lock_eliminated_teams>
+   <num_playoff_teams>4</num_playoff_teams>
+   <num_playoff_consolation_teams>4</num_playoff_consolation_teams>
+   <waiver_type>FR</waiver_type>
+   <waiver_rule>gametime</waiver_rule>
+   <uses_faab>1</uses_faab>
+   <draft_time>1376350200</draft_time>
+   <draft_pick_time>120</draft_pick_time>
+   <post_draft_players>W</post_draft_players>
+   <max_teams>14</max_teams>
+   <waiver_time>2</waiver_time>
+   <trade_end_date>2013-11-15</trade_end_date>
+   <trade_ratify_type>vote</trade_ratify_type>
+   <trade_reject_time>1</trade_reject_time>
+   <player_pool>ALL</player_pool>
+   <cant_cut_list>yahoo</cant_cut_list>
+   <roster_positions>
+    <roster_position>
+     <position>QB</position>
+     <position_type>O</position_type>
+     <count>1</count>
+    </roster_position>
+    <roster_position>
+     <position>WR</position>
+     <position_type>O</position_type>
+     <count>3</count>
+    </roster_position>
+    <roster_position>
+     <position>RB</position>
+     <position_type>O</position_type>
+     <count>2</count>
+    </roster_position>
+    <roster_position>
+     <position>W/R/T</position>
+     <position_type>O</position_type>
+     <count>1</count>
+    </roster_position>
+    <roster_position>
+     <position>K</position>
+     <position_type>K</position_type>
+     <count>1</count>
+    </roster_position>
+    <roster_position>
+     <position>DEF</position>
+     <position_type>DT</position_type>
+     <count>1</count>
+    </roster_position>
+    <roster_position>
+     <position>BN</position>
+     <count>6</count>
+    </roster_position>
+   </roster_positions>
+   <stat_categories>
+    <stats>
+     <stat>
+      <stat_id>4</stat_id>
+      <enabled>1</enabled>
+      <name>Passing Yards</name>
+      <display_name>Pass Yds</display_name>
+      <sort_order>1</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>5</stat_id>
+      <enabled>1</enabled>
+      <name>Passing Touchdowns</name>
+      <display_name>Pass TD</display_name>
+      <sort_order>1</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>6</stat_id>
+      <enabled>1</enabled>
+      <name>Interceptions</name>
+      <display_name>Int</display_name>
+      <sort_order>0</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>9</stat_id>
+      <enabled>1</enabled>
+      <name>Rushing Yards</name>
+      <display_name>Rush Yds</display_name>
+      <sort_order>1</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>10</stat_id>
+      <enabled>1</enabled>
+      <name>Rushing Touchdowns</name>
+      <display_name>Rush TD</display_name>
+      <sort_order>1</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>11</stat_id>
+      <enabled>1</enabled>
+      <name>Receptions</name>
+      <display_name>Rec</display_name>
+      <sort_order>1</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>12</stat_id>
+      <enabled>1</enabled>
+      <name>Reception Yards</name>
+      <display_name>Rec Yds</display_name>
+      <sort_order>1</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>13</stat_id>
+      <enabled>1</enabled>
+      <name>Reception Touchdowns</name>
+      <display_name>Rec TD</display_name>
+      <sort_order>1</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>15</stat_id>
+      <enabled>1</enabled>
+      <name>Return Touchdowns</name>
+      <display_name>Ret TD</display_name>
+      <sort_order>1</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>16</stat_id>
+      <enabled>1</enabled>
+      <name>2-Point Conversions</name>
+      <display_name>2-PT</display_name>
+      <sort_order>1</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>18</stat_id>
+      <enabled>1</enabled>
+      <name>Fumbles Lost</name>
+      <display_name>Fum Lost</display_name>
+      <sort_order>0</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>57</stat_id>
+      <enabled>1</enabled>
+      <name>Offensive Fumble Return TD</name>
+      <display_name>Fum Ret TD</display_name>
+      <sort_order>1</sort_order>
+      <position_type>O</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>O</position_type>
+       </stat_position_type>
+      </stat_position_types>
+      <is_excluded_from_display>1</is_excluded_from_display>
+     </stat>
+     <stat>
+      <stat_id>19</stat_id>
+      <enabled>1</enabled>
+      <name>Field Goals 0-19 Yards</name>
+      <display_name>FG 0-19</display_name>
+      <sort_order>1</sort_order>
+      <position_type>K</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>K</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>20</stat_id>
+      <enabled>1</enabled>
+      <name>Field Goals 20-29 Yards</name>
+      <display_name>FG 20-29</display_name>
+      <sort_order>1</sort_order>
+      <position_type>K</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>K</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>21</stat_id>
+      <enabled>1</enabled>
+      <name>Field Goals 30-39 Yards</name>
+      <display_name>FG 30-39</display_name>
+      <sort_order>1</sort_order>
+      <position_type>K</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>K</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>22</stat_id>
+      <enabled>1</enabled>
+      <name>Field Goals 40-49 Yards</name>
+      <display_name>FG 40-49</display_name>
+      <sort_order>1</sort_order>
+      <position_type>K</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>K</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>23</stat_id>
+      <enabled>1</enabled>
+      <name>Field Goals 50+ Yards</name>
+      <display_name>FG 50+</display_name>
+      <sort_order>1</sort_order>
+      <position_type>K</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>K</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>29</stat_id>
+      <enabled>1</enabled>
+      <name>Point After Attempt Made</name>
+      <display_name>PAT Made</display_name>
+      <sort_order>1</sort_order>
+      <position_type>K</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>K</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>31</stat_id>
+      <enabled>1</enabled>
+      <name>Points Allowed</name>
+      <display_name>Pts Allow</display_name>
+      <sort_order>0</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+        <is_only_display_stat>1</is_only_display_stat>
+       </stat_position_type>
+      </stat_position_types>
+      <is_only_display_stat>1</is_only_display_stat>
+     </stat>
+     <stat>
+      <stat_id>32</stat_id>
+      <enabled>1</enabled>
+      <name>Sack</name>
+      <display_name>Sack</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>33</stat_id>
+      <enabled>1</enabled>
+      <name>Interception</name>
+      <display_name>Int</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>34</stat_id>
+      <enabled>1</enabled>
+      <name>Fumble Recovery</name>
+      <display_name>Fum Rec</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>35</stat_id>
+      <enabled>1</enabled>
+      <name>Touchdown</name>
+      <display_name>TD</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>36</stat_id>
+      <enabled>1</enabled>
+      <name>Safety</name>
+      <display_name>Safe</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>37</stat_id>
+      <enabled>1</enabled>
+      <name>Block Kick</name>
+      <display_name>Blk Kick</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>49</stat_id>
+      <enabled>1</enabled>
+      <name>Kickoff and Punt Return Touchdowns</name>
+      <display_name>Kick and Punt Ret TD</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>50</stat_id>
+      <enabled>1</enabled>
+      <name>Points Allowed 0 points</name>
+      <display_name>Pts Allow 0</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>51</stat_id>
+      <enabled>1</enabled>
+      <name>Points Allowed 1-6 points</name>
+      <display_name>Pts Allow 1-6</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>52</stat_id>
+      <enabled>1</enabled>
+      <name>Points Allowed 7-13 points</name>
+      <display_name>Pts Allow 7-13</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>53</stat_id>
+      <enabled>1</enabled>
+      <name>Points Allowed 14-20 points</name>
+      <display_name>Pts Allow 14-20</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>54</stat_id>
+      <enabled>1</enabled>
+      <name>Points Allowed 21-27 points</name>
+      <display_name>Pts Allow 21-27</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>55</stat_id>
+      <enabled>1</enabled>
+      <name>Points Allowed 28-34 points</name>
+      <display_name>Pts Allow 28-34</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+     <stat>
+      <stat_id>56</stat_id>
+      <enabled>1</enabled>
+      <name>Points Allowed 35+ points</name>
+      <display_name>Pts Allow 35+</display_name>
+      <sort_order>1</sort_order>
+      <position_type>DT</position_type>
+      <stat_position_types>
+       <stat_position_type>
+        <position_type>DT</position_type>
+       </stat_position_type>
+      </stat_position_types>
+     </stat>
+    </stats>
+   </stat_categories>
+   <stat_modifiers>
+    <stats>
+     <stat>
+      <stat_id>4</stat_id>
+      <value>0.04</value>
+     </stat>
+     <stat>
+      <stat_id>5</stat_id>
+      <value>4</value>
+     </stat>
+     <stat>
+      <stat_id>6</stat_id>
+      <value>-1</value>
+     </stat>
+     <stat>
+      <stat_id>9</stat_id>
+      <value>0.1</value>
+     </stat>
+     <stat>
+      <stat_id>10</stat_id>
+      <value>6</value>
+     </stat>
+     <stat>
+      <stat_id>11</stat_id>
+      <value>1</value>
+     </stat>
+     <stat>
+      <stat_id>12</stat_id>
+      <value>0.1</value>
+     </stat>
+     <stat>
+      <stat_id>13</stat_id>
+      <value>6</value>
+     </stat>
+     <stat>
+      <stat_id>15</stat_id>
+      <value>6</value>
+     </stat>
+     <stat>
+      <stat_id>16</stat_id>
+      <value>2</value>
+     </stat>
+     <stat>
+      <stat_id>18</stat_id>
+      <value>-2</value>
+     </stat>
+     <stat>
+      <stat_id>57</stat_id>
+      <value>6</value>
+     </stat>
+     <stat>
+      <stat_id>19</stat_id>
+      <value>3</value>
+     </stat>
+     <stat>
+      <stat_id>20</stat_id>
+      <value>3</value>
+     </stat>
+     <stat>
+      <stat_id>21</stat_id>
+      <value>3</value>
+     </stat>
+     <stat>
+      <stat_id>22</stat_id>
+      <value>4</value>
+     </stat>
+     <stat>
+      <stat_id>23</stat_id>
+      <value>5</value>
+     </stat>
+     <stat>
+      <stat_id>29</stat_id>
+      <value>1</value>
+     </stat>
+     <stat>
+      <stat_id>32</stat_id>
+      <value>1</value>
+     </stat>
+     <stat>
+      <stat_id>33</stat_id>
+      <value>2</value>
+     </stat>
+     <stat>
+      <stat_id>34</stat_id>
+      <value>2</value>
+     </stat>
+     <stat>
+      <stat_id>35</stat_id>
+      <value>6</value>
+     </stat>
+     <stat>
+      <stat_id>36</stat_id>
+      <value>2</value>
+     </stat>
+     <stat>
+      <stat_id>37</stat_id>
+      <value>2</value>
+     </stat>
+     <stat>
+      <stat_id>49</stat_id>
+      <value>6</value>
+     </stat>
+     <stat>
+      <stat_id>50</stat_id>
+      <value>10</value>
+     </stat>
+     <stat>
+      <stat_id>51</stat_id>
+      <value>7</value>
+     </stat>
+     <stat>
+      <stat_id>52</stat_id>
+      <value>4</value>
+     </stat>
+     <stat>
+      <stat_id>53</stat_id>
+      <value>1</value>
+     </stat>
+     <stat>
+      <stat_id>54</stat_id>
+      <value>0</value>
+     </stat>
+     <stat>
+      <stat_id>55</stat_id>
+      <value>-1</value>
+     </stat>
+     <stat>
+      <stat_id>56</stat_id>
+      <value>-4</value>
+     </stat>
+    </stats>
+   </stat_modifiers>
+   <pickem_enabled>1</pickem_enabled>
+   <uses_fractional_points>1</uses_fractional_points>
+   <uses_negative_points>1</uses_negative_points>
+  </settings>
  </league>
 </fantasy_content>
-<!-- fan315.sports.bf1.yahoo.com compressed/chunked Wed Aug 27 07:06:55 PDT 2014 -->
+<!-- fan157.sports.bf1.yahoo.com compressed/chunked Fri Aug 29 15:25:51 PDT 2014 -->
