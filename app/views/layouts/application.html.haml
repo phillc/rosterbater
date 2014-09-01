@@ -7,7 +7,7 @@
     %meta{property: "og:description", content: "This is a simple tool that gives a visualization of your draft after automatically importing your league's draft results. Colors represent the difference between where a player was picked vs their ranking, to help see which picks were good deals and which were reaches. You can compare draft picks against Yahoo's Average Draft Pick, or to Expert Consensus Rankings in either PPR or standard formats."}
     %title= content_for?(:title) ? yield(:title) : "Roster BAIT - Fantasy Football Visualizations"
 
-    = stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true
+    = stylesheet_link_tag    "application", media: "all"
     = javascript_include_tag "vendor/modernizr"
 
     = csrf_meta_tags
@@ -35,5 +35,5 @@
     .row
       .columns.large-12
         = yield
-    = javascript_include_tag "application", "data-turbolinks-track" => true
+    = javascript_include_tag "application"
     = render "layouts/google_analytics"
