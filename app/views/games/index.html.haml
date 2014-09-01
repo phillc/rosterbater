@@ -4,6 +4,8 @@
 %p Users: #{User.count}
 %p Leagues: #{League.count}
 %p Unsynced Leagues: #{League.unsynced.count}
+%p Interesting Leagues: #{League.interesting.length}
+%p Auction Leagues: #{League.where(is_auction_draft: true).count}
 
 - if @games.empty?
   No games present. Please refresh.

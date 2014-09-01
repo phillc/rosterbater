@@ -5,6 +5,14 @@ class League < ActiveRecord::Base
   has_and_belongs_to_many :users
 
   scope :unsynced, ->{ where(synced_at: nil) }
+  scope :interesting, -> {
+    joins(:draft_picks)
+      .where.not(synced_at: nil)
+      .where(is_auction_draft: [false, nil])
+      .group("leagues.id")
+      .having("count(leagues.id) > 0")
+      .order("RANDOM()")
+  }
 
   validates :name,
             :game,

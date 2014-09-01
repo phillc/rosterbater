@@ -3,6 +3,29 @@ require 'rails_helper'
 describe League do
   let(:league) { build(:league) }
 
+  describe ".interesting" do
+    let!(:synced_league) { create(:league, synced_at: 3.hours.ago) }
+    let!(:undrafted_league) { create(:league, synced_at: 3.hours.ago) }
+    let!(:auction_draft_league) { create(:league, is_auction_draft: true, synced_at: 3.hours.ago) }
+
+    before do
+      [synced_league, auction_draft_league].each do |league|
+        create(:draft_pick, league: league)
+      end
+    end
+    it "has synced leagues" do
+      expect(League.interesting).to include(synced_league)
+    end
+
+    it "does not have auction draft leagues" do
+      expect(League.interesting).to_not include(auction_draft_league)
+    end
+
+    it "does not have undrafted leagues" do
+      expect(League.interesting).to_not include(undrafted_league)
+    end
+  end
+
   describe "#ppr?" do
     it "is true when the stat is there" do
       league.settings = {
