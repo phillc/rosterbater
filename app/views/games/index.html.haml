@@ -3,7 +3,7 @@
 
 %p Users: #{User.count}
 %p Leagues: #{League.count}
-%p Unsynced Leagues: #{League.where(synced_at: nil).count}
+%p Unsynced Leagues: #{League.unsynced.count}
 
 - if @games.empty?
   No games present. Please refresh.

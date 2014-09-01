@@ -4,6 +4,46 @@ describe "YahooService" do
   let(:user) { create(:user) }
   let(:service) { YahooService.new(user) }
 
+  describe "#get" do
+    let(:good_response) { double("response", body: fixture("get_yahoo_games.xml")) }
+    let(:good_token) { double("token", get: good_response) }
+    let(:expired_token) { double("token") }
+    let(:consumer_key_unknown_token) { double("token") }
+
+    before do
+      allow(expired_token).to receive(:get).and_raise(OAuth::Problem.new("token_expired"))
+      allow(consumer_key_unknown_token).to receive(:get).and_raise(OAuth::Problem.new("consumer_key_unknown"))
+    end
+
+    it "returns results" do
+      expect(service).to receive(:token).and_return(good_token).once
+      expect(service.get("foo")).to be_a_kind_of(Nokogiri::XML::Document)
+    end
+
+    it "refreshed and retries for a token_expired" do
+      expect(service).to receive(:token).and_return(expired_token, good_token).twice
+      expect(service).to receive(:refresh_token!)
+
+      expect(service.get("foo")).to be_a_kind_of(Nokogiri::XML::Document)
+    end
+
+    it "retries twice for a consumer_key_unknown" do
+      expect(service).to receive(:token)
+                           .and_return(consumer_key_unknown_token, consumer_key_unknown_token, good_token)
+                           .exactly(3).times
+
+      expect(service.get("foo")).to be_a_kind_of(Nokogiri::XML::Document)
+    end
+
+    it "blows up on three failures" do
+      expect(service).to receive(:token)
+                           .and_return(consumer_key_unknown_token, consumer_key_unknown_token, consumer_key_unknown_token)
+                           .exactly(3).times
+
+      expect{ service.get("foo") }.to raise_error(OAuth::Problem)
+    end
+  end
+
   describe "games" do
     let(:response) { double("response", body: fixture("get_yahoo_games.xml")) }
     let(:token) { double("token", get: response) }

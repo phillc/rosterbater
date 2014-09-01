@@ -160,21 +160,21 @@ class YahooService
     #for each week... or perhaps just two most recent.
   end
 
-  protected
-
   def get(path)
-    retried = false
+    retries = 0
     begin
       response = token.get path
     rescue OAuth::Problem => e
-      if !retried
+      if retries < 2
         if e.problem == "token_expired"
           refresh_token!
-          retried = true
+          retries = retries + 1
           retry
         elsif e.problem == "consumer_key_unknown"
-          retried = true
+          retries = retries + 1
           retry
+        else
+          raise
         end
       else
         raise
@@ -182,6 +182,8 @@ class YahooService
     end
     Nokogiri::XML(response.body)
   end
+
+  protected
 
   def oauth_consumer
     @oauth_consumer ||= begin
