@@ -4,6 +4,8 @@ class League < ActiveRecord::Base
   has_many :draft_picks
   has_and_belongs_to_many :users
 
+  scope :unsycned, ->{ where(synced_at: nil) }
+
   validates :name,
             :game,
             :yahoo_league_key,

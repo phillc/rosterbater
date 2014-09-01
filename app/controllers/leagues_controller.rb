@@ -12,6 +12,9 @@ class LeaguesController < ApplicationController
     # Game.all.each do |game|
     #   YahooService.new(current_user).sync_leagues(game)
     # end
+    current_user.leagues.each do |league|
+      YahooService.new(current_user).sync_league(league)
+    end
 
     redirect_to leagues_path, notice: "Refreshed leagues"
   end
