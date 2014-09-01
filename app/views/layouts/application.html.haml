@@ -3,8 +3,8 @@
   %head
     %meta{charset: "utf-8"}
     %meta{content: "width=device-width, initial-scale=1.0", name: "viewport"}
-    %meta{property: "og:title" content: "Fantasy Football Visualizations"}
-    %meta{property: "og:description" content: "This is a simple tool that gives a visualization of your draft after automatically importing your league's draft results. Colors represent the difference between where a player was picked vs their ranking, to help see which picks were good deals and which were reaches. You can compare draft picks against Yahoo's Average Draft Pick, or to Expert Consensus Rankings in either PPR or standard formats."}
+    %meta{property: "og:title", content: "Fantasy Football Visualizations"}
+    %meta{property: "og:description", content: "This is a simple tool that gives a visualization of your draft after automatically importing your league's draft results. Colors represent the difference between where a player was picked vs their ranking, to help see which picks were good deals and which were reaches. You can compare draft picks against Yahoo's Average Draft Pick, or to Expert Consensus Rankings in either PPR or standard formats."}
     %title= content_for?(:title) ? yield(:title) : "Roster BAIT - Fantasy Football Visualizations"
 
     = stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true
