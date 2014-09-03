@@ -1,4 +1,8 @@
 module SessionsHelper
+  def current_user
+    @current_user ||= User.where(id: session[:current_user_id]).first
+  end
+
   protected
 
   def sign_in(user)
@@ -7,9 +11,5 @@ module SessionsHelper
 
   def sign_out
     session[:current_user_id] = @current_user = nil
-  end
-
-  def current_user
-    @current_user ||= User.where(id: session[:current_user_id]).first
   end
 end
