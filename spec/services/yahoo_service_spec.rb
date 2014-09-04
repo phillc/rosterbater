@@ -477,7 +477,6 @@ describe "YahooService" do
             expect(pick.yahoo_team_key).to eq "314.l.1158259.t.6"
             expect(pick.yahoo_player_key).to eq "314.p.8261"
             expect(pick.cost).to eq 72
-            expect(pick.auction_pick).to eq 1
           end
 
           it "stores auction rank by price" do
@@ -486,7 +485,7 @@ describe "YahooService" do
             picks = league.draft_picks.order(cost: :desc).all
             pick1 = picks[0]
             expect(pick1.cost).to eq 72
-            expect(pick1.auction_pick).to eq 1
+            expect(pick1.auction_pick).to eq 2
             pick2 = picks[1]
             expect(pick2.cost).to eq 72
             expect(pick2.auction_pick).to eq 2
@@ -496,6 +495,13 @@ describe "YahooService" do
             pick4 = picks[3]
             expect(pick4.cost).to eq 67
             expect(pick4.auction_pick).to eq 4
+
+            pick5 = picks[110]
+            expect(pick5.cost).to eq 1
+            expect(pick5.auction_pick).to eq 112
+            pick6 = picks[111]
+            expect(pick6.cost).to eq 1
+            expect(pick6.auction_pick).to eq 112
           end
         end
 
@@ -515,5 +521,4 @@ describe "YahooService" do
       end
     end
   end
-
 end

@@ -25,6 +25,10 @@ class DraftPick < ActiveRecord::Base
     EcrRankingInfo.new(self, "ppr")
   end
 
+  def ecr_half_point_info
+    EcrRankingInfo.new(self, "half_point")
+  end
+
   class InfoBase
     attr_reader :draft_pick
 
@@ -48,6 +52,10 @@ class DraftPick < ActiveRecord::Base
       @draft_pick.player.editorial_team_abbr
     end
 
+    def cost
+      @draft_pick.cost
+    end
+
     protected
 
     def drafted_player
@@ -55,7 +63,7 @@ class DraftPick < ActiveRecord::Base
     end
 
     def pick
-      @draft_pick.pick
+      @draft_pick.league.is_auction_draft? ? @draft_pick.auction_pick : @draft_pick.pick
     end
   end
 

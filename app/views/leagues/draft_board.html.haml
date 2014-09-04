@@ -1,8 +1,7 @@
 - content_for :title, "Roster BAIT - Draft Visualization of #{@league.name}"
-%h3
-  = @league.name
-  = @league.start_date.year
 %h3 Post Draft Visualization Board
+%h4= @league.name
+%h5= @league.start_date.year
 
 .button-bar
   %ul.button-group
@@ -10,7 +9,7 @@
       %li
         = link_to "Get your own draft visualized", root_path, class: "button alert"
   %ul.button-group.right
-    - ["Yahoo ADP", "ECR Standard" ,"ECR PPR"].each do |ranking_label|
+    - ["Yahoo ADP", "ECR Standard", "ECR Half Point", "ECR PPR"].each do |ranking_label|
       - ranking_param = ranking_label.downcase.split(" ").join("_")
       %li
         - if @ranking_type == ranking_param
@@ -21,6 +20,12 @@
           = link_to "vs. #{ranking_label}", draft_board_league_path(@league, ranking: ranking_param), class: "button"
 
 %p This is a visualization of your draft. The colors represent the difference between where a player was picked, vs their ranking. Click the buttons above to compare draft picks against Yahoo's Average Draft Pick, or to #{link_to "Expert Consensus Rankings", "http://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"} in either PPR or standard. For example, If Jamaal Charles was picked 3rd overall in your league but was ranked second, it would show up light green for being a late pick. Green picks are late picks against the ranking, where purple picks are reaches for players too early according to the ranking.
+
+- if @league.is_auction_draft?
+  %p
+    Note: This is an
+    %strong auction draft.
+    The picks are shown as if they were picked in order of their cost.
 
 .draft-board
   %div.legend
@@ -55,6 +60,8 @@
                   = info.name
                 %div
                   = info.actual_pick
+                  - if @league.is_auction_draft?
+                    ($#{info.cost})
                   vs
                   = info.rank_value
                 %div

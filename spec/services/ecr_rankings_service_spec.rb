@@ -96,6 +96,27 @@ describe "EcrRankingsService" do
     end
 
     describe "#sync_ppr_draft_rankings" do
+      it "saves the rankings" do
+        expect {
+          service.sync_ppr_draft_rankings(game)
+        }.to change{ Ranking.count }.by(292)
+      end
+    end
+  end
+
+  describe "0.5 draft rankings" do
+    before do
+      expect(service).to receive(:get)
+                           .and_return(fixture("get_ppr_draft_rankings.xls"))
+                           .at_least(:once)
+    end
+
+    describe "#sync_half_point_draft_rankings" do
+      it "saves the rankings" do
+        expect {
+          service.sync_half_point_draft_rankings(game)
+        }.to change{ Ranking.count }.by(292)
+      end
     end
   end
 end

@@ -27,8 +27,14 @@ class League < ActiveRecord::Base
   end
 
   def assign_auction_picks
-    draft_picks.sort_by(&:cost).reverse.each.with_index do |draft_pick, i|
-      draft_pick.auction_pick = i + 1
+    picks = draft_picks.sort_by(&:cost)
+    num_picks = picks.size
+    picks.each.with_object({ count: 0, pick: num_picks, last_cost: nil}) do |draft_pick, info|
+      info[:pick] = num_picks - info[:count] unless info[:last_cost] == draft_pick.cost
+      info[:count] = info[:count] + 1
+      info[:last_cost] = draft_pick.cost
+
+      draft_pick.auction_pick = info[:pick]
     end
   end
 end

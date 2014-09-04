@@ -39,7 +39,7 @@ class LeaguesController < ApplicationController
     @picks =
       @league
         .draft_picks
-        .order(pick: :asc)
+        .order(auction_pick: :asc, pick: :asc)
         .each
         .with_object({}) do |draft_pick, acc|
           acc[draft_pick.team] ||= []
@@ -48,6 +48,7 @@ class LeaguesController < ApplicationController
             when "yahoo_adp"; draft_pick.yahoo_info
             when "ecr_standard"; draft_pick.ecr_standard_info
             when "ecr_ppr"; draft_pick.ecr_ppr_info
+            when "ecr_half_point"; draft_pick.ecr_half_point_info
             end
 
           acc[draft_pick.team] << info

@@ -10,7 +10,7 @@ class EcrRankingsService
     get "/ppr-cheatsheets.php?export=xls"
   end
 
-  def get_half_draft_rankings
+  def get_half_point_draft_rankings
     get "/half-point-ppr-cheatsheets.php?export=xls"
   end
 
@@ -20,6 +20,10 @@ class EcrRankingsService
 
   def ppr_draft_report
     EcrReport.new(get_ppr_draft_rankings)
+  end
+
+  def half_point_draft_report
+    EcrReport.new(get_half_point_draft_rankings)
   end
 
   def sync_standard_draft_rankings(game)
@@ -32,6 +36,12 @@ class EcrRankingsService
     store_report(ppr_draft_report, period: "draft",
                                    ranking_type: "ppr",
                                    game: game)
+  end
+
+  def sync_half_point_draft_rankings(game)
+    store_report(half_point_draft_report, period: "draft",
+                                          ranking_type: "half_point",
+                                          game: game)
   end
 
   protected
