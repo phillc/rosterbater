@@ -69,5 +69,16 @@ describe RankingProfile do
       ranking_profile.reload
       expect(ranking_profile.player).to eq player
     end
+
+    it "Timothy is Tim" do
+      ranking_profile.update! name: "Timothy Wright"
+      player = create(:player, full_name: "Tim Wright", game: ranking_profile.game)
+      expect(ranking_profile.player).to eq nil
+
+      ranking_profile.link
+
+      ranking_profile.reload
+      expect(ranking_profile.player).to eq player
+    end
   end
 end
