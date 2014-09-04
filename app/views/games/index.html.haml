@@ -6,6 +6,9 @@
 %p Unsynced Leagues: #{League.unsynced.count}
 %p Interesting Leagues: #{League.interesting.length}
 %p Auction Leagues: #{League.where(is_auction_draft: true).count}
+%ul
+  - User.select("date(created_at) as created_at, count(*) as number").where("created_at > ?", 7.days.ago).group("date(created_at)").order("created_at desc").each do |u|
+    %li #{u.created_at} - #{u.number}
 
 - if @games.empty?
   No games present. Please refresh.
