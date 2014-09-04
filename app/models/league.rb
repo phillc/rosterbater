@@ -1,7 +1,7 @@
 class League < ActiveRecord::Base
   belongs_to :game
   has_many :teams
-  has_many :draft_picks
+  has_many :draft_picks, autosave: true
   has_and_belongs_to_many :users
 
   scope :unsynced, ->{ where(synced_at: nil) }
@@ -24,5 +24,11 @@ class League < ActiveRecord::Base
 
     stat = settings["stat_modifiers"]["stats"]["stat"].detect{ |stat| stat["stat_id"] == "11" }
     !!stat && (stat["value"] == "1")
+  end
+
+  def assign_auction_picks
+    draft_picks.sort_by(&:cost).reverse.each.with_index do |draft_pick, i|
+      draft_pick.auction_pick = i + 1
+    end
   end
 end

@@ -411,42 +411,106 @@ describe "YahooService" do
         end
       end
 
-      describe "draft results" do
-        it "saves the picks" do
-          expect {
+      describe "snake draft" do
+        describe "draft results" do
+          it "saves the picks" do
+            expect {
+              service.sync_league_details(league)
+            }.to change{ league.draft_picks.count }.by(210)
+          end
+
+          it "does not duplicate" do
             service.sync_league_details(league)
-          }.to change{ league.draft_picks.count }.by(210)
+
+            expect {
+              service.sync_league_details(league)
+            }.to change{ DraftPick.count }.by(0)
+          end
+
+          it "stores the attributes" do
+            service.sync_league_details(league)
+
+            pick = league.draft_picks.where(pick: 1).first
+            expect(pick.round).to eq 1
+            expect(pick.yahoo_team_key).to eq "314.l.31580.t.6"
+            expect(pick.yahoo_player_key).to eq "314.p.8261"
+          end
         end
 
-        it "does not duplicate" do
-          service.sync_league_details(league)
+        describe "settings" do
+          before do
+            expect(service).to receive(:sync_league_teams).at_least(:once) # slow
+            expect(service).to receive(:sync_league_draft_results).at_least(:once) # slow
+          end
 
-          expect {
+          it "stores settings" do
             service.sync_league_details(league)
-          }.to change{ DraftPick.count }.by(0)
-        end
-
-        it "stores the attributes" do
-          service.sync_league_details(league)
-
-          pick = league.draft_picks.where(pick: 1).first
-          expect(pick.round).to eq 1
-          expect(pick.yahoo_team_key).to eq "314.l.31580.t.6"
-          expect(pick.yahoo_player_key).to eq "314.p.8261"
+            expect(league.is_auction_draft).to eq false
+            expect(league.trade_end_date).to eq Date.parse("2013-11-15")
+            expect(league.settings).to include({"draft_type" => "live", "max_teams" => "14"})
+          end
         end
       end
 
-      describe "settings" do
-        before do
-          expect(service).to receive(:sync_league_teams).at_least(:once) # slow
-          expect(service).to receive(:sync_league_draft_results).at_least(:once) # slow
+      describe "auction draft" do
+        let(:response) { double("response", body: fixture("get_yahoo_league_details_auction.xml")) }
+        describe "draft results" do
+          it "saves the picks" do
+            expect {
+              service.sync_league_details(league)
+            }.to change{ league.draft_picks.count }.by(112)
+          end
+
+          it "does not duplicate" do
+            service.sync_league_details(league)
+
+            expect {
+              service.sync_league_details(league)
+            }.to change{ DraftPick.count }.by(0)
+          end
+
+          it "stores the attributes" do
+            service.sync_league_details(league)
+
+            pick = league.draft_picks.where(pick: 1).first
+            expect(pick.round).to eq 1
+            expect(pick.yahoo_team_key).to eq "314.l.1158259.t.6"
+            expect(pick.yahoo_player_key).to eq "314.p.8261"
+            expect(pick.cost).to eq 72
+            expect(pick.auction_pick).to eq 1
+          end
+
+          it "stores auction rank by price" do
+            service.sync_league_details(league)
+
+            picks = league.draft_picks.order(cost: :desc).all
+            pick1 = picks[0]
+            expect(pick1.cost).to eq 72
+            expect(pick1.auction_pick).to eq 1
+            pick2 = picks[1]
+            expect(pick2.cost).to eq 72
+            expect(pick2.auction_pick).to eq 2
+            pick3 = picks[2]
+            expect(pick3.cost).to eq 69
+            expect(pick3.auction_pick).to eq 3
+            pick4 = picks[3]
+            expect(pick4.cost).to eq 67
+            expect(pick4.auction_pick).to eq 4
+          end
         end
 
-        it "stores settings" do
-          service.sync_league_details(league)
-          expect(league.is_auction_draft).to eq false
-          expect(league.trade_end_date).to eq Date.parse("2013-11-15")
-          expect(league.settings).to include({"draft_type" => "live", "max_teams" => "14"})
+        describe "settings" do
+          before do
+            expect(service).to receive(:sync_league_teams).at_least(:once) # slow
+            expect(service).to receive(:sync_league_draft_results).at_least(:once) # slow
+          end
+
+          it "stores settings" do
+            service.sync_league_details(league)
+            expect(league.is_auction_draft).to eq true
+            expect(league.trade_end_date).to eq Date.parse("2013-11-15")
+            expect(league.settings).to include({"draft_type" => "live", "max_teams" => "10"})
+          end
         end
       end
     end

@@ -75,6 +75,15 @@ describe DraftPick do
 
             expect(draft_pick.ecr_ppr_info.vs_pick).to eq 1
           end
+
+          describe "with a auction_pick" do
+            it "respects an auction pick" do
+              league.is_auction_draft = true
+              draft_pick = create(:draft_pick, pick: 1, auction_pick: 50, yahoo_player_key: player.yahoo_player_key, league: league)
+
+              expect(draft_pick.ecr_ppr_info.vs_pick).to eq 48
+            end
+          end
         end
       end
     end
