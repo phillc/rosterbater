@@ -17,10 +17,6 @@ describe League do
       expect(League.interesting).to include(synced_league)
     end
 
-    it "does not have auction draft leagues" do
-      expect(League.interesting).to_not include(auction_draft_league)
-    end
-
     it "does not have undrafted leagues" do
       expect(League.interesting).to_not include(undrafted_league)
     end

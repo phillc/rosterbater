@@ -23,6 +23,8 @@
         %tr
           %td
             = link_to league.name, draft_board_league_path(league)
+            - if league.is_auction_draft?
+              (auction)
           %td
             = league.num_teams
 

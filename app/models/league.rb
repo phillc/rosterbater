@@ -8,7 +8,6 @@ class League < ActiveRecord::Base
   scope :interesting, -> {
     joins(:draft_picks)
       .where.not(synced_at: nil)
-      .where(is_auction_draft: [false, nil])
       .group("leagues.id")
       .having("count(leagues.id) > 0")
       .order("RANDOM()")
