@@ -1,9 +1,13 @@
 - content_for :title, "Roster BAIT - Draft Visualization of #{@league.name}"
 - load_javascript_class "DraftBoardPage"
 
-%h3 Post Draft Visualization Board
-%h4= @league.name
-%h5= @league.start_date.year
+.row
+  .columns.medium-6
+    %h3 Post Draft Visualization Board
+    %h4= @league.name
+    %h5= @league.start_date.year
+  .columns.medium-6
+    = render "leagues/draft_board_ad"
 
 .button-bar
   %ul.button-group
