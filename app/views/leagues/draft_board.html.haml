@@ -1,4 +1,6 @@
 - content_for :title, "Roster BAIT - Draft Visualization of #{@league.name}"
+- load_javascript_class "DraftBoardPage"
+
 %h3 Post Draft Visualization Board
 %h4= @league.name
 %h5= @league.start_date.year
@@ -9,7 +11,7 @@
       %li
         = link_to "Get your own draft visualized", root_path, class: "button alert"
   %ul.button-group.right
-    - ["Yahoo ADP", "ECR Standard", "ECR Half Point", "ECR PPR"].each do |ranking_label|
+    - ["Yahoo ADP", "ECR Standard", "ECR Half PPR", "ECR PPR"].each do |ranking_label|
       - ranking_param = ranking_label.downcase.split(" ").join("_")
       %li
         - if @ranking_type == ranking_param
@@ -27,20 +29,25 @@
     %strong auction draft.
     The picks are shown as if they were picked in order of their cost.
 
-.draft-board
+.draft-board.colors-colorblind-safe
   %div.legend
-    %span.good-5 25+
-    %span.good-4 13-24
-    %span.good-3 7-12
-    %span.good-2 4-6
-    %span.good-1 1-3
-    %span.even Even
-    %span.bad-1 1-3
-    %span.bad-2 4-6
-    %span.bad-3 7-12
-    %span.bad-4 13-24
-    %span.bad-5 25+
-    %span.no-rank NA
+    %div.color-schemes
+      Color Schemes:
+      %a(href="#" data-color-scheme="colorblind-safe") [Colorblind safe]
+      %a(href="#" data-color-scheme="red-green") [Red-Green]
+    %div
+      %span.good-5 25+
+      %span.good-4 13-24
+      %span.good-3 7-12
+      %span.good-2 4-6
+      %span.good-1 1-3
+      %span.even Even
+      %span.bad-1 1-3
+      %span.bad-2 4-6
+      %span.bad-3 7-12
+      %span.bad-4 13-24
+      %span.bad-5 25+
+      %span.no-rank NA
 
   %table
     %thead
