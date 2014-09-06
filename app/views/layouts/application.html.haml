@@ -26,6 +26,7 @@
           - if policy(:game).index?
             %li= link_to "Game Admin", games_path
           - if current_user
+            %li= link_to "My Leagues", leagues_path
             %li= link_to "Logout", logout_path
           - else
             %li
