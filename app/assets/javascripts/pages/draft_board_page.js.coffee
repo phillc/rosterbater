@@ -13,5 +13,7 @@ window.DraftBoardPage = class DraftBoardPage
   setColorScheme: (colorScheme) ->
     $(".draft-board").removeClass("colors-colorblind-safe colors-red-green")
     $(".draft-board").addClass("colors-#{colorScheme}")
+    $(".draft-board .color-schemes a.selected").removeClass("selected")
+    $(".draft-board .color-schemes a[data-color-scheme=#{colorScheme}]").addClass("selected")
 
 
