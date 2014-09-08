@@ -153,11 +153,11 @@ class YahooService
     league.save!
   end
 
-  # def get_yahoo_league_teams(league, team, week)
-  #   get "/league/#{league.yahoo_league_key}/teams;out=roster"
-  # end
+  def get_yahoo_team_roster(team, week)
+    get "/team/#{team.yahoo_team_key};out=roster;week=#{week}"
+  end
 
-  def sync_rosters(league)
+  def sync_rosters(league, week)
     #for each week... or perhaps just two most recent.
   end
 

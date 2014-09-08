@@ -26,17 +26,17 @@ namespace :fixtures do
 
   desc "Update yahoo fixtures"
   task update_yahoo: :environment do
-    user = User.first
+    user = User.find_by(yahoo_uid: "JBAMN3TTXS5EN3SAWHYJKRRGNU")
     service = YahooService.new(user)
     recorder = XMLRecorder.new
 
     # recorder.save("get_yahoo_games.xml", service.get_yahoo_games)
 
     # recorder.save("get_yahoo_user_leagues.xml", service.get_yahoo_user_leagues)
-    league = user.leagues.where(yahoo_league_id: 31580).first
-    recorder.save("get_yahoo_league_details.xml", service.get_yahoo_league_details(league)) #tests take a long time, reduce draft picks size?
-    league = user.leagues.where(yahoo_league_id: 1158259).first
-    recorder.save("get_yahoo_league_details_auction.xml", service.get_yahoo_league_details(league))
+    # league = user.leagues.where(yahoo_league_id: 31580).first
+    # recorder.save("get_yahoo_league_details.xml", service.get_yahoo_league_details(league)) #tests take a long time, reduce draft picks size?
+    # league = user.leagues.where(yahoo_league_id: 1158259).first
+    # recorder.save("get_yahoo_league_details_auction.xml", service.get_yahoo_league_details(league))
 
     # game = Game.find_by(yahoo_game_key: 314) # 2013 fantasy football
     # recorder.save("get_yahoo_game_players_1.xml", service.get_yahoo_game_players(game, 0))
@@ -44,6 +44,9 @@ namespace :fixtures do
     # shortened_page = service.get_yahoo_game_players(game, 50)
     # shortened_page.search(:player).last.remove
     # recorder.save("get_yahoo_game_players_3.xml", shortened_page)
+
+    team = Team.find_by(yahoo_team_key: "331.l.6781.t.1")
+    recorder.save("get_yahoo_team_roster.xml", service.get_yahoo_team_roster(team, 1))
   end
 
   desc "Update ECR fixtures"
