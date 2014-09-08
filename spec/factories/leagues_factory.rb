@@ -5,5 +5,10 @@ FactoryGirl.define do
     sequence(:yahoo_league_id) {|n| 300 + n }
 
     game
+
+    trait :synced do
+      sync_started_at 3.hours.ago
+      sync_finished_at 3.hours.ago
+    end
   end
 end

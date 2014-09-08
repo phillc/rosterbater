@@ -238,21 +238,19 @@ describe "YahooService" do
         }.to change{ League.count }.by(3)
       end
 
-      it "returns the leagues" do
-        expect(service.sync_leagues(game).size).to eq 3
-      end
-
       it "associates" do
-        service.sync_leagues(game).each do |league|
-          expect(league.users).to include(user)
-          expect(league.game).to eq game
-        end
+        service.sync_leagues(game)
+        league = League.last
+        expect(league.users).to include(user)
+        expect(league.game).to eq game
       end
 
-      it "assigns synced_at" do
-        expect(user.reload.synced_at).to be nil
+      it "assigns sync times" do
+        expect(user.reload.sync_started_at).to be nil
+        expect(user.reload.sync_finished_at).to be nil
         service.sync_leagues(game)
-        expect(user.reload.synced_at).to_not be nil
+        expect(user.reload.sync_started_at).to_not be nil
+        expect(user.reload.sync_finished_at).to_not be nil
       end
 
       it "does not duplicate" do
@@ -339,10 +337,12 @@ describe "YahooService" do
         expect(service).to receive(:sync_league_details).at_least(:once) # slow
       end
 
-      it "assigns synced_at" do
-        expect(league.reload.synced_at).to be nil
+      it "assigns sync times" do
+        expect(league.reload.sync_started_at).to be nil
+        expect(league.reload.sync_finished_at).to be nil
         service.sync_league(league)
-        expect(league.reload.synced_at).to_not be nil
+        expect(league.reload.sync_started_at).to_not be nil
+        expect(league.reload.sync_finished_at).to_not be nil
       end
     end
 
@@ -364,6 +364,12 @@ describe "YahooService" do
           expect {
             service.sync_league_details(league)
           }.to change{ League.count }.by(0)
+        end
+
+        it "stores the scoring format" do
+          service.sync_league_details(league)
+          league.reload
+          expect(league.points_per_reception).to eq 1
         end
 
         it "stores the attributes" do
@@ -425,6 +431,12 @@ describe "YahooService" do
             expect {
               service.sync_league_details(league)
             }.to change{ DraftPick.count }.by(0)
+          end
+
+          it "stores the draft finished" do
+            service.sync_league_details(league)
+            league.reload
+            expect(league.has_finished_draft).to eq true
           end
 
           it "stores the attributes" do

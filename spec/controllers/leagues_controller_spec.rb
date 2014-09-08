@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LeaguesController do
   let(:user) { create(:user) }
-  let(:league) { create(:league, users: [user]) }
+  let!(:league) { create(:league, users: [user]) }
 
   before do
     login_as(user)

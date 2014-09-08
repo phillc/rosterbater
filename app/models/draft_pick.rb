@@ -25,8 +25,8 @@ class DraftPick < ActiveRecord::Base
     EcrRankingInfo.new(self, "ppr")
   end
 
-  def ecr_half_point_info
-    EcrRankingInfo.new(self, "half_point")
+  def ecr_half_ppr_info
+    EcrRankingInfo.new(self, "half_ppr")
   end
 
   class InfoBase

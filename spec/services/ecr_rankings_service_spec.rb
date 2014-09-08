@@ -111,11 +111,13 @@ describe "EcrRankingsService" do
                            .at_least(:once)
     end
 
-    describe "#sync_half_point_draft_rankings" do
+    describe "#sync_half_ppr_draft_rankings" do
       it "saves the rankings" do
+        expect(RankingReport.where(ranking_type: "half_ppr").count).to eq 0
         expect {
-          service.sync_half_point_draft_rankings(game)
+          service.sync_half_ppr_draft_rankings(game)
         }.to change{ Ranking.count }.by(292)
+        expect(RankingReport.where(ranking_type: "half_ppr").count).to eq 1
       end
     end
   end

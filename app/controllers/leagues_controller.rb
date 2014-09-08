@@ -2,7 +2,7 @@ class LeaguesController < ApplicationController
   before_action :find_league, only: [:show, :draft_board]
   def index
     authorize :league, :index?
-    @leagues = current_user.leagues.where(game_id: Game.most_recent)
+    @leagues = current_user.leagues.active
   end
 
   def refresh
@@ -12,7 +12,7 @@ class LeaguesController < ApplicationController
     # Game.all.each do |game|
     #   YahooService.new(current_user).sync_leagues(game)
     # end
-    current_user.leagues.where(game_id: Game.most_recent).each do |league|
+    current_user.leagues.active.each do |league|
       YahooService.new(current_user).sync_league(league)
       # sync history...
     end
@@ -35,7 +35,11 @@ class LeaguesController < ApplicationController
   def draft_board
     authorize @league, :show?
 
-    @ranking_type = params[:ranking] || (@league.ppr? ? "ecr_ppr" : "ecr_standard")
+    @ranking_type = params[:ranking] || case @league.points_per_reception
+                                          when 1 then "ecr_ppr"
+                                          when 0 then "ecr_standard"
+                                          when 0.5 then "ecr_half_ppr"
+                                        end
 
     @picks =
       @league
@@ -49,7 +53,7 @@ class LeaguesController < ApplicationController
             when "yahoo_adp"; draft_pick.yahoo_info
             when "ecr_standard"; draft_pick.ecr_standard_info
             when "ecr_ppr"; draft_pick.ecr_ppr_info
-            when "ecr_half_ppr"; draft_pick.ecr_half_point_info
+            when "ecr_half_ppr"; draft_pick.ecr_half_ppr_info
             end
 
           acc[draft_pick.team] << info

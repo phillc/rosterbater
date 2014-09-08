@@ -4,26 +4,20 @@ class League < ActiveRecord::Base
   has_many :draft_picks, autosave: true
   has_and_belongs_to_many :users
 
-  scope :unsynced, ->{ where(synced_at: nil) }
+  scope :unsynced, ->{ where(sync_finished_at: nil) }
   scope :interesting, -> {
     joins(:draft_picks)
-      .where.not(synced_at: nil)
+      .where.not(sync_finished_at: nil)
       .group("leagues.id")
       .having("count(leagues.id) > 0")
       .order("RANDOM()")
   }
+  scope :active, -> { where(game_id: Game.most_recent) }
 
   validates :name,
             :game,
             :yahoo_league_key,
             :yahoo_league_id, presence: true
-
-  def ppr?
-    return false unless settings && !settings.empty?
-
-    stat = settings["stat_modifiers"]["stats"]["stat"].detect{ |stat| stat["stat_id"] == "11" }
-    !!stat && (stat["value"] == "1")
-  end
 
   def assign_auction_picks
     picks = draft_picks.sort_by(&:cost)

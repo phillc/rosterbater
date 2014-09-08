@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140904112038) do
+ActiveRecord::Schema.define(version: 20140908115326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,9 +48,9 @@ ActiveRecord::Schema.define(version: 20140904112038) do
   add_index "games", ["yahoo_game_key"], name: "index_games_on_yahoo_game_key", unique: true, using: :btree
 
   create_table "leagues", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
-    t.string   "name",             null: false
-    t.string   "yahoo_league_key", null: false
-    t.integer  "yahoo_league_id",  null: false
+    t.string   "name",                                 null: false
+    t.string   "yahoo_league_key",                     null: false
+    t.integer  "yahoo_league_id",                      null: false
     t.string   "url"
     t.integer  "num_teams"
     t.string   "scoring_type"
@@ -61,13 +61,16 @@ ActiveRecord::Schema.define(version: 20140904112038) do
     t.integer  "end_week"
     t.date     "start_date"
     t.date     "end_date"
-    t.uuid     "game_id",          null: false
+    t.uuid     "game_id",                              null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "synced_at"
+    t.datetime "sync_finished_at"
     t.boolean  "is_auction_draft"
     t.datetime "trade_end_date"
     t.json     "settings"
+    t.datetime "sync_started_at"
+    t.boolean  "has_finished_draft",   default: false, null: false
+    t.decimal  "points_per_reception", default: 0.0,   null: false
   end
 
   add_index "leagues", ["yahoo_league_key"], name: "index_leagues_on_yahoo_league_key", unique: true, using: :btree
@@ -190,7 +193,8 @@ ActiveRecord::Schema.define(version: 20140904112038) do
     t.string   "yahoo_session_handle"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "synced_at"
+    t.datetime "sync_finished_at"
+    t.datetime "sync_started_at"
   end
 
   add_index "users", ["yahoo_uid"], name: "index_users_on_yahoo_uid", unique: true, using: :btree

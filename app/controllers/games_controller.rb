@@ -27,7 +27,7 @@ class GamesController < ApplicationController
     EcrRankingsService.new.tap do |service|
       service.sync_standard_draft_rankings(game)
       service.sync_ppr_draft_rankings(game)
-      service.sync_half_point_draft_rankings(game)
+      service.sync_half_ppr_draft_rankings(game)
     end
 
     redirect_to games_path, notice: "Synced rankings"

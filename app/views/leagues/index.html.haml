@@ -3,8 +3,8 @@
 - if policy(:league).refresh?
   = link_to "Sync your leagues with Yahoo", refresh_leagues_path, method: :post, class: "button small"
 
-- if current_user.synced_at
-  %p Last synced #{time_ago_in_words(current_user.synced_at)} ago.
+- if current_user.sync_finished_at
+  %p Last synced #{time_ago_in_words(current_user.sync_finished_at)} ago.
 
 - if @leagues.empty?
   No leagues present. Please sync your leagues with Yahoo.

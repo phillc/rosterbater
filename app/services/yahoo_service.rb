@@ -68,7 +68,7 @@ class YahooService
   end
 
   def sync_leagues(game)
-    @user.update! synced_at: Time.now
+    @user.update! sync_started_at: Time.now
 
     leagues(game).map do |yahoo_league|
       league = League
@@ -81,15 +81,18 @@ class YahooService
       league.save!
       league
     end
+
+    @user.update! sync_finished_at: Time.now
   end
 
   def sync_league(league)
-    league.update! synced_at: Time.now
+    league.update! sync_started_at: Time.now
 
     sync_league_details(league)
 
     #must make direct calls for sub-resources
     # sync_rosters(league)
+    league.update! sync_finished_at: Time.now
   end
 
   def get_yahoo_league_details(league)
@@ -142,7 +145,8 @@ class YahooService
 
   def sync_league_draft_results(league, details)
     league_draft_picks = league.draft_picks.all
-    details.draft_results.each do |yahoo_draft_result|
+    draft_results = details.draft_results
+    draft_results.each do |yahoo_draft_result|
       pick = league.draft_picks.detect{ |draft_pick| draft_pick.pick == yahoo_draft_result.pick.to_i }
       pick ||= league.draft_picks.build
 
@@ -150,6 +154,7 @@ class YahooService
     end
 
     league.assign_auction_picks if league.is_auction_draft?
+    league.has_finished_draft = draft_results.any?
     league.save!
   end
 
@@ -431,14 +436,32 @@ class YahooService
       at(:is_auction_draft) == "1"
     end
 
+    def points_per_reception
+      stat("11") || 0
+    end
+
     def update(league)
-      league.settings = Hash.from_xml(@doc.to_xml)["settings"]
+      league.settings = settings_hash
       %w(
+        points_per_reception
         is_auction_draft
         trade_end_date
       ).each do |attribute|
         league.public_send("#{attribute}=", self.public_send(attribute))
       end
+    end
+
+    protected
+
+    def stat(stat_id)
+      settings_hash &&
+        settings_hash["stat_modifiers"] &&
+        (pair = settings_hash["stat_modifiers"]["stats"]["stat"].detect{ |stat| stat["stat_id"] == stat_id }) &&
+        pair["value"]
+    end
+
+    def settings_hash
+      @settings_hash ||= Hash.from_xml(@doc.to_xml)["settings"]
     end
   end
 
