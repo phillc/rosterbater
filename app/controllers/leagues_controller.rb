@@ -2,7 +2,7 @@ class LeaguesController < ApplicationController
   before_action :find_league, only: [:show, :draft_board]
   def index
     authorize :league, :index?
-    @leagues = current_user.leagues
+    @leagues = current_user.leagues.where(game_id: Game.most_recent)
   end
 
   def refresh
@@ -12,8 +12,9 @@ class LeaguesController < ApplicationController
     # Game.all.each do |game|
     #   YahooService.new(current_user).sync_leagues(game)
     # end
-    current_user.leagues.each do |league|
+    current_user.leagues.where(game_id: Game.most_recent).each do |league|
       YahooService.new(current_user).sync_league(league)
+      # sync history...
     end
 
     redirect_to leagues_path, notice: "Refreshed leagues"

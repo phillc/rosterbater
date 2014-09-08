@@ -6,6 +6,7 @@ window.DraftBoardPage = class DraftBoardPage
     $(".draft-board .color-schemes a").each (i, a) =>
       link = $(a)
       link.click (e) =>
+        e.preventDefault()
         colorScheme = link.data("color-scheme")
         @setColorScheme(colorScheme)
         $.cookie('color-scheme', colorScheme)
