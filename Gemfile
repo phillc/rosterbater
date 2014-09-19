@@ -38,9 +38,16 @@ gem 'raygun4ruby'
 gem 'spreadsheet', '0.9.8'
 
 group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
+end
+
+group :development do
   gem 'guard'
   gem 'guard-rspec', require: false
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+end
+
+group :development do
   gem 'spring'
   gem 'spring-commands-rspec'
 end
@@ -52,14 +59,4 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.0.0'
   gem 'webmock', require: false
 end
-
-
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
-
-# Use unicorn as the app server
-# gem 'unicorn'
-
-# Use debugger
-# gem 'debugger', group: [:development, :test]
 

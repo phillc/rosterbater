@@ -39,6 +39,7 @@ class LeaguesController < ApplicationController
                                           when 1 then "ecr_ppr"
                                           when 0 then "ecr_standard"
                                           when 0.5 then "ecr_half_ppr"
+                                          else "ecr_standard"
                                         end
 
     @picks =
