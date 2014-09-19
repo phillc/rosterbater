@@ -58,28 +58,30 @@ class YahooService
     end
   end
 
-  def get_yahoo_user_leagues(game)
-    get "/users;use_login=1/games;game_keys=#{game.yahoo_game_key}/leagues"
+  def get_yahoo_user_games_leagues(games)
+    get "/users;use_login=1/games;game_keys=#{games.map(&:yahoo_game_key).join(",")}/leagues"
   end
 
-  def leagues(game)
-    doc = get_yahoo_user_leagues(game)
-    doc.search("league").map{ |league_doc| YahooLeague.new(league_doc) }
+  def games_with_leagues(games)
+    doc = get_yahoo_user_games_leagues(games)
+    doc.search("game").map{ |game_doc| YahooGame.new(game_doc) }
   end
 
-  def sync_leagues(game)
+  def sync_leagues(games)
     @user.update! sync_started_at: Time.now
 
-    leagues(game).map do |yahoo_league|
-      league = League
-                 .where(yahoo_league_key: yahoo_league.league_key,
-                        game: game)
-                 .first_or_initialize
+    games_with_leagues(games).each do |yahoo_game|
+      yahoo_game.leagues.map do |yahoo_league|
+        game = games.detect{ |g| g.yahoo_game_key.to_s == yahoo_game.game_key }
+        league = League
+                   .where(yahoo_league_key: yahoo_league.league_key,
+                          game: game)
+                   .first_or_initialize
 
-      yahoo_league.update(league)
-      league.users << @user unless league.users.include?(@user)
-      league.save!
-      league
+        yahoo_league.update(league)
+        league.users << @user unless league.users.include?(@user)
+        league.save!
+      end
     end
 
     @user.update! sync_finished_at: Time.now
@@ -278,6 +280,10 @@ class YahooService
       ).each do |attribute|
         game.public_send("#{attribute}=", self.public_send(attribute))
       end
+    end
+
+    def leagues
+      @doc.search("league").map{ |league_doc| YahooLeague.new(league_doc) }
     end
   end
 

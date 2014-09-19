@@ -4,7 +4,7 @@ class LeaguePolicy < ApplicationPolicy
   end
 
   def refresh?
-    logged_in? && (!user.sync_finished_at || user.sync_finished_at < 30.minutes.ago)
+    recently_updated?(user)
   end
 
   def show?
@@ -12,12 +12,16 @@ class LeaguePolicy < ApplicationPolicy
   end
 
   def sync?
-    logged_in? && (!league.sync_finished_at || league.sync_finished_at < 10.minutes.ago)
+    recently_updated?(league)
   end
 
   protected
 
   def league
     record
+  end
+
+  def recently_updated?(object)
+    logged_in? && (!object.sync_started_at || (object.sync_started_at < 10.minutes.ago))
   end
 end

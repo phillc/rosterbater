@@ -23,4 +23,8 @@
             - else
               = team.name
 
-
+%h4 Past seasons:
+%ul
+  - @league.past_leagues.each do |league|
+    %li
+      #{league.name} (#{league.start_date.year})

@@ -30,4 +30,18 @@ class League < ActiveRecord::Base
       draft_pick.auction_pick = info[:pick]
     end
   end
+
+  def past_leagues
+    league = self
+    result = []
+    while league
+      league = league.last_league
+      result << league
+    end
+    result.compact
+  end
+
+  def last_league
+    renew && self.class.find_by(yahoo_league_key: renew.split("_").join(".l."))
+  end
 end

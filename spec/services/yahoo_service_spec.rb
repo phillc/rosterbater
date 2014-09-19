@@ -198,22 +198,27 @@ describe "YahooService" do
     end
   end
 
-  describe "user leagues" do
+  describe "user game leagues" do
     let(:response) { double("response", body: fixture("get_yahoo_user_leagues.xml")) }
     let(:token) { double("token", get: response) }
-    let!(:game) { create(:game) }
+    let!(:games) do
+      [
+        create(:game, yahoo_game_key: 331),
+        create(:game, yahoo_game_key: 314)
+      ]
+    end
 
     before do
       expect(service).to receive(:token).and_return(token).at_least(:once)
     end
 
-    describe "#leagues" do
+    describe "#games_with_leagues" do
       it "returns the count" do
-        expect(service.leagues(game).size).to eq 3
+        expect(service.games_with_leagues(games).map(&:leagues).flatten.size).to eq 3
       end
 
       it "retains the attributes" do
-        league = service.leagues(game).first
+        league = service.games_with_leagues(games).first.leagues.first
 
         expect(league.name).to eq "Stay Thirsty My Friends"
         expect(league.league_key).to eq "331.l.6781"
@@ -234,35 +239,37 @@ describe "YahooService" do
     describe "#sync_leagues" do
       it "saves the leagues" do
         expect {
-          service.sync_leagues(game)
+          service.sync_leagues(games)
         }.to change{ League.count }.by(3)
       end
 
       it "associates" do
-        service.sync_leagues(game)
-        league = League.last
-        expect(league.users).to include(user)
-        expect(league.game).to eq game
+        service.sync_leagues(games)
+        games.each do |game|
+          league = game.leagues.first
+          expect(league.users).to include(user)
+          expect(league.game).to eq(game)
+        end
       end
 
       it "assigns sync times" do
         expect(user.reload.sync_started_at).to be nil
         expect(user.reload.sync_finished_at).to be nil
-        service.sync_leagues(game)
+        service.sync_leagues(games)
         expect(user.reload.sync_started_at).to_not be nil
         expect(user.reload.sync_finished_at).to_not be nil
       end
 
       it "does not duplicate" do
-        service.sync_leagues(game)
+        service.sync_leagues(games)
 
         expect {
-          service.sync_leagues(game)
+          service.sync_leagues(games)
         }.to change{ League.count }.by(0)
       end
 
       it "stores the attributes" do
-        service.sync_leagues(game)
+        service.sync_leagues(games)
 
         league = League.find_by(yahoo_league_key: "314.l.31580")
 

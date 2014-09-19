@@ -8,7 +8,7 @@ class LeaguesController < ApplicationController
   def refresh
     authorize :league, :refresh?
 
-    YahooService.new(current_user).sync_leagues(Game.most_recent)
+    YahooService.new(current_user).sync_leagues(Game.all)
     # Game.all.each do |game|
     #   YahooService.new(current_user).sync_leagues(game)
     # end

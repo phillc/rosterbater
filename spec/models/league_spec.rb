@@ -21,4 +21,21 @@ describe League do
       expect(League.interesting).to_not include(undrafted_league)
     end
   end
+
+  describe "#past_leagues" do
+    it "lists pasts leagues" do
+      league.renew = "314_31580"
+      old_league = create(:league, yahoo_league_key: "314.l.31580", renew: "273_592842")
+      older_league = create(:league, yahoo_league_key: "273.l.592842", renew: nil)
+
+      expect(league.past_leagues).to eq [old_league, older_league]
+    end
+
+    it "survives dead pointer" do
+      league.renew = "314_31580"
+      old_league = create(:league, yahoo_league_key: "314.l.31580", renew: "lalalalala")
+
+      expect(league.past_leagues).to eq [old_league]
+    end
+  end
 end
