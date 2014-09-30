@@ -1,0 +1,924 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE pinnacle_line_feed [
+<!ELEMENT PinnacleFeedTime (#PCDATA)>
+<!ELEMENT lastContest (#PCDATA)>
+<!ELEMENT lastGame (#PCDATA)>
+<!ELEMENT contest_maximum (#PCDATA)>
+<!ELEMENT contestantnum (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT event (event_datetimeGMT , gamenumber , sporttype , league , IsLive? , contest_maximum? , description? , (participants | periods | total)+)>
+<!ELEMENT event_datetimeGMT (#PCDATA)>
+<!ELEMENT gamenumber (#PCDATA)>
+<!ELEMENT league (#PCDATA)>
+<!ELEMENT odds (moneyline_value , to_base?)>
+<!ELEMENT over_adjust (#PCDATA)>
+<!ELEMENT participants (participant)*>
+<!ELEMENT participant (participant_name , contestantnum , rotnum , visiting_home_draw? , odds? , pitcher?)>
+<!ELEMENT participant_name (#PCDATA)>
+<!ELEMENT periods (period)*>
+<!ELEMENT period (period_number , period_description , periodcutoff_datetimeGMT , period_status , period_update , spread_maximum? , moneyline_maximum? , total_maximum? , moneyline? , spread? , total?)>
+<!ELEMENT period_number (#PCDATA)>
+<!ELEMENT period_description (#PCDATA)>
+<!ELEMENT period_status (#PCDATA)>
+<!ELEMENT period_update (#PCDATA)>
+<!ELEMENT periodcutoff_datetimeGMT (#PCDATA)>
+<!ELEMENT pinnacle_line_feed (PinnacleFeedTime , lastContest , lastGame , events)>
+<!ELEMENT events (event)*>
+<!ELEMENT pitcher (#PCDATA)>
+<!ELEMENT rotnum (#PCDATA)>
+<!ELEMENT sporttype (#PCDATA)>
+<!ELEMENT moneyline (moneyline_visiting , moneyline_home , moneyline_draw?)>
+<!ELEMENT moneyline_value (#PCDATA)>
+<!ELEMENT moneyline_visiting (#PCDATA)>
+<!ELEMENT moneyline_home (#PCDATA)>
+<!ELEMENT moneyline_draw (#PCDATA)>
+<!ELEMENT moneyline_maximum (#PCDATA)>
+<!ELEMENT spread (spread_visiting , spread_adjust_visiting , spread_home , spread_adjust_home)>
+<!ELEMENT spread_adjust_home (#PCDATA)>
+<!ELEMENT spread_adjust_visiting (#PCDATA)>
+<!ELEMENT spread_home (#PCDATA)>
+<!ELEMENT spread_maximum (#PCDATA)>
+<!ELEMENT spread_visiting (#PCDATA)>
+<!ELEMENT to_base (#PCDATA)>
+<!ELEMENT total (total_points , over_adjust? , under_adjust? , units?)>
+<!ELEMENT total_maximum (#PCDATA)>
+<!ELEMENT total_points (#PCDATA)>
+<!ELEMENT under_adjust (#PCDATA)>
+<!ELEMENT units (#PCDATA)>
+<!ELEMENT IsLive (#PCDATA)>
+<!ELEMENT visiting_home_draw (#PCDATA)>
+]>
+<!--
+IMPORTANT CHANGE - June, 2008
+
+Some xml consumers have reported incorrect Soccer Total (Asian Handicaps) and others have reported missed updates.
+
+A release performed on June 24th, 2008 addresses the incorrect odds reported for Soccer Total (Asian Handicaps).
+
+As for the missed updates, due to the complexity of our platform, a small schema change along with a new way to make incremental calls has been developed.
+
+It is important to note that the previous functionality, using the last parameter, has been grandfathered so that current users do not need to worry about this upgrade breaking their parsing software.  At some point, we will remove this functionality, so please upgrade your software in a timely fashion.
+
+The feed will now contain two new elements, lastGame and lastContest.
+
+If you are interested in games only you can use the value of the element lastGame to make an incremental call.
+
+For example.
+Get the static file - http://xml.pinnaclesports.com/pinnaclefeed.asp
+Make an incremental call to get up to date - http://xml.pinnaclesports.com/pinaclefeed.asp?lastGame=42145789 (the value for lastGame is found in the static file and subsequent incremental updates)
+
+If you are also interested in contests, simply add the parameter lastContest to the query string with the value found in the static file.
+
+For example.
+Get the static file - http://xml.pinnaclesports.com/pinnaclefeed.asp
+Make an incremental call to get up to date - http://xml.pinnclesports.com/pinnaclefeed.asp?lastGame=42145789&lastContest=4678
+
+You can also mix and match sportType, sportSubType with lastGame if you are only interested in one sport (see examples way below, mixing sporttype, sportSubType and last).
+
+Attention:  lastContest does not work without lastGame.
+
+Attention:  last supercedes the usage of either lastGame or lastContest.  If you issue both last and either of lastGame or lastContest in the same call, only last will be used.
+
+Warning:  The usage of SportType and SportSubtype is being abused.  The intent is to only be used by those who are only interested in one or two specific leagues.  We have observed, from the same IP, calls to all individual soccer leagues (more than 800 of them) in rapid succession.  This is a situation that calls for getting the static file, and then getting incremental updates without a sportType/sportSubtype being specified.  This type of abuse puts a lot of stress on our backend servers.  We are monitoring and will limit access to our systems from IP exhibiting this type of behavior.
+
+
+
+
+IMPORTANT CHANGE
+
+Pinnacle Sports has released a new and updated version of our live lines feed. A working knowledge of XML is required for integration purposes. Pinnacle Sports regrets that it is unable to provide additional programming support.
+
+USAGE:
+
+-  Get the file produced by http://xml.pinnaclesports.com/pinnacleFeed.asp. The server will produce a static file which is updated every 10 minutes.
+-  Make an incremental call to the same URL to receive the latest updates since the static file was produced by using the PinnacleFeedTime found in the previous call (example http://xml.pinnaclesports.com/pinnacleFeed.asp?last=1196199051920)
+-  The PinnacleFeedTime is a critical part of this system and represents the number of milliseconds since the epoch. To compensate for the various latencies between the time at which the PinnacleFeedTime value was generated and the production of the static file, it is perfectly acceptable to deduct a certain number of seconds (in milliseconds) from this value.  Please note however, that this can result in duplicate updates which you will need to be able to resolve.
+
+
+
+PARAMETERS:
+
+last: This is used to receive incremental updates using the value of PinncelFeedTime. Always use the value of PinnacleFeedTime found in the previous evocation of the xml feed. A PinnacleFeedTime older than 60 minutes, in the absence of the sportType parameter, will have no effect. If you do not include the PinnacleFeedTime, you will receive the same static file as if you had issued a call without it (unless the sporttype parameter was used, see next section).
+
+sporttype: (maximum size of 20 characters) This can be used to restrict the feed to a particular sport (examples of a valid sporttype are Baseball, Football (for American Football), Handball, Hockey, Soccer etc.). With the exception of soccer, providing a sporttype parameter will result in a dynamic feed with lines current at the time of the call. Due to the number of individual leagues in soccer, please refer to the Standard usage example below to receive up to date lines for soccer. A list of valid "sports" can be found at http://xml.pinnaclesports.com/leagues.asp.
+
+sportsubtype:  (maximum size of 12 characters) This can be used to restrict the feed to a chosen League only for a particular sport. When using a specific sportsubtype, you must include a valid sporttype to identify the sport and league. For example, NCAA could refer to either Basketball or Football in American college sports. Refer to http://xml.pinnaclesports.com/leagues.asp for the complete list of leagues that are currently available together with the matching 12 character abbreviation.
+
+contest: This can be used to prevent the display of contests using the following name/value pair in the query string: contest=no.
+
+
+
+EXAMPLES:
+
+Standard usage
+1. Get the complete feed with http://xml.pinnaclesports.com/pinnacleFeed.asp
+2. Make an incremental call to receive the latest changes with http://xml.pinnaclesports.com/pinnacleFeed.asp?last=1196336347638
+3. Make a second incremental call 60 seconds later to receive the latest changes with http://xml.pinnaclesports.com/pinnacleFeed.asp?last=1196336407638
+4. In this example it was assumed that the complete feed included a value of 1196336347638 for the PinnacleFeedTime. Please ensure to always use the value present in the feed obtained in the previous call.
+
+
+Interested in Hockey only
+1.  Get the full list of hockey games with http://xml.pinnaclesports.com/pinnacleFeed.asp?sportType=Hockey&contest=no
+2.  Make an incremental call to receive the latest changes in Hockey with ttp://xml.pinnaclesports.com/pinnacleFeed.asp?sportType=Hockey&last=1196336347639&contest=no
+3.  Make another incremental call 60 seconds later to receive the latest changes with http://xml.pinnaclesports.com/pinnacleFeed.asp?sportType=Hockey&last=1196336407639&contest=no
+4.  In this example it was assumed that the complete feed included a value of 1196336347639 for the PinnacleFeedTime. Please ensure to always use the value present in the feed obtained in the previous call.
+
+Interested in Soccer only
+1. Get the complete feed with http://xml.pinnaclesports.com/pinnacleFeed.asp
+2. Make an incremental call to receive the latest changes with http://xml.pinnaclesports.com/pinnacleFeed.asp?sportType=Soccer&last=1196336347640
+3. Make another incremental call 60 seconds later to receive the latest changes with http://xml.pinnaclesports.com/pinnacleFeed.asp?sportType=Hockey&last=1196336407640&contest=no
+4. In this example it was assumed that the complete feed included a value of 1196336347640 for the PinnacleFeedTime. Please ensure to always use the value present in the feed obtained in the previous call.
+
+IMPORTANT NOTICE:
+
+Please refrain from using a very high frequency of calls to the xml feed. Pinnacle Sports reserves the right to monitor usage of the XML feed and block the IP address range of any user that abuses this service. 1 call per minute is considered an acceptable usage of the feed.
+
+UPDATE September, 2010:
+
+There is a new element ‘IsLive’, it indicates whether the event is dealt live or not. All live soccer spread lines are in the 'full game' format. Please note that on the website the spread odds are in the 'rest of the game' format
+-->
+<pinnacle_line_feed>
+
+
+<PinnacleFeedTime>1411163361973</PinnacleFeedTime>
+<lastContest>26802519</lastContest>
+<lastGame>147404700</lastGame>
+<events>
+<event>
+	<event_datetimeGMT>2014-09-21 17:00</event_datetimeGMT>
+	<gamenumber>399974922</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>San Diego Chargers</participant_name>
+			<contestantnum>451</contestantnum>
+			<rotnum>451</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>Buffalo Bills</participant_name>
+			<contestantnum>452</contestantnum>
+			<rotnum>452</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 17:00</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>115</moneyline_visiting>
+				<moneyline_home>-127</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>2.5</spread_visiting>
+				<spread_adjust_visiting>-106</spread_adjust_visiting>
+				<spread_home>-2.5</spread_home>
+				<spread_adjust_home>-104</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>45</total_points>
+				<over_adjust>-110</over_adjust>
+				<under_adjust>100</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 17:00</event_datetimeGMT>
+	<gamenumber>399974952</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Dallas Cowboys</participant_name>
+			<contestantnum>453</contestantnum>
+			<rotnum>453</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>St. Louis Rams</participant_name>
+			<contestantnum>454</contestantnum>
+			<rotnum>454</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 17:00</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>-113</moneyline_visiting>
+				<moneyline_home>102</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>-1</spread_visiting>
+				<spread_adjust_visiting>-105</spread_adjust_visiting>
+				<spread_home>1</spread_home>
+				<spread_adjust_home>-105</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>44</total_points>
+				<over_adjust>-105</over_adjust>
+				<under_adjust>-105</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 17:00</event_datetimeGMT>
+	<gamenumber>399974964</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Washington Redskins</participant_name>
+			<contestantnum>455</contestantnum>
+			<rotnum>455</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>Philadelphia Eagles</participant_name>
+			<contestantnum>456</contestantnum>
+			<rotnum>456</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 17:00</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>222</moneyline_visiting>
+				<moneyline_home>-250</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>5.5</spread_visiting>
+				<spread_adjust_visiting>-101</spread_adjust_visiting>
+				<spread_home>-5.5</spread_home>
+				<spread_adjust_home>-109</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>50</total_points>
+				<over_adjust>-105</over_adjust>
+				<under_adjust>-105</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 17:00</event_datetimeGMT>
+	<gamenumber>399974983</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Houston Texans</participant_name>
+			<contestantnum>457</contestantnum>
+			<rotnum>457</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>New York Giants</participant_name>
+			<contestantnum>458</contestantnum>
+			<rotnum>458</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 17:00</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>-110</moneyline_visiting>
+				<moneyline_home>100</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>-1.5</spread_visiting>
+				<spread_adjust_visiting>104</spread_adjust_visiting>
+				<spread_home>1.5</spread_home>
+				<spread_adjust_home>-115</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>41.5</total_points>
+				<over_adjust>-108</over_adjust>
+				<under_adjust>-102</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 17:00</event_datetimeGMT>
+	<gamenumber>399974997</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Minnesota Vikings</participant_name>
+			<contestantnum>459</contestantnum>
+			<rotnum>459</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>New Orleans Saints</participant_name>
+			<contestantnum>460</contestantnum>
+			<rotnum>460</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 17:00</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>423</moneyline_visiting>
+				<moneyline_home>-500</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>10</spread_visiting>
+				<spread_adjust_visiting>-103</spread_adjust_visiting>
+				<spread_home>-10</spread_home>
+				<spread_adjust_home>-107</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>49</total_points>
+				<over_adjust>-105</over_adjust>
+				<under_adjust>-105</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 17:00</event_datetimeGMT>
+	<gamenumber>399975017</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Tennessee Titans</participant_name>
+			<contestantnum>461</contestantnum>
+			<rotnum>461</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>Cincinnati Bengals</participant_name>
+			<contestantnum>462</contestantnum>
+			<rotnum>462</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 17:00</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>281</moneyline_visiting>
+				<moneyline_home>-320</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>7</spread_visiting>
+				<spread_adjust_visiting>-105</spread_adjust_visiting>
+				<spread_home>-7</spread_home>
+				<spread_adjust_home>-105</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>42.5</total_points>
+				<over_adjust>-102</over_adjust>
+				<under_adjust>-108</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 17:00</event_datetimeGMT>
+	<gamenumber>399975038</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Baltimore Ravens</participant_name>
+			<contestantnum>463</contestantnum>
+			<rotnum>463</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>Cleveland Browns</participant_name>
+			<contestantnum>464</contestantnum>
+			<rotnum>464</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 17:00</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>-118</moneyline_visiting>
+				<moneyline_home>107</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>-1.5</spread_visiting>
+				<spread_adjust_visiting>-106</spread_adjust_visiting>
+				<spread_home>1.5</spread_home>
+				<spread_adjust_home>-104</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>41.5</total_points>
+				<over_adjust>100</over_adjust>
+				<under_adjust>-110</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 17:00</event_datetimeGMT>
+	<gamenumber>399975048</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Green Bay Packers</participant_name>
+			<contestantnum>465</contestantnum>
+			<rotnum>465</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>Detroit Lions</participant_name>
+			<contestantnum>466</contestantnum>
+			<rotnum>466</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 17:00</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>122</moneyline_visiting>
+				<moneyline_home>-135</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>2.5</spread_visiting>
+				<spread_adjust_visiting>-101</spread_adjust_visiting>
+				<spread_home>-2.5</spread_home>
+				<spread_adjust_home>-109</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>52</total_points>
+				<over_adjust>-105</over_adjust>
+				<under_adjust>-105</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 17:00</event_datetimeGMT>
+	<gamenumber>399975072</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Indianapolis Colts</participant_name>
+			<contestantnum>467</contestantnum>
+			<rotnum>467</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>Jacksonville Jaguars</participant_name>
+			<contestantnum>468</contestantnum>
+			<rotnum>468</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 17:00</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>-320</moneyline_visiting>
+				<moneyline_home>281</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>-7</spread_visiting>
+				<spread_adjust_visiting>-106</spread_adjust_visiting>
+				<spread_home>7</spread_home>
+				<spread_adjust_home>-104</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>45</total_points>
+				<over_adjust>-105</over_adjust>
+				<under_adjust>-105</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 17:00</event_datetimeGMT>
+	<gamenumber>399975080</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Oakland Raiders</participant_name>
+			<contestantnum>469</contestantnum>
+			<rotnum>469</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>New England Patriots</participant_name>
+			<contestantnum>470</contestantnum>
+			<rotnum>470</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 17:00</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>910</moneyline_visiting>
+				<moneyline_home>-1285</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>14</spread_visiting>
+				<spread_adjust_visiting>-110</spread_adjust_visiting>
+				<spread_home>-14</spread_home>
+				<spread_adjust_home>100</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>46.5</total_points>
+				<over_adjust>-105</over_adjust>
+				<under_adjust>-105</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 20:05</event_datetimeGMT>
+	<gamenumber>399975093</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>San Francisco 49ers</participant_name>
+			<contestantnum>471</contestantnum>
+			<rotnum>471</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>Arizona Cardinals</participant_name>
+			<contestantnum>472</contestantnum>
+			<rotnum>472</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 20:05</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>-156</moneyline_visiting>
+				<moneyline_home>141</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>-3</spread_visiting>
+				<spread_adjust_visiting>-105</spread_adjust_visiting>
+				<spread_home>3</spread_home>
+				<spread_adjust_home>-105</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>42</total_points>
+				<over_adjust>-105</over_adjust>
+				<under_adjust>-105</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 20:25</event_datetimeGMT>
+	<gamenumber>399975105</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Denver Broncos</participant_name>
+			<contestantnum>473</contestantnum>
+			<rotnum>473</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>Seattle Seahawks</participant_name>
+			<contestantnum>474</contestantnum>
+			<rotnum>474</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 20:25</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>205</moneyline_visiting>
+				<moneyline_home>-229</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>5</spread_visiting>
+				<spread_adjust_visiting>-106</spread_adjust_visiting>
+				<spread_home>-5</spread_home>
+				<spread_adjust_home>-104</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>48.5</total_points>
+				<over_adjust>-102</over_adjust>
+				<under_adjust>-108</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-21 20:25</event_datetimeGMT>
+	<gamenumber>399975133</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Kansas City Chiefs</participant_name>
+			<contestantnum>475</contestantnum>
+			<rotnum>475</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>Miami Dolphins</participant_name>
+			<contestantnum>476</contestantnum>
+			<rotnum>476</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-21 20:25</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>171</moneyline_visiting>
+				<moneyline_home>-190</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>3.5</spread_visiting>
+				<spread_adjust_visiting>-105</spread_adjust_visiting>
+				<spread_home>-3.5</spread_home>
+				<spread_adjust_home>-105</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>42.5</total_points>
+				<over_adjust>-107</over_adjust>
+				<under_adjust>-103</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-22 00:30</event_datetimeGMT>
+	<gamenumber>399975142</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Pittsburgh Steelers</participant_name>
+			<contestantnum>477</contestantnum>
+			<rotnum>477</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>Carolina Panthers</participant_name>
+			<contestantnum>478</contestantnum>
+			<rotnum>478</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-22 00:30</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>144</moneyline_visiting>
+				<moneyline_home>-160</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>3</spread_visiting>
+				<spread_adjust_visiting>-101</spread_adjust_visiting>
+				<spread_home>-3</spread_home>
+				<spread_adjust_home>-109</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>42</total_points>
+				<over_adjust>-108</over_adjust>
+				<under_adjust>-102</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-09-23 00:35</event_datetimeGMT>
+	<gamenumber>399975413</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>Chicago Bears</participant_name>
+			<contestantnum>479</contestantnum>
+			<rotnum>479</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>New York Jets</participant_name>
+			<contestantnum>480</contestantnum>
+			<rotnum>480</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-09-23 00:35</periodcutoff_datetimeGMT>
+			<period_status>I</period_status>
+			<period_update>open</period_update>
+			<spread_maximum>10000</spread_maximum>
+			<moneyline_maximum>5000</moneyline_maximum>
+			<total_maximum>4000</total_maximum>
+			<moneyline>
+				<moneyline_visiting>131</moneyline_visiting>
+				<moneyline_home>-145</moneyline_home>
+			</moneyline>
+			<spread>
+				<spread_visiting>3</spread_visiting>
+				<spread_adjust_visiting>-119</spread_adjust_visiting>
+				<spread_home>-3</spread_home>
+				<spread_adjust_home>108</spread_adjust_home>
+			</spread>
+			<total>
+				<total_points>45.5</total_points>
+				<over_adjust>-107</over_adjust>
+				<under_adjust>-103</under_adjust>
+			</total>
+		</period>
+	</periods>
+</event>
+<event>
+	<event_datetimeGMT>2014-12-29 04:00</event_datetimeGMT>
+	<gamenumber>318588048</gamenumber>
+	<sporttype>Football</sporttype>
+	<league>NFL</league>
+	<IsLive>No</IsLive>
+	<participants>
+		<participant>
+			<participant_name>2nd Half Wagering</participant_name>
+			<contestantnum>8887</contestantnum>
+			<rotnum>8887</rotnum>
+			<visiting_home_draw>Visiting</visiting_home_draw>
+		</participant>
+		<participant>
+			<participant_name>Will Be available for all games</participant_name>
+			<contestantnum>8888</contestantnum>
+			<rotnum>8888</rotnum>
+			<visiting_home_draw>Home</visiting_home_draw>
+		</participant>
+	</participants>
+	<periods>
+		<period>
+			<period_number>0</period_number>
+			<period_description>Game</period_description>
+			<periodcutoff_datetimeGMT>2014-12-29 04:00</periodcutoff_datetimeGMT>
+			<period_status>H</period_status>
+			<period_update>offline</period_update>
+			<spread_maximum>30000</spread_maximum>
+			<moneyline_maximum>10000</moneyline_maximum>
+			<total_maximum>10000</total_maximum>
+			<spread>
+				<spread_visiting>0</spread_visiting>
+				<spread_adjust_visiting>-105</spread_adjust_visiting>
+				<spread_home>0</spread_home>
+				<spread_adjust_home>-105</spread_adjust_home>
+			</spread>
+		</period>
+		<period>
+			<period_number>2</period_number>
+			<period_description>2nd Half</period_description>
+			<periodcutoff_datetimeGMT>2014-12-29 04:00</periodcutoff_datetimeGMT>
+			<period_status>H</period_status>
+			<period_update>offline</period_update>
+			<spread_maximum>5000</spread_maximum>
+			<moneyline_maximum>3000</moneyline_maximum>
+			<total_maximum>3000</total_maximum>
+			<spread>
+				<spread_visiting>0</spread_visiting>
+				<spread_adjust_visiting>-105</spread_adjust_visiting>
+				<spread_home>0</spread_home>
+				<spread_adjust_home>-105</spread_adjust_home>
+			</spread>
+		</period>
+	</periods>
+</event>
+
+</events>
+</pinnacle_line_feed>
