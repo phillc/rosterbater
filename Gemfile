@@ -24,9 +24,11 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
 gem 'factory_girl_rails'
+gem 'foreigner'
 gem 'foundation-rails'
 gem 'haml-rails'
 gem 'httparty'
+gem 'immigrant'
 gem 'newrelic_rpm'
 gem 'nokogiri'
 gem 'oauth'

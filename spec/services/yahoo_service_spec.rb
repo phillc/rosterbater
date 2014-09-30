@@ -539,5 +539,8 @@ describe "YahooService" do
         end
       end
     end
+
+    describe "#sync_league_rosters" do
+    end
   end
 end
