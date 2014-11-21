@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140928202118) do
+ActiveRecord::Schema.define(version: 20141120234643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -200,7 +200,6 @@ ActiveRecord::Schema.define(version: 20140928202118) do
   add_index "users", ["yahoo_uid"], name: "index_users_on_yahoo_uid", unique: true, using: :btree
 
   add_foreign_key "draft_picks", "leagues", name: "draft_picks_league_id_fk"
-  add_foreign_key "draft_picks", "players", name: "draft_picks_yahoo_player_key_fk", column: "yahoo_player_key", primary_key: "yahoo_player_key"
   add_foreign_key "draft_picks", "teams", name: "draft_picks_yahoo_team_key_fk", column: "yahoo_team_key", primary_key: "yahoo_team_key"
 
   add_foreign_key "leagues", "games", name: "leagues_game_id_fk"
