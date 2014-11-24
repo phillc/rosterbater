@@ -586,6 +586,25 @@ describe "YahooService" do
       expect(MatchupTeam.count).to eq (teams * weeks)
     end
 
-    it "saves end results" # something changes? like status
+    it "saves end results" do
+      service.sync_league_matchups(league)
+
+      mt = MatchupTeam
+             .joins(:matchup)
+             .where(yahoo_team_key: "331.l.6781.t.1", matchups: { week: 1})
+             .first
+
+      matchup = mt.matchup
+      expect(matchup.status).to eq "postevent"
+
+      matchup.update! status: "preevent"
+
+      league.reload
+
+      service.sync_league_matchups(league)
+
+      matchup.reload
+      expect(matchup.status).to eq "postevent"
+    end
   end
 end
