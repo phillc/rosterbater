@@ -291,7 +291,24 @@ describe "YahooService" do
     end
   end
 
-  describe "league details" do
+  describe "#sync_league" do
+    let(:league) { create(:league) }
+
+    before do
+      expect(service).to receive(:sync_league_details).at_least(:once) # slow
+      expect(service).to receive(:sync_league_matchups).at_least(:once) # slow
+    end
+
+    it "assigns sync times" do
+      expect(league.reload.sync_started_at).to be nil
+      expect(league.reload.sync_finished_at).to be nil
+      service.sync_league(league)
+      expect(league.reload.sync_started_at).to_not be nil
+      expect(league.reload.sync_finished_at).to_not be nil
+    end
+  end
+
+  describe "sync league details" do
     let(:league) { create(:league) }
     let(:response) { double("response", body: fixture("get_yahoo_league_details.xml")) }
     let(:token) { double("token", get: response) }
@@ -336,20 +353,6 @@ describe "YahooService" do
         expect(result.round).to eq "1"
         expect(result.team_key).to eq "314.l.31580.t.6"
         expect(result.player_key).to eq "314.p.8261"
-      end
-    end
-
-    describe "#sync_league" do
-      before do
-        expect(service).to receive(:sync_league_details).at_least(:once) # slow
-      end
-
-      it "assigns sync times" do
-        expect(league.reload.sync_started_at).to be nil
-        expect(league.reload.sync_finished_at).to be nil
-        service.sync_league(league)
-        expect(league.reload.sync_started_at).to_not be nil
-        expect(league.reload.sync_finished_at).to_not be nil
       end
     end
 
@@ -539,8 +542,50 @@ describe "YahooService" do
         end
       end
     end
+  end
 
-    describe "#sync_league_rosters" do
+  describe "#sync_league_rosters" do
+  end
+
+  describe "#sync_league_matchups" do
+    let(:league) { create(:league) }
+    let(:response) { double("response", body: fixture("get_yahoo_league_scoreboard.xml")) }
+    let(:token) { double("token", get: response) }
+
+    before do
+      allow(service).to receive(:token).and_return(token)
+
+      (1..12).each do |i|
+        create(:team, yahoo_team_key: "331.l.6781.t.#{i}")
+      end
     end
+
+    it "saves matchups" do
+      teams = 12
+      weeks = 13
+
+      service.sync_league_matchups(league)
+
+      expect(league.matchups.count).to eq ((teams/2) * weeks)
+      expect(MatchupTeam.count).to eq (teams * weeks)
+    end
+
+    it "save doesn't duplicate" do
+      teams = 12
+      weeks = 13
+
+      service.sync_league_matchups(league)
+
+      league.reload
+
+      expect {
+        service.sync_league_matchups(league)
+      }.to change(Matchup, :count).by(0)
+
+      expect(league.matchups.count).to eq ((teams/2) * weeks)
+      expect(MatchupTeam.count).to eq (teams * weeks)
+    end
+
+    it "saves end results" # something changes? like status
   end
 end

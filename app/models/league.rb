@@ -2,7 +2,10 @@ class League < ActiveRecord::Base
   belongs_to :game
   has_many :teams
   has_many :draft_picks, autosave: true
+  has_many :matchups
   has_and_belongs_to_many :users
+
+  default_scope { order(start_date: :desc) }
 
   scope :unsynced, ->{ where(sync_finished_at: nil) }
   scope :interesting, -> {

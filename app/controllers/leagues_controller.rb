@@ -14,7 +14,6 @@ class LeaguesController < ApplicationController
     # end
     current_user.leagues.active.each do |league|
       YahooService.new(current_user).sync_league(league)
-      # sync history...
     end
 
     redirect_to leagues_path, notice: "Refreshed leagues"

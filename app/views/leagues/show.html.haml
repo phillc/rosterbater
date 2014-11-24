@@ -1,3 +1,5 @@
+- load_javascript_class "LeagueShowPage"
+
 %h3= @league.name
 
 %ul.button-group
@@ -10,10 +12,14 @@
 - if @league.teams.empty?
   No teams present. Please sync this league with Yahoo.
 - else
-  %table.table
+  - team_attrs = %w(waiver_priority faab_balance number_of_moves number_of_trades)
+
+  %table#league-teams
     %thead
       %tr
         %th(width="33%") Name
+        - team_attrs.each do |attr|
+          %th= attr.humanize
     %tbody
       - @league.teams.each do |team|
         %tr
@@ -22,6 +28,13 @@
               %strong= team.name
             - else
               = team.name
+          - team_attrs.each do |attr|
+            %td= team.public_send(attr)
+
+%ul
+  - %w(scoring_type current_week start_week end_week playoff_start_week start_date end_date trade_end_date points_per_reception).each do |attr|
+    %li
+      #{attr.humanize}: #{@league.public_send(attr)}
 
 %h4 Past seasons:
 %ul

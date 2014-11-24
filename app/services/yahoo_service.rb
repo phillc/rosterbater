@@ -94,6 +94,7 @@ class YahooService
 
     #must make direct calls for sub-resources
     # sync_rosters(league)
+    sync_league_matchups(league)
     league.update! sync_finished_at: Time.now
   end
 
@@ -161,14 +162,49 @@ class YahooService
   end
 
   def get_yahoo_team_roster(team, week)
-    get "/team/#{team.yahoo_team_key};out=roster;week=#{week}"
+    # get "/team/#{team.yahoo_team_key};out=roster;week=#{week}"
   end
 
   def sync_rosters(league, week)
     #for each week... or perhaps just two most recent.
   end
 
+  def get_yahoo_league_scoreboard(league)
+    weeks = (1..(league.playoff_start_week - 1)).to_a
+    get "/league/#{league.yahoo_league_key}/scoreboard;week=#{weeks.join(",")}"
+  end
+
+  def matchups(league)
+    doc = get_yahoo_league_scoreboard(league)
+    doc.search("matchup").map{ |matchup_doc| YahooMatchup.new(matchup_doc) }
+  end
+
+  def sync_league_matchups(league)
+    league_matchups = league.matchups.to_a
+    matchups(league).each do |yahoo_matchup|
+      matchup = league_matchups
+        .detect{ |league_matchup|
+          (Set.new(league_matchup.matchup_teams.map(&:yahoo_team_key)) ==
+            Set.new(yahoo_matchup.teams.map(&:team_key))) &&
+          league_matchup.week == yahoo_matchup.week.to_i
+        } || league.matchups.build
+
+      yahoo_matchup.update(matchup)
+
+      yahoo_matchup.teams.each do |yahoo_team|
+        mt = matchup.matchup_teams.detect{ |matchup_team|
+          matchup_team.yahoo_team_key == yahoo_team.team_key
+        } || matchup.matchup_teams.build
+
+        yahoo_team.update(mt)
+      end
+
+      matchup.save!
+    end
+  end
+
   def get(path)
+    Rails.logger.info "YahooService request: #{path}"
     retries = 0
     begin
       response = token.get path
@@ -546,6 +582,76 @@ class YahooService
         round
       ).each do |attribute|
         draft_pick.public_send("#{attribute}=", self.public_send(attribute))
+      end
+    end
+  end
+
+  class YahooMatchup < Base
+    attributes *%w(status
+                   winner_team_key)
+
+    def teams
+      @doc.search("team").map{ |team_doc| YahooMatchupTeam.new(team_doc, self) }
+    end
+
+    def is_playoffs
+      at(:is_playoffs) == "1"
+    end
+
+    def is_consolation
+      at(:is_consolation) == "1"
+    end
+
+    def is_tied
+      at(:is_tied) == "1"
+    end
+
+    def week
+      at(:week)
+    end
+
+    def update(matchup)
+      %w(
+        week
+        status
+        is_playoffs
+        is_consolation
+        is_tied
+      ).each do |attribute|
+        matchup.public_send("#{attribute}=", self.public_send(attribute))
+      end
+    end
+  end
+
+  class YahooMatchupTeam < Base
+    attributes *%w(team_key)
+
+    def initialize(doc, matchup)
+      super doc
+      @matchup = matchup
+    end
+
+    def is_winner
+      @matchup.winner_team_key == team_key
+    end
+
+    def points
+      at("team_points/total")
+    end
+
+    def projected_points
+      at("team_projected_points/total")
+    end
+
+    def update(matchup_team)
+      matchup_team.yahoo_team_key = team_key
+
+      %w(
+        is_winner
+        points
+        projected_points
+      ).each do |attribute|
+        matchup_team.public_send("#{attribute}=", self.public_send(attribute))
       end
     end
   end

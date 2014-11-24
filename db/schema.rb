@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141120234643) do
+ActiveRecord::Schema.define(version: 20141121133153) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,11 +66,12 @@ ActiveRecord::Schema.define(version: 20141120234643) do
     t.datetime "updated_at"
     t.datetime "sync_finished_at"
     t.boolean  "is_auction_draft"
-    t.datetime "trade_end_date"
+    t.date     "trade_end_date"
     t.json     "settings"
     t.datetime "sync_started_at"
     t.boolean  "has_finished_draft",   default: false, null: false
     t.decimal  "points_per_reception", default: 0.0,   null: false
+    t.integer  "playoff_start_week"
   end
 
   add_index "leagues", ["yahoo_league_key"], name: "index_leagues_on_yahoo_league_key", unique: true, using: :btree
@@ -94,6 +95,29 @@ ActiveRecord::Schema.define(version: 20141120234643) do
   end
 
   add_index "managers", ["yahoo_guid", "team_id"], name: "index_managers_on_yahoo_guid_and_team_id", unique: true, using: :btree
+
+  create_table "matchup_teams", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+    t.uuid     "matchup_id",       null: false
+    t.string   "yahoo_team_key",   null: false
+    t.boolean  "is_winner"
+    t.decimal  "points"
+    t.decimal  "projected_points"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "matchup_teams", ["matchup_id", "yahoo_team_key"], name: "index_matchup_teams_on_matchup_id_and_yahoo_team_key", unique: true, using: :btree
+
+  create_table "matchups", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+    t.uuid     "league_id",      null: false
+    t.integer  "week"
+    t.string   "status"
+    t.boolean  "is_playoffs"
+    t.boolean  "is_consolation"
+    t.boolean  "is_tied"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "players", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
     t.string   "yahoo_player_key",                      null: false
@@ -208,6 +232,11 @@ ActiveRecord::Schema.define(version: 20141120234643) do
   add_foreign_key "leagues_users", "users", name: "leagues_users_user_id_fk"
 
   add_foreign_key "managers", "teams", name: "managers_team_id_fk"
+
+  add_foreign_key "matchup_teams", "matchups", name: "matchup_teams_matchup_id_fk"
+  add_foreign_key "matchup_teams", "teams", name: "matchup_teams_yahoo_team_key_fk", column: "yahoo_team_key", primary_key: "yahoo_team_key"
+
+  add_foreign_key "matchups", "leagues", name: "matchups_league_id_fk"
 
   add_foreign_key "players", "games", name: "players_game_id_fk"
 
