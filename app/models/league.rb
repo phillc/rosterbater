@@ -10,8 +10,15 @@ class League < ActiveRecord::Base
   default_scope { order(start_date: :desc) }
 
   scope :unsynced, ->{ where(sync_finished_at: nil) }
-  scope :interesting, -> {
+  scope :interesting_draft, -> {
     joins(:draft_picks)
+      .where.not(sync_finished_at: nil)
+      .group("leagues.id")
+      .having("count(leagues.id) > 0")
+      .order("RANDOM()")
+  }
+  scope :interesting_season, -> {
+    joins(:matchups)
       .where.not(sync_finished_at: nil)
       .group("leagues.id")
       .having("count(leagues.id) > 0")

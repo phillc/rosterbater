@@ -1,6 +1,7 @@
 class WelcomeController < ApplicationController
   def index
     authorize :welcome, :index?
-    @leagues = League.interesting.limit(10)
+    @draft_leagues = League.interesting_draft.limit(10)
+    @season_leagues = League.interesting_season.limit(10)
   end
 end

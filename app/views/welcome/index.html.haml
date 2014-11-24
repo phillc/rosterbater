@@ -1,31 +1,55 @@
-.row
-  %h1 Fantasy Football - Post Draft Visualization Board
+%h1 Rosterbait - Taking data from Yahoo leagues and creating visualizations with it.
+
+- if current_user
   %p
-    This is a simple tool that gives a visualization of your draft after automatically importing your league's draft results. Colors represent the difference between where a player was picked vs their ranking, to help see which picks were good deals and which were reaches. You can compare draft picks against Yahoo's Average Draft Pick, or to #{link_to "Expert Consensus Rankings", "http://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"} in either PPR or standard formats.
+    %a.button{href: leagues_path} Look at your leagues now »
+- else
+  %p
+    By signing into yahoo, you will allow us to automatically import your draft results, and compare them to Yahoo's Average Draft Pick, and Expert Consensus Rankings. We are only given read permissions, and cannot make changes to your account, league, team, or roster.
+  %p
+    %a.button{href: "/auth/yahoo"} Sign in with yahoo »
 
-  - if current_user
-    %p
-      %a.button{href: leagues_path} Look at your leagues now »
-  - else
-    %p
-      By signing into yahoo, you will allow us to automatically import your draft results, and compare them to Yahoo's Average Draft Pick, and Expert Consensus Rankings. We are only given read permissions, and cannot make changes to your account, league, team, or roster.
-    %p
-      %a.button{href: "/auth/yahoo"} Sign in with yahoo »
 
-  %h3 Example Post Draft Visualization Boards
-  %table.table
-    %thead
-      %tr
-        %th Name
-        %th Number of teams
-    %tbody
-      - @leagues.each do |league|
+.row
+  .columns.large-6
+    %h2 Fantasy Football - Random in season stats
+    %p
+      I often need help cherry-picking interesting data from my league, so I created some sortable tables. This will eventually include charts and other visualizations.
+
+    %h3 Example in season stats
+    %table.table
+      %thead
         %tr
-          %td
-            = link_to league.name, draft_board_league_path(league)
-            - if league.is_auction_draft?
-              (auction)
-          %td
-            = league.num_teams
+          %th Name
+          %th Number of teams
+      %tbody
+        - @season_leagues.each do |league|
+          %tr
+            %td
+              = link_to league.name, league_path(league)
+            %td
+              = league.num_teams
+
+
+  .columns.large-6
+    %h2 Fantasy Football - Post Draft Visualization Board
+    %p
+      This is a simple tool that gives a visualization of your draft after automatically importing your league's draft results. Colors represent the difference between where a player was picked vs their ranking, to help see which picks were good deals and which were reaches. You can compare draft picks against Yahoo's Average Draft Pick, or to #{link_to "Expert Consensus Rankings", "http://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"} in either PPR or standard formats.
+
+    %h3 Example Post Draft Visualization Boards
+    %table.table
+      %thead
+        %tr
+          %th Name
+          %th Number of teams
+      %tbody
+        - @draft_leagues.each do |league|
+          %tr
+            %td
+              = link_to league.name, draft_board_league_path(league)
+              - if league.is_auction_draft?
+                (auction)
+            %td
+              = league.num_teams
 
 
