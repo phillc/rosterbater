@@ -31,7 +31,32 @@
           - team_attrs.each do |attr|
             %td= team.public_send(attr)
 
+- if !@league.matchups.empty?
+
+  %table#league-matchup-teams
+    %thead
+      %tr
+        %th(width="33%") Name
+        %th Week
+        %th Opponent
+        %th Points
+        %th Projected Points
+        %th Points - Projected
+    %tbody
+      - @league.finished_matchup_teams.each do |matchup_team|
+        %tr
+          %td= matchup_team.team.name
+          %td= matchup_team.matchup.week
+          %td= matchup_team.opponent_matchup_team.team.name
+          %td= matchup_team.points
+          %td= matchup_team.projected_points
+          %td= matchup_team.points - matchup_team.projected_points
+
+%hr
 %ul
+  %li #{@league.matchups.count} Matchups
+  %li #{@league.matchup_teams.count} Team records
+  %li #{@league.finished_matchup_teams.count} Finished team records
   - %w(scoring_type current_week start_week end_week playoff_start_week start_date end_date trade_end_date points_per_reception).each do |attr|
     %li
       #{attr.humanize}: #{@league.public_send(attr)}

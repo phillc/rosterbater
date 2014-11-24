@@ -3,6 +3,8 @@ class League < ActiveRecord::Base
   has_many :teams
   has_many :draft_picks, autosave: true
   has_many :matchups
+  has_many :matchup_teams, through: :matchups
+  has_many :finished_matchup_teams, ->(league){ where("status = 'postevent'") }, through: :matchups, source: "matchup_teams"
   has_and_belongs_to_many :users
 
   default_scope { order(start_date: :desc) }
