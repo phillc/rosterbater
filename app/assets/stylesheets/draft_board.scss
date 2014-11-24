@@ -2,6 +2,7 @@
   .legend {
     background-color: #CCCCCC;
     text-align: center;
+    padding-bottom: 5px;
     margin-bottom: 10px;
 
     span {
@@ -46,7 +47,7 @@
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    font-size: 0.7rem;
+    font-size: 11px;
     line-height: 120%;
 
     .round-number {

@@ -1,0 +1,12 @@
+.col-md-2.sidebar
+  %h2= @league.name
+  %h5= @league.start_date.year
+
+  - if policy(@league).sync?
+    %p= link_to "Sync this league with Yahoo", sync_league_path(@league), method: :post, class: "btn btn-info"
+  - if @league.sync_finished_at
+    %p Last synced #{time_ago_in_words(@league.sync_finished_at)} ago.
+
+  %ul.nav
+    %li{class: current_page?(controller: 'leagues', action: 'show') && "active"}= link_to "Random Stats", league_path(@league)
+    %li{class: current_page?(controller: 'leagues', action: 'draft_board') && "active"}= link_to "Post Draft Visualization Board", draft_board_league_path(@league)

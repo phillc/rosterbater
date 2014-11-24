@@ -1,70 +1,71 @@
 - load_javascript_class "LeagueShowPage"
 
-%h3= @league.name
+.row
+  = render "leagues/navigation"
 
-%ul.button-group
-  %li= link_to "View your Post Draft Visualization Board", draft_board_league_path(@league), class: "button"
-  - if policy(@league).sync?
-    %li= link_to "Sync this league with Yahoo", sync_league_path(@league), method: :post, class: "button secondary"
-- if @league.sync_finished_at
-  %p Last synced #{time_ago_in_words(@league.sync_finished_at)} ago.
+  .col-md-10.col-md-offset-2
+    .page-header
+      %h2
+        Random Stats
+        %small (sortable)
+    - if @league.teams.empty?
+      No teams present. Please sync this league with Yahoo.
+    - else
+      - team_attrs = %w(waiver_priority faab_balance number_of_moves number_of_trades)
 
-%h4 Teams
-- if @league.teams.empty?
-  No teams present. Please sync this league with Yahoo.
-- else
-  - team_attrs = %w(waiver_priority faab_balance number_of_moves number_of_trades)
+      %table#league-teams
+        %thead
+          %tr
+            %th(width="33%") Name
+            - team_attrs.each do |attr|
+              %th= attr.humanize
+        %tbody
+          - @league.teams.each do |team|
+            %tr
+              %td
+                - if current_user && team.managers.map(&:yahoo_guid).include?(current_user.yahoo_uid)
+                  %strong= team.name
+                - else
+                  = team.name
+              - team_attrs.each do |attr|
+                %td= team.public_send(attr)
 
-  %table#league-teams
-    %thead
-      %tr
-        %th(width="33%") Name
-        - team_attrs.each do |attr|
-          %th= attr.humanize
-    %tbody
-      - @league.teams.each do |team|
-        %tr
-          %td
-            - if current_user && team.managers.map(&:yahoo_guid).include?(current_user.yahoo_uid)
-              %strong= team.name
-            - else
-              = team.name
-          - team_attrs.each do |attr|
-            %td= team.public_send(attr)
+    - if !@league.matchups.empty?
+      .page-header
+        %h4
+          Matchups
+          %small (sortable)
 
-- if !@league.matchups.empty?
-  %h4 Matchups
+      %table#league-matchup-teams
+        %thead
+          %tr
+            %th(width="33%") Name
+            %th Week
+            %th Opponent
+            %th Points
+            %th Projected Points
+            %th Points - Projected
+        %tbody
+          - @league.finished_matchup_teams.each do |matchup_team|
+            %tr
+              %td= matchup_team.team.name
+              %td= matchup_team.matchup.week
+              %td= matchup_team.opponent_matchup_team.team.name
+              %td= matchup_team.points
+              %td= matchup_team.projected_points
+              %td= matchup_team.points - matchup_team.projected_points
 
-  %table#league-matchup-teams
-    %thead
-      %tr
-        %th(width="33%") Name
-        %th Week
-        %th Opponent
-        %th Points
-        %th Projected Points
-        %th Points - Projected
-    %tbody
-      - @league.finished_matchup_teams.each do |matchup_team|
-        %tr
-          %td= matchup_team.team.name
-          %td= matchup_team.matchup.week
-          %td= matchup_team.opponent_matchup_team.team.name
-          %td= matchup_team.points
-          %td= matchup_team.projected_points
-          %td= matchup_team.points - matchup_team.projected_points
+    %hr
+    %ul
+      %li #{@league.matchups.count} Matchups
+      %li #{@league.matchup_teams.count} Team records
+      %li #{@league.finished_matchup_teams.count} Finished team records
+      - %w(scoring_type current_week start_week end_week playoff_start_week start_date end_date trade_end_date points_per_reception).each do |attr|
+        %li
+          #{attr.humanize}: #{@league.public_send(attr)}
 
-%hr
-%ul
-  %li #{@league.matchups.count} Matchups
-  %li #{@league.matchup_teams.count} Team records
-  %li #{@league.finished_matchup_teams.count} Finished team records
-  - %w(scoring_type current_week start_week end_week playoff_start_week start_date end_date trade_end_date points_per_reception).each do |attr|
-    %li
-      #{attr.humanize}: #{@league.public_send(attr)}
-
-%h4 Past seasons:
-%ul
-  - @league.past_leagues.each do |league|
-    %li
-      #{league.name} (#{league.start_date.year})
+    %h4 Past seasons:
+    %ul
+      - @league.past_leagues.each do |league|
+        %li
+          #{league.name} (#{league.start_date.year})

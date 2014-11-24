@@ -35,6 +35,8 @@ GEM
       rack (>= 0.9.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap-sass (3.3.1.0)
+      sass (~> 3.2)
     builder (3.2.2)
     celluloid (0.15.2)
       timers (~> 1.1.0)
@@ -68,9 +70,6 @@ GEM
     foreigner (1.6.1)
       activerecord (>= 3.0.0)
     formatador (0.2.5)
-    foundation-rails (5.4.1.0)
-      railties (>= 3.1.0)
-      sass (>= 3.2.0)
     guard (2.6.1)
       formatador (>= 0.2.4)
       listen (~> 2.7)
@@ -239,12 +238,12 @@ PLATFORMS
 DEPENDENCIES
   better_errors
   binding_of_caller
+  bootstrap-sass
   coffee-rails (~> 4.0.0)
   dotenv-rails
   factory_girl_rails
   faker
   foreigner
-  foundation-rails
   guard
   guard-rspec
   haml-rails
