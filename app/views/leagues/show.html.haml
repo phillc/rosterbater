@@ -19,7 +19,7 @@
             - team_attrs.each do |attr|
               %th= attr.humanize
         %tbody
-          - @league.teams.each do |team|
+          - @league.teams.by_rank.each do |team|
             %tr
               %td
                 - if current_user && team.managers.map(&:yahoo_guid).include?(current_user.yahoo_uid)
