@@ -3,7 +3,7 @@
 .row
   = render "leagues/navigation"
 
-  .col-md-10.col-md-offset-2
+  .col-sm-10.col-sm-offset-2
     .page-header
       %h2
         Random Stats
@@ -11,8 +11,7 @@
     - if @league.teams.empty?
       No teams present. Please sync this league with Yahoo.
     - else
-      - team_attrs = %w(waiver_priority faab_balance number_of_moves number_of_trades)
-
+      - team_attrs = %w(waiver_priority faab_balance number_of_moves number_of_trades has_clinched_playoffs points_for points_against rank wins losses ties)
       %table#league-teams
         %thead
           %tr

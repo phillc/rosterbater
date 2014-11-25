@@ -329,7 +329,7 @@ describe "YahooService" do
         expect(team.team_key).to eq "314.l.31580.t.1"
         expect(team.team_id).to eq "1"
         expect(team.url).to eq "http://football.fantasysports.yahoo.com/archive/nfl/2013/31580/1"
-        expect(team.logo_url).to eq "http://i.imgur-ysports.com/miBocdcy.png"
+        expect(team.logo_url).to eq "https://i.imgur-ysports.com/miBocdcy.png"
         expect(team.waiver_priority).to eq "7"
         expect(team.faab_balance).to eq "0"
         expect(team.number_of_moves).to eq "70"
@@ -390,7 +390,7 @@ describe "YahooService" do
           expect(team.yahoo_team_key).to eq "314.l.31580.t.1"
           expect(team.yahoo_team_id).to eq 1
           expect(team.url).to eq "http://football.fantasysports.yahoo.com/archive/nfl/2013/31580/1"
-          expect(team.logo_url).to eq "http://i.imgur-ysports.com/miBocdcy.png"
+          expect(team.logo_url).to eq "https://i.imgur-ysports.com/miBocdcy.png"
           expect(team.waiver_priority).to eq 7
           expect(team.faab_balance).to eq 0
           expect(team.number_of_moves).to eq 70
@@ -400,6 +400,13 @@ describe "YahooService" do
           expect(team.managers.first.image_url).to eq "https://s.yimg.com/dh/ap/social/profile/profile_b64.png"
           expect(team.managers.first.is_commissioner).to eq true
           expect(team.managers.first.email).to_not be_empty
+          expect(team.has_clinched_playoffs).to be true
+          expect(team.points_for).to eq 1849.32
+          expect(team.points_against).to eq 1597.64
+          expect(team.rank).to eq 1
+          expect(team.wins).to eq 9
+          expect(team.losses).to eq 5
+          expect(team.ties).to eq 0
         end
 
         it "updates changes" do
@@ -469,6 +476,8 @@ describe "YahooService" do
             service.sync_league_details(league)
             expect(league.is_auction_draft).to eq false
             expect(league.trade_end_date).to eq Date.parse("2013-11-15")
+            expect(league.num_playoff_teams).to eq 4
+            expect(league.num_playoff_consolation_teams).to eq 4
             expect(league.settings).to include({"draft_type" => "live", "max_teams" => "14"})
           end
         end

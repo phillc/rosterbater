@@ -1,5 +1,6 @@
 class LeaguesController < ApplicationController
-  before_action :find_league, only: [:show, :draft_board]
+  before_action :find_league, only: [:show, :draft_board, :playoffs]
+
   def index
     authorize :league, :index?
     @leagues = current_user.leagues.active

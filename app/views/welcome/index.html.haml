@@ -1,21 +1,24 @@
+- content_for :outside_container do
+  .jumbotron
+    .container
+      %h1 Roster BAIT
+      %h2 Taking data from Yahoo leagues and creating visualizations with it.
+
+      - if current_user
+        %p
+          %a.btn.btn-primary.btn-lg{href: leagues_path} Look at your leagues now »
+      - else
+        %p
+          By signing into yahoo, you will allow us to automatically import your league's information. We are only given read permissions, and cannot make changes to your account, league, team, or roster.
+        %p
+          %a.btn.btn-primary.btn-lg{href: "/auth/yahoo"} Sign in with yahoo »
+
 .container
-  %h1 Rosterbait - Taking data from Yahoo leagues and creating visualizations with it.
-
-  - if current_user
-    %p
-      %a.btn.btn-primary.btn-lg{href: leagues_path} Look at your leagues now »
-  - else
-    %p
-      By signing into yahoo, you will allow us to automatically import your draft results, and compare them to Yahoo's Average Draft Pick, and Expert Consensus Rankings. We are only given read permissions, and cannot make changes to your account, league, team, or roster.
-    %p
-      %a.btn.btn-primary.btn-lg{href: "/auth/yahoo"} Sign in with yahoo »
-
-
   .row
     .col-md-6
       %h2 Fantasy Football - Random in season stats
       %p
-        I often need help cherry-picking interesting data from my league, so I created some sortable tables. This will eventually include charts and other visualizations.
+        I often need help cherry-picking interesting data from my league for weekly emails and trash talk, so I created some sortable tables. This will eventually include charts and other visualizations.
 
       %h3 Example in season stats
       %table.table.table-bordered.table-striped

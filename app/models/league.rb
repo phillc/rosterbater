@@ -56,4 +56,12 @@ class League < ActiveRecord::Base
   def last_league
     renew && self.class.find_by(yahoo_league_key: renew.split("_").join(".l."))
   end
+
+  def weeks_in_a_season
+    playoff_start_week - 1
+  end
+
+  def weeks_remaining
+    playoff_start_week - current_week
+  end
 end

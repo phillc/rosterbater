@@ -1,0 +1,34 @@
+- load_javascript_class "LeaguePlayoffsPage"
+
+.row
+  = render "leagues/navigation"
+
+  .col-sm-10.col-sm-offset-2
+    .page-header
+      %h2 Playoffs
+
+    .page-header
+      %h3
+        Magic Numbers
+        %small #{@league.weeks_remaining} games remaining. #{@league.num_playoff_teams} teams in playoffs.
+
+    %p Magic Number: Number of wins needed to have a playoff record.
+    %p Elimination Number: Number of losses to have a record that misses playoffs.
+    %p These numbers only take into account records, and do not consider tie breakers (points), or divisions.
+
+    %table.table.table-striped
+      %thead
+        %tr
+          %th Team name
+          %th Record
+          %th Magic Number
+          %th Elimination number
+      %tbody
+        - @league.teams.by_rank.each do |team|
+          %tr
+            %td= team.name
+            %td #{team.wins}-#{team.losses}-#{team.ties}
+            %td= @league.weeks_in_a_season + 1 - team.wins - @bubble_team.losses
+
+
+

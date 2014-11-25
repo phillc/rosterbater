@@ -99,7 +99,7 @@ class YahooService
   end
 
   def get_yahoo_league_details(league)
-    get "/league/#{league.yahoo_league_key};out=teams,draftresults,settings"
+    get "/league/#{league.yahoo_league_key};out=draftresults,settings,standings"
   end
 
   def league_details(league)
@@ -457,7 +457,7 @@ class YahooService
 
   class YahooLeagueDetails < Base
     def teams
-      @doc.search("league/teams/team").map{ |team_doc| YahooTeam.new(team_doc) }
+      @doc.search("league/standings/teams/team").map{ |team_doc| YahooTeam.new(team_doc) }
     end
 
     def draft_results
@@ -473,7 +473,10 @@ class YahooService
 
   class YahooLeagueSettings < Base
     attributes *%w(trade_end_date
+                   num_playoff_teams
+                   num_playoff_consolation_teams
                   )
+
     def is_auction_draft
       at(:is_auction_draft) == "1"
     end
@@ -488,6 +491,8 @@ class YahooService
         points_per_reception
         is_auction_draft
         trade_end_date
+        num_playoff_teams
+        num_playoff_consolation_teams
       ).each do |attribute|
         league.public_send("#{attribute}=", self.public_send(attribute))
       end
@@ -516,6 +521,12 @@ class YahooService
                    faab_balance
                    number_of_moves
                    number_of_trades
+                   points_for
+                   points_against
+                   wins
+                   losses
+                   ties
+                   rank
                   )
     def logo_url
       @doc.search("team_logo").at(:url).text
@@ -523,6 +534,10 @@ class YahooService
 
     def managers
       @doc.search("manager").map{ |manager_doc| YahooManager.new(manager_doc) }
+    end
+
+    def has_clinched_playoffs
+      at(:clinched_playoffs) == "1"
     end
 
     def update(team)
@@ -535,6 +550,13 @@ class YahooService
         faab_balance
         number_of_moves
         number_of_trades
+        has_clinched_playoffs
+        points_for
+        points_against
+        wins
+        losses
+        ties
+        rank
       ).each do |attribute|
         team.public_send("#{attribute}=", self.public_send(attribute))
       end

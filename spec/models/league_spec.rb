@@ -38,4 +38,13 @@ describe League do
       expect(league.past_leagues).to eq [old_league]
     end
   end
+
+  describe "#weeks_remaining" do
+    it "is how many games are left" do
+      league.playoff_start_week = 14
+      league.current_week = 12
+
+      expect(league.weeks_remaining).to eq 2
+    end
+  end
 end

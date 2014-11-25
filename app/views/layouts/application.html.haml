@@ -28,10 +28,12 @@
             %li
               %a{href: "/auth/yahoo"} Sign in with yahoo
 
+    = yield :outside_container
     .container-fluid
       = render "layouts/messages"
       = yield
 
+      %br
       %br
       .row
         .col-md-12.text-center

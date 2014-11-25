@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     member do
       post :sync
       get :draft_board
+      get :playoffs
     end
   end
 end

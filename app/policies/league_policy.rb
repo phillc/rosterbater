@@ -12,7 +12,7 @@ class LeaguePolicy < ApplicationPolicy
   end
 
   def sync?
-    recently_updated?(league)
+    recently_updated?(league) && league.users.include?(user)
   end
 
   protected

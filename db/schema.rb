@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141121133153) do
+ActiveRecord::Schema.define(version: 20141125122430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,9 +48,9 @@ ActiveRecord::Schema.define(version: 20141121133153) do
   add_index "games", ["yahoo_game_key"], name: "index_games_on_yahoo_game_key", unique: true, using: :btree
 
   create_table "leagues", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
-    t.string   "name",                                 null: false
-    t.string   "yahoo_league_key",                     null: false
-    t.integer  "yahoo_league_id",                      null: false
+    t.string   "name",                                          null: false
+    t.string   "yahoo_league_key",                              null: false
+    t.integer  "yahoo_league_id",                               null: false
     t.string   "url"
     t.integer  "num_teams"
     t.string   "scoring_type"
@@ -61,7 +61,7 @@ ActiveRecord::Schema.define(version: 20141121133153) do
     t.integer  "end_week"
     t.date     "start_date"
     t.date     "end_date"
-    t.uuid     "game_id",                              null: false
+    t.uuid     "game_id",                                       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "sync_finished_at"
@@ -69,9 +69,11 @@ ActiveRecord::Schema.define(version: 20141121133153) do
     t.date     "trade_end_date"
     t.json     "settings"
     t.datetime "sync_started_at"
-    t.boolean  "has_finished_draft",   default: false, null: false
-    t.decimal  "points_per_reception", default: 0.0,   null: false
+    t.boolean  "has_finished_draft",            default: false, null: false
+    t.decimal  "points_per_reception",          default: 0.0,   null: false
     t.integer  "playoff_start_week"
+    t.integer  "num_playoff_teams"
+    t.integer  "num_playoff_consolation_teams"
   end
 
   add_index "leagues", ["yahoo_league_key"], name: "index_leagues_on_yahoo_league_key", unique: true, using: :btree
@@ -191,18 +193,25 @@ ActiveRecord::Schema.define(version: 20141121133153) do
   add_index "rankings", ["ranking_profile_id", "ranking_report_id"], name: "index_rankings_on_ranking_profile_id_and_ranking_report_id", unique: true, using: :btree
 
   create_table "teams", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
-    t.string   "name",             null: false
-    t.string   "yahoo_team_key",   null: false
-    t.integer  "yahoo_team_id",    null: false
+    t.string   "name",                  null: false
+    t.string   "yahoo_team_key",        null: false
+    t.integer  "yahoo_team_id",         null: false
     t.string   "url"
     t.string   "logo_url"
     t.integer  "waiver_priority"
     t.integer  "faab_balance"
     t.integer  "number_of_moves"
     t.integer  "number_of_trades"
-    t.uuid     "league_id",        null: false
+    t.uuid     "league_id",             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "has_clinched_playoffs"
+    t.decimal  "points_for"
+    t.decimal  "points_against"
+    t.integer  "rank"
+    t.integer  "wins"
+    t.integer  "losses"
+    t.integer  "ties"
   end
 
   add_index "teams", ["yahoo_team_key"], name: "index_teams_on_yahoo_team_key", unique: true, using: :btree
