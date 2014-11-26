@@ -22,6 +22,6 @@ class LeaguePolicy < ApplicationPolicy
   end
 
   def recently_updated?(object)
-    logged_in? && (!object.sync_started_at || (object.sync_started_at < 10.minutes.ago))
+    logged_in? && (!object.sync_started_at || (object.sync_started_at < 2.minutes.ago))
   end
 end
