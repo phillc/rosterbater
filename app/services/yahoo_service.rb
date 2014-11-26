@@ -475,6 +475,7 @@ class YahooService
     attributes *%w(trade_end_date
                    num_playoff_teams
                    num_playoff_consolation_teams
+                   playoff_start_week
                   )
 
     def is_auction_draft
