@@ -1,15 +1,17 @@
 - load_javascript_class "LeaguePlayoffsPage", matchups: @matchups, teams: @teams, weeks: @league.weeks_in_a_season
 
-.row
-  = render "leagues/navigation"
+= render "leagues/navigation"
 
-  .col-sm-10.col-sm-offset-2
-    .page-header
-      %h2
-        Playoffs
-        %small #{@league.weeks_remaining} games remaining. #{@league.num_playoff_teams} teams in playoffs.
+.page-header
+  %h2
+    Playoffs
+    %small #{@league.weeks_remaining} games remaining. #{@league.num_playoff_teams} teams in playoffs.
 
-    #playoffs-matchups
-    #playoffs-outcomes
+#playoffs-outcomes
 
+.page-header
+  %h2
+    Matchups
+    %small Select the winners
+#playoffs-matchups
 

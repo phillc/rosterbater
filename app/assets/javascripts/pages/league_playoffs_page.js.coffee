@@ -71,7 +71,7 @@ class TeamOutcomesView extends Backbone.View
     <td><%= points_for %></td>
     <td><%= wins %>-<%= losses %></td>
     <td><%= unknowns %></td>
-    <% _.times(weeks, function(i){ %>
+    <% _.times(weeks + 1, function(i){ %>
       <% record = _.find(outcomes, function(outcome){ return outcome.wins === weeks - i });  %>
       <td>
         <% if(record) { %>
@@ -98,17 +98,22 @@ class TeamOutcomesView extends Backbone.View
 
 class TeamListView extends Backbone.View
   template: _.template """
-    <table>
+    <table class="table table-hover table-bordered">
       <thead>
-        <th>Team</th>
-        <th>Points For</th>
-        <th>Known record</th>
-        <th>Unknown games</th>
-        <% _.times(weeks, function(i){ %>
-          <th>
-            <%= weeks - i %>
-          </th>
-        <% }); %>
+        <tr>
+          <th rowspan="2">Team</th>
+          <th rowspan="2">Points For</th>
+          <th rowspan="2">Known record</th>
+          <th rowspan="2">Unknown games</th>
+          <th colspan="<%= weeks + 1 %>">Possible Wins</th>
+        </tr>
+        <tr>
+          <% _.times(weeks + 1, function(i){ %>
+            <th>
+              <%= weeks - i %>
+            </th>
+          <% }); %>
+        </tr>
       </thead>
       <tbody>
       </tbody>

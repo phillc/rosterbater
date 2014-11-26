@@ -1,81 +1,79 @@
 - content_for :title, "Roster BAIT - Draft Visualization of #{@league.name}"
 - load_javascript_class "DraftBoardPage"
 
+= render "leagues/navigation"
+
 .row
-  = render "leagues/navigation"
+  .col-md-8
+    .page-header
+      %h2 Post Draft Visualization Board
+  .col-md-4
+    = render "leagues/draft_board_ad"
 
-  .col-sm-10.col-sm-offset-2
-    .row
-      .col-md-8
-        .page-header
-          %h2 Post Draft Visualization Board
-      .col-md-4
-        = render "leagues/draft_board_ad"
+.btn-group.btn-group-justified(role="group")
+  - if !current_user
+    = link_to "Get your own draft visualized", root_path, class: "btn btn-danger"
+  - ["Yahoo ADP", "ECR Standard", "ECR Half PPR", "ECR PPR"].each do |ranking_label|
+    - ranking_param = ranking_label.downcase.split(" ").join("_")
+    - if @ranking_type == ranking_param
+      %span.btn.btn-default.btn-primary.disabled
+        vs.
+        = ranking_label
+    - else
+      = link_to "vs. #{ranking_label}", draft_board_league_path(@league, ranking: ranking_param), class: "btn btn-primary"
 
-    .btn-group.btn-group-justified(role="group")
-      - if !current_user
-        = link_to "Get your own draft visualized", root_path, class: "btn btn-danger"
-      - ["Yahoo ADP", "ECR Standard", "ECR Half PPR", "ECR PPR"].each do |ranking_label|
-        - ranking_param = ranking_label.downcase.split(" ").join("_")
-        - if @ranking_type == ranking_param
-          %span.btn.btn-default.btn-primary.disabled
-            vs.
-            = ranking_label
-        - else
-          = link_to "vs. #{ranking_label}", draft_board_league_path(@league, ranking: ranking_param), class: "btn btn-primary"
+%p This is a visualization of your draft. The colors represent the difference between where a player was picked, vs their ranking. Click the buttons above to compare draft picks against Yahoo's Average Draft Pick, or to #{link_to "Expert Consensus Rankings", "http://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"} in either PPR or standard. For example, If Jamaal Charles was picked 3rd overall in your league but was ranked second, it would show up light green for being a late pick. Green picks are late picks against the ranking, where purple picks are reaches for players too early according to the ranking.
 
-    %p This is a visualization of your draft. The colors represent the difference between where a player was picked, vs their ranking. Click the buttons above to compare draft picks against Yahoo's Average Draft Pick, or to #{link_to "Expert Consensus Rankings", "http://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"} in either PPR or standard. For example, If Jamaal Charles was picked 3rd overall in your league but was ranked second, it would show up light green for being a late pick. Green picks are late picks against the ranking, where purple picks are reaches for players too early according to the ranking.
+- if @league.is_auction_draft?
+  %p
+    Note: This is an
+    %strong auction draft.
+    The picks are shown as if they were picked in order of their cost.
 
-    - if @league.is_auction_draft?
-      %p
-        Note: This is an
-        %strong auction draft.
-        The picks are shown as if they were picked in order of their cost.
+.draft-board.colors-colorblind-safe
+  %div.legend
+    %div.color-schemes
+      Color Schemes:
+      %a.selected(href="#" data-color-scheme="colorblind-safe") [Colorblind safe]
+      %a(href="#" data-color-scheme="red-green") [Red-Green]
+    %div
+      %span.good-5 25+
+      %span.good-4 13-24
+      %span.good-3 7-12
+      %span.good-2 4-6
+      %span.good-1 1-3
+      %span.even Even
+      %span.bad-1 1-3
+      %span.bad-2 4-6
+      %span.bad-3 7-12
+      %span.bad-4 13-24
+      %span.bad-5 25+
+      %span.no-rank NA
 
-    .draft-board.colors-colorblind-safe
-      %div.legend
-        %div.color-schemes
-          Color Schemes:
-          %a.selected(href="#" data-color-scheme="colorblind-safe") [Colorblind safe]
-          %a(href="#" data-color-scheme="red-green") [Red-Green]
-        %div
-          %span.good-5 25+
-          %span.good-4 13-24
-          %span.good-3 7-12
-          %span.good-2 4-6
-          %span.good-1 1-3
-          %span.even Even
-          %span.bad-1 1-3
-          %span.bad-2 4-6
-          %span.bad-3 7-12
-          %span.bad-4 13-24
-          %span.bad-5 25+
-          %span.no-rank NA
-
-      %table
-        %thead
+  %table
+    %thead
+      %tr
+        %th.round-number #
+        - @picks.each do |(team, _)|
+          %th= team.name
+    %tbody
+      - if !@picks.empty?
+        - @picks.first.last.size.times do |i|
           %tr
-            %th.round-number #
-            - @picks.each do |(team, _)|
-              %th= team.name
-        %tbody
-          - if !@picks.empty?
-            - @picks.first.last.size.times do |i|
-              %tr
-                %td.round-number= i + 1
-                - @picks.each do |(_, pick_infos)|
-                  - info = pick_infos[i]
-                  %td{class: ranking_class(info)}
-                    %div
-                      = info.name
-                    %div
-                      = info.actual_pick
-                      - if @league.is_auction_draft?
-                        ($#{info.cost})
-                      vs
-                      = info.rank_value
-                    %div
-                      #{info.team_abbr} - #{info.position}
+            %td.round-number= i + 1
+            - @picks.each do |(_, pick_infos)|
+              - info = pick_infos[i]
+              %td{class: ranking_class(info)}
+                %div
+                  = info.name
+                %div
+                  = info.actual_pick
+                  - if @league.is_auction_draft?
+                    ($#{info.cost})
+                  vs
+                  = info.rank_value
+                %div
+                  #{info.team_abbr} - #{info.position}
 
-    %br
-    %br
+%br
+%br
