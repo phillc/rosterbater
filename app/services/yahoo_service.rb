@@ -170,7 +170,7 @@ class YahooService
   end
 
   def get_yahoo_league_scoreboard(league)
-    weeks = (1..17).to_a
+    weeks = (1..(league.playoff_start_week - 1)).to_a
     get "/league/#{league.yahoo_league_key}/scoreboard;week=#{weeks.join(",")}"
   end
 
