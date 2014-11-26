@@ -61,6 +61,13 @@ class LeaguesController < ApplicationController
         end
   end
 
+  def playoffs
+    authorize @league, :show?
+
+    @matchups = @league.matchups
+    @teams = @league.teams
+  end
+
   protected
 
   def find_league

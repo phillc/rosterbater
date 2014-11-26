@@ -6,4 +6,8 @@ class Team < ActiveRecord::Base
   validates :yahoo_team_key, presence: true, uniqueness: true
 
   scope :by_rank, ->{ order(rank: :asc) }
+
+  def as_json(options={})
+    super(only: [:id, :name, :points_for])
+  end
 end

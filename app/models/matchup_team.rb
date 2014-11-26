@@ -7,4 +7,8 @@ class MatchupTeam < ActiveRecord::Base
       .matchup_teams
       .detect{ |matchup_team| matchup_team.yahoo_team_key != yahoo_team_key }
   end
+
+  def name
+    team.name
+  end
 end
