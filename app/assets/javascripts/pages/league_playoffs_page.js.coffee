@@ -38,7 +38,7 @@ class MatchupView extends Backbone.View
 
 class MatchupListView extends Backbone.View
   template: _.template """
-    <table>
+    <table class="table table-bordered">
       <thead>
       </thead>
       <tbody>
