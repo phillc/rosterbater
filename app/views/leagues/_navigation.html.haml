@@ -10,8 +10,12 @@
         %p.navbar-text
           Last synced #{time_ago_in_words(@league.sync_finished_at)} ago.
 
-%ul.nav.nav-pills
-  %li{class: current_page?(controller: 'leagues', action: 'show') && "active"}= link_to "Random Stats", league_path(@league)
-  %li{class: current_page?(controller: 'leagues', action: 'draft_board') && "active"}= link_to "Post Draft Visualization Board", draft_board_league_path(@league)
-  %li{class: current_page?(controller: 'leagues', action: 'playoffs') && "active"}= link_to "Playoffs", playoffs_league_path(@league)
+.row
+  .col-md-8
+    %ul.nav.nav-pills
+      %li{class: current_page?(controller: 'leagues', action: 'show') && "active"}= link_to "Random Stats", league_path(@league)
+      %li{class: current_page?(controller: 'leagues', action: 'draft_board') && "active"}= link_to "Post Draft Visualization Board", draft_board_league_path(@league)
+      %li{class: current_page?(controller: 'leagues', action: 'playoffs') && "active"}= link_to "Playoffs", playoffs_league_path(@league)
+  .col-md-4
+    = render "shared/small_google_ad"
 

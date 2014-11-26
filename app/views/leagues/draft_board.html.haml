@@ -3,12 +3,8 @@
 
 = render "leagues/navigation"
 
-.row
-  .col-md-8
-    .page-header
-      %h2 Post Draft Visualization Board
-  .col-md-4
-    = render "leagues/draft_board_ad"
+.page-header
+  %h2 Post Draft Visualization Board
 
 .btn-group.btn-group-justified(role="group")
   - if !current_user
