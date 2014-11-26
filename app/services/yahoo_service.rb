@@ -494,6 +494,7 @@ class YahooService
         trade_end_date
         num_playoff_teams
         num_playoff_consolation_teams
+        playoff_start_week
       ).each do |attribute|
         league.public_send("#{attribute}=", self.public_send(attribute))
       end
