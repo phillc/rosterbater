@@ -20,6 +20,7 @@ class League < ActiveRecord::Base
   scope :interesting_season, -> {
     joins(:matchups)
       .where.not(sync_finished_at: nil)
+      .where(start_week: 1)
       .group("leagues.id")
       .having("count(leagues.id) > 0")
       .order("RANDOM()")
