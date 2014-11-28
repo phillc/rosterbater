@@ -1,5 +1,5 @@
 class LeaguesController < ApplicationController
-  before_action :find_league, only: [:show, :draft_board, :playoffs]
+  before_action :find_league, only: [:show, :draft_board, :playoffs, :parity]
 
   def index
     authorize :league, :index?
@@ -62,6 +62,13 @@ class LeaguesController < ApplicationController
   end
 
   def playoffs
+    authorize @league, :show?
+
+    @matchups = @league.matchups
+    @teams = @league.teams
+  end
+
+  def parity
     authorize @league, :show?
 
     @matchups = @league.matchups

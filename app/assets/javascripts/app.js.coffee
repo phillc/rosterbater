@@ -1,0 +1,3 @@
+window.APP =
+  models: {}
+  collections: {}

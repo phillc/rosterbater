@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       post :sync
       get :draft_board
       get :playoffs
+      get :parity
     end
   end
 end

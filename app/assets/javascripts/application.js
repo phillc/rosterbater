@@ -17,4 +17,9 @@
 //= require bootstrap-sprockets
 //= require underscore
 //= require backbone
-//= require_tree .
+//
+//= require app
+//
+//= require_tree ./pages
+//= require_tree ./models
+
