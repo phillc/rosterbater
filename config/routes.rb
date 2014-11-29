@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
   constraints host: "kapsh.com" do
-    get "/(*path)" => redirect { |params, req| "http://rosterbait.com/#{params[:path]}" }
+    get "/(*path)" => redirect { |params, req| "http://rosterbater.com/#{params[:path]}" }
   end
+  constraints host: "rosterbait.com" do
+    get "/(*path)" => redirect { |params, req| "http://rosterbater.com/#{params[:path]}" }
+  end
+
   root to: "welcome#index"
 
   get 'auth/:provider/callback', to: 'sessions#create_from_omniauth'
