@@ -17,6 +17,7 @@
 //= require bootstrap-sprockets
 //= require underscore
 //= require backbone
+//= require d3
 //
 //= require app
 //

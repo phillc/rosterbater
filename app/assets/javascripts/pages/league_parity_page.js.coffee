@@ -1,16 +1,15 @@
 class ParityView extends Backbone.View
   template: _.template """
+    <div id="parity-viz"></div>
     <ul>
       <% _.each(path, function(node) { %>
         <li>
           <% if(node.matchup) { %>
+            in week
+            <%= node.matchup.get("week") %>
             beat
           <% } %>
           <%= node.teamName %>
-          <% if(node.matchup) { %>
-            in week:
-            <%= node.matchup.get("week") %>
-          <% } %>
         </li>
       <% }); %>
     </ul>
@@ -20,6 +19,100 @@ class ParityView extends Backbone.View
 
   render: ->
     @$el.html @template(path: @path)
+
+    width = 750
+    height = 750
+
+    links = []
+
+    for x, i in @path
+      if i != @path.length - 1
+        links.push source: @path[i].teamId, target: @path[i+1].teamId, matchup: @path[i+1].matchup
+
+    centerX = width/2
+    centerY = height/2
+    radius = width/3
+
+    nodes = []
+    for edge, i in @path[0..@path.length - 2]
+      inc = i / ( @path.length - 1)
+      nodes.push
+        teamId: edge.teamId
+        teamName: edge.teamName
+        cx: centerX + (radius * Math.cos(2 * Math.PI * inc))
+        cy: centerX + (radius * Math.sin(2 * Math.PI * inc))
+
+    console.log "nodes", nodes
+
+    force = d3.layout.force()
+      .nodes(nodes)
+      .links(links)
+      .size([width, height])
+      .start()
+
+    svg = d3.select("#parity-viz")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .style("border", "1px solid black")
+
+    svg.append("defs").append("marker")
+      .attr("id", "arrow")
+      .attr("viewBox", "0 -5 10 10")
+      .attr("refX", 10)
+      .attr("refY", 0)
+      .attr("markerWidth", 6)
+      .attr("markerHeight", 6)
+      .attr("orient", "auto")
+      .append("path")
+      .attr("d", "M0,-5L10,0L0,5")
+      .attr("stroke", "red")
+
+    circle = svg.append("g").selectAll("circle")
+      .data(force.nodes())
+      .enter().append("circle")
+      .attr("r", 12)
+      .attr "cx", (d) -> d.cx
+      .attr "cy", (d) -> d.cy
+
+    path = svg.append("g").selectAll("path")
+      .data(force.links())
+      .enter().append("path")
+      .attr("stroke", "blue")
+      .attr("stroke-width", 2)
+      .attr("fill", "none")
+      .attr "marker-end", (d) -> return "url(#arrow)"
+      .attr "d", (d) ->
+        source = _.findWhere(nodes, teamId: d.source)
+        target = _.findWhere(nodes, teamId: d.target)
+        dx = target.cx - source.cx
+        dy = target.cy - source.cy
+        dr = Math.sqrt(dx * dx + dy * dy)
+        attr = "M#{source.cx},#{source.cy} A#{dr},#{dr} 0 0,0 #{target.cx},#{target.cy}"
+        attr
+
+    svg.append("g").selectAll("text")
+      .data(force.nodes())
+      .enter().append("text")
+      .attr "x", (d) -> d.cx
+      .attr "y", (d) -> d.cy
+      .text (d) -> return d.teamName
+
+    svg.append("g").selectAll("text")
+      .data(force.links())
+      .enter().append("text")
+      .attr "x", (d) ->
+        source = _.findWhere(nodes, teamId: d.source)
+        target = _.findWhere(nodes, teamId: d.target)
+        target.cx + 30
+      .attr "y", (d) ->
+        source = _.findWhere(nodes, teamId: d.source)
+        target = _.findWhere(nodes, teamId: d.target)
+        target.cy + 30
+      .text (d) ->
+        # target = _.findWhere(nodes, teamId: d.target)
+        "week #{d.matchup.get("week")}"
+
 
 window.LeagueParityPage = class LeagueParityPage
   constructor: ({@matchups, @teams}) ->
@@ -43,34 +136,19 @@ window.LeagueParityPage = class LeagueParityPage
       .sortBy (teamId) -> nodes[teamId].length
       .value()
 
-    orderedTeamIds = orderedTeamIds[0..5]
+    # orderedTeamIds = orderedTeamIds[0..5]
 
-    #Search the most likely start. Then show if possible, if not search starting with all the other teams.
-
-    window.nodes = nodes
-    # idsPath = @search(nodes, orderedTeamIds[0], orderedTeamIds[0], orderedTeamIds[1..])
-    # path = @search(nodes, orderedTeamIds, [])
     path = @search(nodes, orderedTeamIds[1..], [{ teamId: orderedTeamIds[0] }])
     _.each path, (node) ->
       node.teamName = teams.findWhere(id: node.teamId).get("name")
-
-    window.path = path
-    console.log "PATH: ", path
 
     parityView = new ParityView(el: $("#parity"), path: path)
     parityView.render()
 
   search: (nodes, neededTeamIds, currentPath) ->
-    console.log "Current Path", currentPath
-    console.log "NEEDED:", neededTeamIds.length, neededTeamIds
-
     tail = _.last(currentPath)
 
     if _.isEmpty(neededTeamIds)
-      console.log "TERMINATED!"
-      #if doesn't come back
-      # return []
-      # else
       ending = _.findWhere nodes[tail.teamId], teamId: currentPath[0].teamId
 
       return currentPath.concat([ending])
@@ -78,86 +156,13 @@ window.LeagueParityPage = class LeagueParityPage
     longestPath = []
 
     _.each neededTeamIds, (neededTeamId) =>
-      console.log "checking from to:", tail.teamId, neededTeamId
-      console.log "they beat:", nodes[tail.teamId]
-
       if beatenTeam = _.findWhere(nodes[tail.teamId], teamId: neededTeamId)
-        console.log "beaten: ", beatenTeam
         newNeededTeamIds = _.reject neededTeamIds, (teamId) -> teamId == beatenTeam.teamId
         newCurrentPath = currentPath.concat([beatenTeam])
 
         path = @search(nodes, newNeededTeamIds, newCurrentPath)
         if path.length > longestPath.length
-          console.log "FOUND NEWER!"
           longestPath = path
-
 
     return longestPath
 
-
-  # search: (nodes, orderedTeamIds, currentPath) ->
-  #   console.log "searching", currentPath
-
-  #   neededTeamIds = _.reject orderedTeamIds, (teamId) -> !!_.findWhere(currentPath, teamId: teamId)
-  #   console.log "NEEDED:", neededTeamIds, neededTeamIds.length
-
-  #   if _.isEmpty(neededTeamIds)
-  #     #if doesn't come back
-  #     # return []
-  #     # else
-  #     ending = nodes[_.last(currentPath)].findWhere(teamId: currentPath[0].teamId)
-
-  #     return currentPath.concat([ending])
-
-  #   longestPath = []
-
-  #   # # _.each nodes, (beats, teamId) =>
-  #   #   # _.each beats, (beaten) =>
-  #   _.every nodes, (beats, teamId) =>
-  #     beaten = beats[0]
-  #     if !_.contains(_.pluck(currentPath, "teamId"), beaten.teamId)
-  #       console.log "Gonna search", teamId, beaten
-
-  #       newPath = @search(nodes, orderedTeamIds, currentPath.concat([beaten]))
-  #       console.log "NEW PATH", newPath
-  #       if newPath.length > longestPath.length
-  #         console.log "!!!!!! LONGER"
-  #         longestPath = newPath
-
-  #       false
-
-  #     else
-  #       true
-
-  #   return longestPath
-
-
-  #   # _.each orderedTeamIds, (candidateTeamId) =>
-  #   #   if !_.contains(_.pluck(currentPath, "teamId"), candidateTeamId)
-  #   #     console.log ">> condidateTeamId"
-  #       # newPath = @search(nodes, orderedTeamIds, currentPath.concat([{ teamId: candidateTeamId }]))
-
-  #       # if newPath.length > longestPath.length
-  #       #   longestPath = newPath
-
-  #       # node = _.detect nodes[candidateTeamId], (node) -> node.teamId == candidateTeamId
-  #       # if node
-  #       #   path = @search(nodes, orderedTeamIds, newPath)
-  #       #   paths.push(path: path, node: node)
-
-  #   # return longestPath
-  #   # returm longest path
-
-  # # search: (nodes, endingTeamId, rootTeamId, neededTeamIds) ->
-  # #   # if _.isEmpty(neededTeamIds)
-  # #   #   n
-  # #   paths = []
-
-  # #   _.each neededTeamIds, (candidateTeamId) =>
-  # #     node = _.detect nodes[rootTeamId], (node) -> node.teamId == candidateTeamId
-  # #     if node
-  # #       path = @search(nodes, endingTeamId, candidateTeamId, _.without(neededTeamIds, candidateTeamId))
-  # #       paths.push(path: path, node: node)
-
-  # #   return path[0]
-  # #   # returm longest path

@@ -24,8 +24,9 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
-gem 'rails-backbone', github: 'codebrew/backbone-rails', branch: 'master'
+
 gem 'bootstrap-sass'
+gem 'd3_rails'
 gem 'factory_girl_rails'
 gem 'foreigner'
 gem 'haml-rails'
@@ -38,6 +39,7 @@ gem 'omniauth'
 gem 'omniauth-yahoo'
 gem 'puma'
 gem 'pundit'
+gem 'rails-backbone', github: 'codebrew/backbone-rails', branch: 'master'
 gem 'raygun4ruby'
 gem 'spreadsheet', '0.9.8'
 
