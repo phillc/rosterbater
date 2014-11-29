@@ -7,7 +7,7 @@
 
     %meta{property: "og:title", content: "Fantasy Football Visualizations"}
     %meta{property: "og:description", content: "This is a simple tool that gives a visualization of your draft after automatically importing your league's draft results. Colors represent the difference between where a player was picked vs their ranking, to help see which picks were good deals and which were reaches. You can compare draft picks against Yahoo's Average Draft Pick, or to Expert Consensus Rankings in either PPR or standard formats."}
-    %title= content_for?(:title) ? yield(:title) : "Roster BAIT - Fantasy Football Visualizations"
+    %title= content_for?(:title) ? yield(:title) : "Rosterbater - Fantasy Football Visualizations"
 
     = stylesheet_link_tag "application", media: "all"
 
@@ -16,7 +16,7 @@
     %nav.main-nav.navbar.navbar-inverse.navbar-static-top(role="navigation")
       .container-fluid
         .navbar-header
-          %a(class="navbar-brand" href="/") Roster BAIT
+          %a(class="navbar-brand" href="/") Rosterbater
 
         %ul.nav.navbar-nav.navbar-right
           - if policy(:game).index?
