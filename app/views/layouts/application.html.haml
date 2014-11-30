@@ -10,6 +10,7 @@
     %title= content_for?(:title) ? yield(:title) : "Rosterbater - Fantasy Football Visualizations"
 
     = stylesheet_link_tag "application", media: "all"
+    = favicon_link_tag 'favicon.ico'
 
     = csrf_meta_tags
   %body

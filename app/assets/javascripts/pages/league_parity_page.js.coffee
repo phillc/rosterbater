@@ -24,8 +24,8 @@ class ParityView extends Backbone.View
 
     @$el.html @template(path: @path)
 
-    width = 750
-    height = 750
+    width = 900
+    height = 700
 
     links = []
 
@@ -35,8 +35,10 @@ class ParityView extends Backbone.View
 
     centerX = width/2
     centerY = height/2
-    radius = width/3
+    radius = height/3
     dotSize = 30
+    pathStartOffset = 1 / ((@path.length - 1) * 5)
+    pathEndOffset = pathStartOffset * 2
 
     nodes = []
     for edge, i in @path[0..@path.length - 2]
@@ -45,7 +47,13 @@ class ParityView extends Backbone.View
         teamId: edge.teamId
         team: edge.team
         cx: centerX + (radius * Math.cos(2 * Math.PI * inc))
-        cy: centerX + (radius * Math.sin(2 * Math.PI * inc))
+        cy: centerY + (radius * Math.sin(2 * Math.PI * inc))
+        textX: centerX + ((radius + dotSize * 2) * Math.cos(2 * Math.PI * inc))
+        textY: centerY + ((radius + dotSize * 2) * Math.sin(2 * Math.PI * inc))
+        pathStartX: centerX + ((radius - dotSize) * Math.cos(2 * Math.PI * (inc + pathStartOffset)))
+        pathStartY: centerY + ((radius - dotSize) * Math.sin(2 * Math.PI * (inc + pathStartOffset)))
+        pathEndX: centerX + ((radius - dotSize) * Math.cos(2 * Math.PI * (inc - pathEndOffset)))
+        pathEndY: centerY + ((radius - dotSize) * Math.sin(2 * Math.PI * (inc - pathEndOffset)))
 
     console.log "nodes", nodes
 
@@ -65,14 +73,17 @@ class ParityView extends Backbone.View
     defs.append("marker")
       .attr("id", "arrow")
       .attr("viewBox", "0 -5 10 10")
-      .attr("refX", 10)
+      .attr("refX", 0)
       .attr("refY", 0)
-      .attr("markerWidth", 6)
-      .attr("markerHeight", 6)
+      .attr("markerWidth", 2)
+      .attr("markerHeight", 2)
+      # .attr("markerUnits", "userSpaceOnUse")
+      # .attr("markerUnits", "strokeWidth")
       .attr("orient", "auto")
       .append("path")
       .attr("d", "M0,-5L10,0L0,5")
-      .attr("stroke", "red")
+      .attr("stroke", "#ccc")
+      .attr("fill", "#ccc")
 
     defs.selectAll("pattern")
       .data(force.nodes())
@@ -96,14 +107,14 @@ class ParityView extends Backbone.View
       .attr "cx", (d) -> d.cx
       .attr "cy", (d) -> d.cy
       .attr "stroke", "black"
-      .attr "stroke-width", "4"
-      .style "fill", (d) -> "url(##{d.teamId})"
+      .attr "stroke-width", "3"
+      # .style "fill", (d) -> "url(##{d.teamId})"
 
     path = svg.append("g").selectAll("path")
       .data(force.links())
       .enter().append("path")
-      .attr("stroke", "blue")
-      .attr("stroke-width", 2)
+      .attr("stroke", "#ccc")
+      .attr("stroke-width", 10)
       .attr("fill", "none")
       .attr "marker-end", (d) -> return "url(#arrow)"
       .attr "d", (d) ->
@@ -111,15 +122,15 @@ class ParityView extends Backbone.View
         target = _.findWhere(nodes, teamId: d.target)
         dx = target.cx - source.cx
         dy = target.cy - source.cy
-        dr = Math.sqrt(dx * dx + dy * dy)
-        attr = "M#{source.cx},#{source.cy} A#{dr},#{dr} 0 0,0 #{target.cx},#{target.cy}"
+        dr = Math.sqrt(dx * dx + dy * dy) / 3
+        attr = "M#{source.pathStartX},#{source.pathStartY} A#{dr},#{dr} 0 0,0 #{target.pathEndX},#{target.pathEndY}"
         attr
 
     svg.append("g").selectAll("text")
       .data(force.nodes())
       .enter().append("text")
-      .attr "x", (d) -> d.cx
-      .attr "y", (d) -> d.cy
+      .attr "x", (d) -> d.textX
+      .attr "y", (d) -> d.textY
       .text (d) -> return d.team.get("name")
 
     svg.append("g").selectAll("text")
