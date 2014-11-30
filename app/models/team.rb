@@ -8,6 +8,6 @@ class Team < ActiveRecord::Base
   scope :by_rank, ->{ order(rank: :asc) }
 
   def as_json(options={})
-    super(only: [:id, :name, :points_for])
+    super(only: [:id, :name, :points_for, :logo_url])
   end
 end

@@ -9,7 +9,7 @@ class ParityView extends Backbone.View
             <%= node.matchup.get("week") %>
             beat
           <% } %>
-          <%= node.teamName %>
+          <%= node.team.get("name") %>
         </li>
       <% }); %>
     </ul>
@@ -21,7 +21,7 @@ class ParityView extends Backbone.View
     if @path.length == 0
       @$el.html "Parity has not yet been achieved"
       return
-    
+
     @$el.html @template(path: @path)
 
     width = 750
@@ -36,13 +36,14 @@ class ParityView extends Backbone.View
     centerX = width/2
     centerY = height/2
     radius = width/3
+    dotSize = 30
 
     nodes = []
     for edge, i in @path[0..@path.length - 2]
       inc = i / ( @path.length - 1)
       nodes.push
         teamId: edge.teamId
-        teamName: edge.teamName
+        team: edge.team
         cx: centerX + (radius * Math.cos(2 * Math.PI * inc))
         cy: centerX + (radius * Math.sin(2 * Math.PI * inc))
 
@@ -60,7 +61,8 @@ class ParityView extends Backbone.View
       .attr("height", height)
       .style("border", "1px solid black")
 
-    svg.append("defs").append("marker")
+    defs = svg.append("defs")
+    defs.append("marker")
       .attr("id", "arrow")
       .attr("viewBox", "0 -5 10 10")
       .attr("refX", 10)
@@ -72,12 +74,30 @@ class ParityView extends Backbone.View
       .attr("d", "M0,-5L10,0L0,5")
       .attr("stroke", "red")
 
-    circle = svg.append("g").selectAll("circle")
+    defs.selectAll("pattern")
+      .data(force.nodes())
+      .enter().append("pattern")
+      .attr "id", (d) -> d.teamId
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("height", dotSize)
+      .attr("width", dotSize)
+      .append("image")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("height", dotSize * 2)
+      .attr("width", dotSize * 2)
+      .attr "xlink:href", (d) -> d.team.get("logo_url")
+
+    svg.append("g").selectAll("circle")
       .data(force.nodes())
       .enter().append("circle")
-      .attr("r", 12)
+      .attr("r", dotSize)
       .attr "cx", (d) -> d.cx
       .attr "cy", (d) -> d.cy
+      .attr "stroke", "black"
+      .attr "stroke-width", "4"
+      .style "fill", (d) -> "url(##{d.teamId})"
 
     path = svg.append("g").selectAll("path")
       .data(force.links())
@@ -100,7 +120,7 @@ class ParityView extends Backbone.View
       .enter().append("text")
       .attr "x", (d) -> d.cx
       .attr "y", (d) -> d.cy
-      .text (d) -> return d.teamName
+      .text (d) -> return d.team.get("name")
 
     svg.append("g").selectAll("text")
       .data(force.links())
@@ -145,7 +165,7 @@ window.LeagueParityPage = class LeagueParityPage
     path = @search(nodes, orderedTeamIds[1..], [{ teamId: orderedTeamIds[0] }])
     console.log("PATH", path)
     _.each path, (node) ->
-      node.teamName = teams.findWhere(id: node.teamId).get("name")
+      node.team = teams.findWhere(id: node.teamId)
 
     parityView = new ParityView(el: $("#parity"), path: path)
     parityView.render()
