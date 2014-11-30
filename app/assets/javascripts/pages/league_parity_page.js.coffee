@@ -24,21 +24,21 @@ class ParityView extends Backbone.View
 
     @$el.html @template(path: @path)
 
-    width = 900
-    height = 700
-
     links = []
 
     for x, i in @path
       if i != @path.length - 1
         links.push source: @path[i].teamId, target: @path[i+1].teamId, matchup: @path[i+1].matchup
 
+    width = 900
+    height = 700
     centerX = width/2
     centerY = height/2
     radius = height/3
     dotSize = 30
     pathStartOffset = 1 / ((@path.length - 1) * 5)
     pathEndOffset = pathStartOffset * 2
+    weekOffset = 1 / ((@path.length - 1) * 2)
 
     nodes = []
     for edge, i in @path[0..@path.length - 2]
@@ -48,12 +48,14 @@ class ParityView extends Backbone.View
         team: edge.team
         cx: centerX + (radius * Math.cos(2 * Math.PI * inc))
         cy: centerY + (radius * Math.sin(2 * Math.PI * inc))
-        textX: centerX + ((radius + dotSize * 2) * Math.cos(2 * Math.PI * inc))
-        textY: centerY + ((radius + dotSize * 2) * Math.sin(2 * Math.PI * inc))
+        # textX: centerX + ((radius + dotSize * 2) * Math.cos(2 * Math.PI * inc))
+        # textY: centerY + ((radius + dotSize * 2) * Math.sin(2 * Math.PI * inc))
         pathStartX: centerX + ((radius - dotSize) * Math.cos(2 * Math.PI * (inc + pathStartOffset)))
         pathStartY: centerY + ((radius - dotSize) * Math.sin(2 * Math.PI * (inc + pathStartOffset)))
         pathEndX: centerX + ((radius - dotSize) * Math.cos(2 * Math.PI * (inc - pathEndOffset)))
         pathEndY: centerY + ((radius - dotSize) * Math.sin(2 * Math.PI * (inc - pathEndOffset)))
+        weekX: centerX + ((radius * .7) * Math.cos(2 * Math.PI * (inc - weekOffset)))
+        weekY: centerY + ((radius * .7) * Math.sin(2 * Math.PI * (inc - weekOffset)))
 
     console.log "nodes", nodes
 
@@ -77,8 +79,6 @@ class ParityView extends Backbone.View
       .attr("refY", 0)
       .attr("markerWidth", 2)
       .attr("markerHeight", 2)
-      # .attr("markerUnits", "userSpaceOnUse")
-      # .attr("markerUnits", "strokeWidth")
       .attr("orient", "auto")
       .append("path")
       .attr("d", "M0,-5L10,0L0,5")
@@ -88,7 +88,7 @@ class ParityView extends Backbone.View
     defs.selectAll("pattern")
       .data(force.nodes())
       .enter().append("pattern")
-      .attr "id", (d) -> d.teamId
+      .attr "id", (d) -> "logo-#{d.teamId}"
       .attr("x", 0)
       .attr("y", 0)
       .attr("height", dotSize)
@@ -108,7 +108,14 @@ class ParityView extends Backbone.View
       .attr "cy", (d) -> d.cy
       .attr "stroke", "black"
       .attr "stroke-width", "3"
-      # .style "fill", (d) -> "url(##{d.teamId})"
+      # .style "fill", (d) -> "url(#logo-#{d.teamId})"
+      .style "fill", "none"
+
+    arc = d3.svg.arc()
+      .innerRadius (d) -> dotSize
+      .outerRadius (d) -> dotSize * 1.2
+      .startAngle(0)
+      .endAngle(2 * Math.PI)
 
     path = svg.append("g").selectAll("path")
       .data(force.links())
@@ -116,7 +123,7 @@ class ParityView extends Backbone.View
       .attr("stroke", "#ccc")
       .attr("stroke-width", 10)
       .attr("fill", "none")
-      .attr "marker-end", (d) -> return "url(#arrow)"
+      .attr "marker-end", (d) -> "url(#arrow)"
       .attr "d", (d) ->
         source = _.findWhere(nodes, teamId: d.source)
         target = _.findWhere(nodes, teamId: d.target)
@@ -129,24 +136,46 @@ class ParityView extends Backbone.View
     svg.append("g").selectAll("text")
       .data(force.nodes())
       .enter().append("text")
-      .attr "x", (d) -> d.textX
-      .attr "y", (d) -> d.textY
-      .text (d) -> return d.team.get("name")
+      .style("font-size", 12)
+      .append("textPath")
+      .attr "textLength", (d) -> 130 + d.team.get("name").length
+      .attr "lengthAdjust", "spacing"
+      .attr("startOffset", "0.1")
+      .attr "xlink:href", (d) -> "#team-name-#{d.teamId}"
+      .text (d) -> d.team.get("name")
 
-    svg.append("g").selectAll("text")
+    arcs = svg.append("g").selectAll("path")
+      .data(force.nodes())
+      .enter().append("path")
+      .attr("fill", "none")
+      .attr "id", (d) -> "team-name-#{d.teamId}"
+      .attr("d", arc)
+      .attr "transform", (d) -> "translate(#{d.cx},#{d.cy})"
+
+    weekText = svg.append("g").selectAll("text")
       .data(force.links())
       .enter().append("text")
+      .attr "text-anchor", "middle"
+      .style("font-size", 10)
       .attr "x", (d) ->
-        source = _.findWhere(nodes, teamId: d.source)
         target = _.findWhere(nodes, teamId: d.target)
-        target.cx + 30
+        target.weekX
       .attr "y", (d) ->
-        source = _.findWhere(nodes, teamId: d.source)
         target = _.findWhere(nodes, teamId: d.target)
-        target.cy + 30
+        target.weekY
+    weekText
+      .append("tspan")
       .text (d) ->
-        # target = _.findWhere(nodes, teamId: d.target)
         "week #{d.matchup.get("week")}"
+    weekText
+      .append("tspan")
+      .attr("dy", "1em")
+      .attr "x", (d) ->
+        target = _.findWhere(nodes, teamId: d.target)
+        target.weekX
+      .text (d) ->
+        points = d.matchup.get("teams").map (team) -> team.points
+        points.sort().join(" - ")
 
 
 window.LeagueParityPage = class LeagueParityPage
