@@ -18,6 +18,10 @@ class ParityView extends Backbone.View
   initialize: ({@path}) ->
 
   render: ->
+    if @path.length == 0
+      @$el.html "Parity has not yet been achieved"
+      return
+    
     @$el.html @template(path: @path)
 
     width = 750
@@ -139,6 +143,7 @@ window.LeagueParityPage = class LeagueParityPage
     # orderedTeamIds = orderedTeamIds[0..5]
 
     path = @search(nodes, orderedTeamIds[1..], [{ teamId: orderedTeamIds[0] }])
+    console.log("PATH", path)
     _.each path, (node) ->
       node.teamName = teams.findWhere(id: node.teamId).get("name")
 
@@ -151,7 +156,10 @@ window.LeagueParityPage = class LeagueParityPage
     if _.isEmpty(neededTeamIds)
       ending = _.findWhere nodes[tail.teamId], teamId: currentPath[0].teamId
 
-      return currentPath.concat([ending])
+      if ending
+        return currentPath.concat([ending])
+      else
+        return []
 
     longestPath = []
 
