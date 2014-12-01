@@ -36,11 +36,10 @@
 
       %br
       %br
-      .row
-        .col-md-12.text-center
-          = render "layouts/footer_ad_#{rand(1..3)}"
+      = large_banner_ad
+      %footer.footer
+        %p &copy; Rosterbater 2014
+
     = javascript_include_tag "application"
     = render "layouts/google_analytics"
     = yield :page_javascripts
-    %br
-    %br

@@ -108,8 +108,8 @@ class ParityView extends Backbone.View
       .attr "cy", (d) -> d.cy
       .attr "stroke", "black"
       .attr "stroke-width", "3"
-      # .style "fill", (d) -> "url(#logo-#{d.teamId})"
-      .style "fill", "none"
+      .style "fill", (d) -> "url(#logo-#{d.teamId})"
+      # .style "fill", "none"
 
     arc = d3.svg.arc()
       .innerRadius (d) -> dotSize
@@ -175,8 +175,10 @@ class ParityView extends Backbone.View
         target = _.findWhere(nodes, teamId: d.target)
         target.weekX
       .text (d) ->
-        points = d.matchup.get("teams").map (team) -> team.points
-        points.sort().join(" - ")
+        winnerId = d.matchup.get("result")
+        winner = _.find d.matchup.get("teams"), (team) -> team.id == winnerId
+        loser = _.find d.matchup.get("teams"), (team) -> team.id != winnerId
+        "#{winner.points} - #{loser.points}"
 
 
 window.LeagueParityPage = class LeagueParityPage
