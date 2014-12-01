@@ -30,13 +30,13 @@ class ParityView extends Backbone.View
       if i != @path.length - 1
         links.push source: @path[i].teamId, target: @path[i+1].teamId, matchup: @path[i+1].matchup
 
-    width = 900
-    height = 700
+    width = 600
+    height = 600
     centerX = width/2
     centerY = height/2
-    radius = height/3
+    radius = height/2.5
     dotSize = 30
-    pathStartOffset = 1 / ((@path.length - 1) * 5)
+    pathStartOffset = 1 / ((@path.length - 1) * 4)
     pathEndOffset = pathStartOffset * 2
     weekOffset = 1 / ((@path.length - 1) * 2)
 
@@ -163,6 +163,7 @@ class ParityView extends Backbone.View
       .attr "y", (d) ->
         target = _.findWhere(nodes, teamId: d.target)
         target.weekY
+      .attr "dy", "-1em"
     weekText
       .append("tspan")
       .text (d) ->
