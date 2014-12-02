@@ -29,7 +29,7 @@
 
   &.colors-colorblind-safe {
     // colors from http://colorbrewer2.org/
-    .bad-5   { background-color: #8e0152; }
+    .bad-5   { background-color: #8e0152; color: #999; }
     .bad-4   { background-color: #c51b7d; }
     .bad-3   { background-color: #de77ae; }
     .bad-2   { background-color: #f1b6da; }
@@ -39,8 +39,8 @@
     .good-2  { background-color: #b8e186; }
     .good-3  { background-color: #7fbc41; }
     .good-4  { background-color: #4d9221; }
-    .good-5  { background-color: #276419; }
-    .no-rank { background-color: #333333; color: #ffffff; }
+    .good-5  { background-color: #276419; color: #999; }
+    .no-rank { background-color: #333333; color: #999; }
   }
 
   table {
