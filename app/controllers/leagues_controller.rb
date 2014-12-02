@@ -1,6 +1,8 @@
 class LeaguesController < ApplicationController
   before_action :find_league, only: [:show, :draft_board, :playoffs, :parity]
 
+  rescue_from Pundit::NotAuthorizedError, with: :please_log_in
+
   def index
     authorize :league, :index?
     @leagues = current_user.leagues.active

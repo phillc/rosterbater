@@ -10,7 +10,12 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  # def authenticate_user!
-  #   redirect_to :root unless current_user
-  # end
+  def please_log_in(exception)
+    if !current_user
+      flash[:error] = "Please log in to do that"
+      redirect_to root_path
+    else
+      redirect_to leagues_path
+    end
+  end
 end
