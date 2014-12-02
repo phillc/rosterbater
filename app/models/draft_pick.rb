@@ -6,8 +6,7 @@ class DraftPick < ActiveRecord::Base
   validates :team,
             :pick,
             :round,
-            :yahoo_team_key,
-            :yahoo_player_key, presence: true
+            :yahoo_team_key, presence: true
 
   def player
     drafted_player || Player::NullPlayer.new(yahoo_player_key)

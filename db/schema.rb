@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141125122430) do
+ActiveRecord::Schema.define(version: 20141202171642) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20141125122430) do
     t.integer  "pick",             null: false
     t.integer  "round",            null: false
     t.string   "yahoo_team_key",   null: false
-    t.string   "yahoo_player_key", null: false
+    t.string   "yahoo_player_key"
     t.uuid     "league_id",        null: false
     t.datetime "created_at"
     t.datetime "updated_at"

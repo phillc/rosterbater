@@ -478,7 +478,7 @@ describe "YahooService" do
             expect(league.trade_end_date).to eq Date.parse("2013-11-15")
             expect(league.num_playoff_teams).to eq 4
             expect(league.num_playoff_consolation_teams).to eq 4
-            expect(league.playoff_start_week).to eq 14
+            expect(league.playoff_start_week).to eq 15
             expect(league.settings).to include({"draft_type" => "live", "max_teams" => "14"})
           end
         end
