@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   resources :leagues, only: [:index, :show] do
     collection do
       post :refresh
+      get :currently_refreshing
     end
 
     member do

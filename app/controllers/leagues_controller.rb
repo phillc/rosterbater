@@ -7,17 +7,27 @@ class LeaguesController < ApplicationController
   end
 
   def refresh
-    authorize :league, :refresh?
+    if current_user.currently_syncing?
+      authorize :league, :index?
+      redirect_to currently_refreshing_leagues_path
+    else
+      authorize :league, :refresh?
 
-    YahooService.new(current_user).sync_leagues(Game.all)
-    # Game.all.each do |game|
-    #   YahooService.new(current_user).sync_leagues(game)
-    # end
-    current_user.leagues.active.each do |league|
-      YahooService.new(current_user).sync_league(league)
+      YahooService.new(current_user).sync_leagues(Game.all)
+      # Game.all.each do |game|
+      #   YahooService.new(current_user).sync_leagues(game)
+      # end
+      current_user.leagues.active.each do |league|
+        YahooService.new(current_user).sync_league(league)
+      end
+
+      redirect_to leagues_path, notice: "Refreshed leagues"
     end
+  end
 
-    redirect_to leagues_path, notice: "Refreshed leagues"
+  def currently_refreshing
+    authorize :league, :index?
+    redirect_to leagues_path if !current_user.currently_syncing?
   end
 
   def show

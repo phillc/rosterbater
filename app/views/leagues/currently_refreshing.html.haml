@@ -1,0 +1,10 @@
+- content_for :head do
+  %META{"http-equiv" => "refresh", content: "7;URL=#{currently_refreshing_leagues_path}"}
+
+.container
+  %br
+  %br
+  %br
+  %p
+    We are currently syncing your league. This page will refresh in a few seconds.
+    = link_to "Click here if it does not.", currently_refreshing_leagues_path

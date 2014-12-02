@@ -9,6 +9,8 @@
     %meta{property: "og:description", content: "This is a simple tool that gives a visualization of your draft after automatically importing your league's draft results. Colors represent the difference between where a player was picked vs their ranking, to help see which picks were good deals and which were reaches. You can compare draft picks against Yahoo's Average Draft Pick, or to Expert Consensus Rankings in either PPR or standard formats."}
     %title= content_for?(:title) ? yield(:title) : "Rosterbater - Fantasy Football Visualizations"
 
+    = yield(:head)
+
     = stylesheet_link_tag "application", media: "all"
     = favicon_link_tag 'favicon.ico'
 
@@ -30,6 +32,7 @@
               %a{href: "/auth/yahoo"} Sign in with yahoo
 
     = yield :outside_container
+
     .container-fluid
       = render "layouts/messages"
       = yield

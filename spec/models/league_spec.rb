@@ -47,4 +47,41 @@ describe League do
       expect(league.weeks_remaining).to eq 2
     end
   end
+
+  describe "#currently_syncing?" do
+    before do
+      league.sync_started_at = nil
+      league.sync_finished_at = nil
+    end
+
+    it "is false if haven't started syncing" do
+      expect(league.currently_syncing?).to be false
+    end
+
+    it "is false if over a minute ago" do
+      league.sync_started_at = 3.minutes.ago
+
+      expect(league.currently_syncing?).to be false
+    end
+
+    it "is true if started recently" do
+      league.sync_started_at = 3.seconds.ago
+
+      expect(league.currently_syncing?).to be true
+    end
+
+    it "is false if finished" do
+      league.sync_started_at = 10.seconds.ago
+      league.sync_finished_at = 2.seconds.ago
+
+      expect(league.currently_syncing?).to be false
+    end
+
+    it "is true if finished from before" do
+      league.sync_started_at = 10.seconds.ago
+      league.sync_finished_at = 12.seconds.ago
+
+      expect(league.currently_syncing?).to be true
+    end
+  end
 end

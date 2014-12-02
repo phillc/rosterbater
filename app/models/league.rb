@@ -1,4 +1,6 @@
 class League < ActiveRecord::Base
+  include Syncable
+
   belongs_to :game
   has_many :teams
   has_many :draft_picks, autosave: true
