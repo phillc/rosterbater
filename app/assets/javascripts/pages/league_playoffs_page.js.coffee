@@ -52,7 +52,7 @@ class MatchupListView extends Backbone.View
     @$el.html @template()
 
     _.times @weeks, (i) =>
-      week = i + 1
+      week = @weeks - i
       tr = $("<tr><td>Week #{week}</td></tr>")
       @matchups.where(week: week).forEach (matchup) =>
         @appendMatchup(matchup, tr)
