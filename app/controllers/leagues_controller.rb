@@ -1,5 +1,5 @@
 class LeaguesController < ApplicationController
-  before_action :find_league, only: [:show, :draft_board, :playoffs, :parity]
+  before_action :find_league, only: [:show, :draft_board, :playoffs, :parity, :charts]
 
   rescue_from Pundit::NotAuthorizedError, with: :please_log_in
 
@@ -89,6 +89,9 @@ class LeaguesController < ApplicationController
 
   def charts
     authorize @league, :show?
+
+    @matchups = @league.matchups
+    @teams = @league.teams
   end
 
   protected

@@ -86,7 +86,7 @@ class TeamOutcomesView extends Backbone.View
   render: ->
     @$el.html @template(
       name: @model.get("name")
-      points_for: @model.get("points_for")
+      points_for: @model.pointsFor()
       wins: @model.get("wins")
       losses: @model.get("losses")
       ties: @model.get("ties")
@@ -139,6 +139,7 @@ window.LeaguePlayoffsPage = class LeaguePlayoffsPage
 
     teams.calculateRecords(matchups)
     matchups.on "change", ->
+      teams.resetRecords()
       teams.calculateRecords(matchups)
 
     matchupListView = new MatchupListView(el: $("#playoffs-matchups"), matchups: matchups, weeks: @weeks)

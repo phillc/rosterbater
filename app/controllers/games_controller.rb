@@ -1,4 +1,8 @@
 class GamesController < ApplicationController
+  rescue_from Pundit::NotAuthorizedError do
+    redirect_to root_path
+  end
+
   def index
     authorize :game, :index?
     @games = Game.order(season: :desc)

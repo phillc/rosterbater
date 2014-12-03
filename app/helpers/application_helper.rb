@@ -18,11 +18,19 @@ module ApplicationHelper
 
   def large_banner_ad
     number = rand(0..3)
-    if number == 0 || number == 1
-      render "shared/google_large_banner_ad"
-    else
-      content_tag :div, class: "text-center" do
+    content_tag :div, class: "text-center" do
+      if number == 0 || number == 1
+        render "shared/google_large_banner_ad"
+      else
         render "shared/amazon_banner_ad_#{rand(2..3)}"
+      end
+    end
+  end
+
+  def week_1_alert
+    if @league.start_week != 1
+      content_tag :div, class: "alert alert-danger" do
+        "Sorry, this tool does not work for leagues that do not start in week 1."
       end
     end
   end

@@ -5,7 +5,7 @@ window.APP.models.Team = class Team extends Backbone.Model
     losses: 0
     ties: 0
     unknowns: 0
-    points_for: 0
+    points_for: 0.0
 
   incrementWins: ->
     @set("wins", @get("wins") + 1)
@@ -18,6 +18,12 @@ window.APP.models.Team = class Team extends Backbone.Model
 
   incrementUnknowns: ->
     @set("unknowns", @get("unknowns") + 1)
+
+  addPointsFor: (amount) ->
+    @set("points_for", (@get("points_for") + amount))
+
+  pointsFor: ->
+    @get("points_for").toFixed(2)
 
   outcomes: ->
     results = []
@@ -47,11 +53,15 @@ window.APP.collections.TeamCollection = class TeamCollection extends Backbone.Co
       team.set("losses", 0)
       team.set("ties", 0)
       team.set("unknowns", 0)
+      team.set("points_for", 0)
 
   calculateRecords: (matchups) ->
-    @resetRecords()
     matchups.each (matchup) =>
       teams = matchup.get("teams").map (team) => @findWhere(id: team.id)
+
+      _(matchup.get("teams")).each (team) ->
+        _(teams).findWhere(id: team.id).addPointsFor(parseFloat(team.points))
+
       result = matchup.get("result")
       switch result
         when "unknown" then teams.map (team) -> team.incrementUnknowns()
