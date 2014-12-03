@@ -19,6 +19,7 @@
       %li{class: current_page?(controller: 'leagues', action: 'parity') && "active"}= link_to "Parity", parity_league_path(@league)
       - if !current_user
         %li= link_to "Get this for your league", root_path, class: "btn-danger"
+
   .col-md-4
-    = render "shared/small_google_ad"
+    = render "shared/google_sub_nav_ad"
 
