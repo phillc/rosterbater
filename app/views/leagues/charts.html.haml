@@ -1,0 +1,19 @@
+- load_javascript_class "LeaguePlayoffsPage", matchups: @matchups, teams: @teams, weeks: @league.weeks_in_a_season
+
+= render "leagues/navigation"
+
+.page-header
+  %h2
+    Charts
+
+- if @league.start_week != 1
+  .alert.alert-danger
+    Sorry, this tool does not work for leagues that do not start in week 1.
+
+= large_banner_ad
+
+#charts
+  %p
+    Calculating records...
+
+

@@ -87,6 +87,10 @@ class LeaguesController < ApplicationController
     @teams = @league.teams
   end
 
+  def charts
+    authorize @league, :show?
+  end
+
   protected
 
   def find_league

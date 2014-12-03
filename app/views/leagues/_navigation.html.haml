@@ -13,7 +13,7 @@
 .row
   .col-md-8
     %ul.nav.nav-pills
-      %li{class: current_page?(controller: 'leagues', action: 'show') && "active"}= link_to "Random Stats", league_path(@league)
+      %li{class: current_page?(controller: 'leagues', action: 'show') && "active"}= link_to "Sortable Stats", league_path(@league)
       %li{class: current_page?(controller: 'leagues', action: 'draft_board') && "active"}= link_to "Post Draft Visualization Board", draft_board_league_path(@league)
       %li{class: current_page?(controller: 'leagues', action: 'playoffs') && "active"}= link_to "Playoff and Record Scenarios", playoffs_league_path(@league)
       %li{class: current_page?(controller: 'leagues', action: 'parity') && "active"}= link_to "Parity", parity_league_path(@league)

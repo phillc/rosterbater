@@ -36,6 +36,7 @@ Rails.application.routes.draw do
       get :draft_board
       get :playoffs
       get :parity
+      get :charts
     end
   end
 end
