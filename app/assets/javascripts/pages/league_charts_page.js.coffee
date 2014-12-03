@@ -55,16 +55,23 @@ class ChartsView extends Backbone.View
         .attr("x", legendX)
         .attr("y", teamIndex * height / 12)
         .attr("class", "legend")
+        .attr("id", "legend-#{team.id}")
         .style "fill", -> color(team.id)
         .text(team.get("name"))
         .on "click", ->
           currentlyHidden = team.get("hidden")
-          newOpacity = if currentlyHidden then 1 else 0
+          newLineOpacity = if currentlyHidden then 1 else 0
+          newLegendOpacity = if currentlyHidden then 1 else 0.4
+          newLegendDecoration = if currentlyHidden then "none" else "line-through"
           team.set("hidden", !currentlyHidden)
 
           d3.select("#line-#{team.id}")
             .transition().duration(700)
-            .style("opacity", newOpacity)
+            .style("opacity", newLineOpacity)
+          d3.select("#legend-#{team.id}")
+            .transition().duration(700)
+            .style("opacity", newLegendOpacity)
+            .style("text-decoration", newLegendDecoration)
 
     svg.append("text")
       .attr("x", legendX + 20)
