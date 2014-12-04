@@ -24,9 +24,11 @@
   _.each path, (node) ->
     node.team = _(teams).findWhere(id: node.teamId)
 
-  postMessage(path: path)
+  postMessage(message: "done", path: path)
 
 search = (nodes, neededTeamIds, currentPath) ->
+  postMessage(message: "progress")
+
   tail = _.last(currentPath)
 
   if _.isEmpty(neededTeamIds)

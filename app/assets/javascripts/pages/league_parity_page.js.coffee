@@ -190,12 +190,21 @@ window.LeagueParityPage = class LeagueParityPage
 
     worker.postMessage matchups: @matchups, teams: @teams
 
+    messages = 0
     worker.onmessage = (event) ->
-      worker.terminate()
-      {path} = event.data
+      if event.data.message == "progress"
+        if messages < 100000
+          messages = messages + 1
+          $("#parity-message").text(messages)
+        else
+          worker.terminate()
+          $("#parity-message").html("<div class='alert alert-danger'>Sorry, we searched #{messages} deep and could not find parity.</div>")
+      else if event.data.message == "done"
+        worker.terminate()
+        {path} = event.data
 
-      parityView = new ParityView(el: $("#parity"), path: path)
-      parityView.render()
+        parityView = new ParityView(el: $("#parity"), path: path)
+        parityView.render()
 
 
 
