@@ -1,16 +1,6 @@
 %h3 Games
 = link_to "Refresh", refresh_games_path, method: :post, class: "button small"
 
-%p Users: #{User.count}
-%p Leagues: #{League.count}
-%p Unsynced Leagues: #{League.unsynced.count}
-%p Interesting Draft Leagues: #{League.interesting_draft.length}
-%p Interesting Season Leagues: #{League.interesting_season.length}
-%p Auction Leagues: #{League.where(is_auction_draft: true).count}
-%ul
-  - User.select("date(created_at) as created_at, count(*) as number").where("created_at > ?", 7.days.ago).group("date(created_at)").order("created_at desc").each do |u|
-    %li #{u.created_at} - #{u.number}
-
 - if @games.empty?
   No games present. Please refresh.
 - else

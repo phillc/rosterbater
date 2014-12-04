@@ -16,7 +16,7 @@ class ChartsView extends Backbone.View
       .domain([1, @weeks])
       .range([0, width])
     y = d3.scale.linear()
-      .domain([@teams.size(),1])
+      .domain([@teams.size(), 1])
       .range([height, 0])
 
     xAxis = d3.svg.axis().scale(x)
@@ -61,7 +61,7 @@ class ChartsView extends Backbone.View
         .on "click", ->
           currentlyHidden = team.get("hidden")
           newLineOpacity = if currentlyHidden then 1 else 0
-          newLegendOpacity = if currentlyHidden then 1 else 0.4
+          newLegendOpacity = if currentlyHidden then 1 else 0.5
           newLegendDecoration = if currentlyHidden then "none" else "line-through"
           team.set("hidden", !currentlyHidden)
 
@@ -76,9 +76,7 @@ class ChartsView extends Backbone.View
     svg.append("text")
       .attr("x", legendX + 20)
       .attr("y", (@teams.size() + 1)  * height / 12)
-      .attr("class", "legend")
       .text("(click name to hide)")
-
 
     svg.append("g")
         .attr("class", "x axis")
