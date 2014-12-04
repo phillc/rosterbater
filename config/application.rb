@@ -27,6 +27,8 @@ module Kapsh
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
+    config.assets.precompile += ["parity_worker.js"]
+
     config.generators do |g|
       g.factory_girl dir: "spec/factories", suffix: 'factory'
     end

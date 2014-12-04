@@ -6,10 +6,10 @@ class ParityView extends Backbone.View
         <li>
           <% if(node.matchup) { %>
             in week
-            <%= node.matchup.get("week") %>
+            <%= node.matchup.week %>
             beat
           <% } %>
-          <%= node.team.get("name") %>
+          <%= node.team.name %>
         </li>
       <% }); %>
     </ul>
@@ -57,8 +57,6 @@ class ParityView extends Backbone.View
         weekX: centerX + ((radius * .7) * Math.cos(2 * Math.PI * (inc - weekOffset)))
         weekY: centerY + ((radius * .7) * Math.sin(2 * Math.PI * (inc - weekOffset)))
 
-    console.log "nodes", nodes
-
     force = d3.layout.force()
       .nodes(nodes)
       .links(links)
@@ -98,7 +96,7 @@ class ParityView extends Backbone.View
       .attr("y", 0)
       .attr("height", dotSize * 2)
       .attr("width", dotSize * 2)
-      .attr "xlink:href", (d) -> d.team.get("logo_url")
+      .attr "xlink:href", (d) -> d.team.logo_url
 
     svg.append("g").selectAll("circle")
       .data(force.nodes())
@@ -138,11 +136,11 @@ class ParityView extends Backbone.View
       .enter().append("text")
       .style("font-size", 12)
       .append("textPath")
-      .attr "textLength", (d) -> 130 + d.team.get("name").length
+      .attr "textLength", (d) -> 130 + d.team.name.length
       .attr "lengthAdjust", "spacing"
       .attr("startOffset", "0.1")
       .attr "xlink:href", (d) -> "#team-name-#{d.teamId}"
-      .text (d) -> d.team.get("name")
+      .text (d) -> d.team.name
 
     arcs = svg.append("g").selectAll("path")
       .data(force.nodes())
@@ -167,7 +165,7 @@ class ParityView extends Backbone.View
     weekText
       .append("tspan")
       .text (d) ->
-        "week #{d.matchup.get("week")}"
+        "week #{d.matchup.week}"
     weekText
       .append("tspan")
       .attr("dy", "1em")
@@ -175,65 +173,29 @@ class ParityView extends Backbone.View
         target = _.findWhere(nodes, teamId: d.target)
         target.weekX
       .text (d) ->
-        winnerId = d.matchup.get("result")
-        winner = _.find d.matchup.get("teams"), (team) -> team.id == winnerId
-        loser = _.find d.matchup.get("teams"), (team) -> team.id != winnerId
+        winner = _.find d.matchup.teams, (team) -> team.is_winner
+        loser = _.find d.matchup.teams, (team) -> team.id != winner.id
         "#{winner.points} - #{loser.points}"
 
 
 window.LeagueParityPage = class LeagueParityPage
-  constructor: ({@matchups, @teams}) ->
+  constructor: ({@matchups, @teams, @workerPath}) ->
 
   bind: ->
-    matchups = new window.APP.collections.MatchupCollection(@matchups)
-    teams = new window.APP.collections.TeamCollection(@teams)
+    if typeof(Worker) == "undefined"
+      $("#parity").text("Sorry, this only works in browsers that support Web Workers")
+      return
 
-    nodes = {}
-    matchups.each (matchup) ->
-      result = matchup.get("result")
+    worker = new Worker(@workerPath)
 
-      if result != "unknown" && result != "tie"
-        loser = _.find matchup.get("teams"), (team) -> team.id != result
-        nodes[result] ||= []
-        nodes[result].push(teamId: loser.id, matchup: matchup)
+    worker.postMessage matchups: @matchups, teams: @teams
 
-    # Order is to ensure teams with fewer wins are searched first
-    orderedTeamIds = _.chain(nodes)
-      .keys()
-      .sortBy (teamId) -> nodes[teamId].length
-      .value()
+    worker.onmessage = (event) ->
+      worker.terminate()
+      {path} = event.data
 
-    # orderedTeamIds = orderedTeamIds[0..5]
+      parityView = new ParityView(el: $("#parity"), path: path)
+      parityView.render()
 
-    path = @search(nodes, orderedTeamIds[1..], [{ teamId: orderedTeamIds[0] }])
-    console.log("PATH", path)
-    _.each path, (node) ->
-      node.team = teams.findWhere(id: node.teamId)
 
-    parityView = new ParityView(el: $("#parity"), path: path)
-    parityView.render()
-
-  search: (nodes, neededTeamIds, currentPath) ->
-    tail = _.last(currentPath)
-
-    if _.isEmpty(neededTeamIds)
-      ending = _.findWhere nodes[tail.teamId], teamId: currentPath[0].teamId
-
-      if ending
-        return currentPath.concat([ending])
-      else
-        return []
-
-    longestPath = []
-
-    _.each neededTeamIds, (neededTeamId) =>
-      if beatenTeam = _.findWhere(nodes[tail.teamId], teamId: neededTeamId)
-        newNeededTeamIds = _.reject neededTeamIds, (teamId) -> teamId == beatenTeam.teamId
-        newCurrentPath = currentPath.concat([beatenTeam])
-
-        path = @search(nodes, newNeededTeamIds, newCurrentPath)
-        if path.length > longestPath.length
-          longestPath = path
-
-    return longestPath
 
