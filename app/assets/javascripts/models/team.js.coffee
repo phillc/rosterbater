@@ -20,6 +20,7 @@ window.APP.models.Team = class Team extends Backbone.Model
     @set("unknowns", @get("unknowns") + 1)
 
   addPointsFor: (amount) ->
+    @set("last_points_for", amount)
     @set("points_for", (@get("points_for") + amount))
 
   pointsFor: ->
