@@ -43,6 +43,8 @@ class ChartsView extends Backbone.View
 
     xAxis = d3.svg.axis().scale(x)
         .orient("bottom").ticks(@weeks)
+        .innerTickSize(-height)
+        .outerTickSize(0)
 
     yAxis = d3.svg.axis().scale(y)
         .orient("left").ticks(@teams.size())
@@ -154,6 +156,8 @@ class ChartsView extends Backbone.View
 
     xAxis = d3.svg.axis().scale(x)
         .orient("bottom").ticks(@weeks)
+        .innerTickSize(-height)
+        .outerTickSize(0)
 
     yAxis = d3.svg.axis().scale(y)
         .orient("left").ticks(@teams.size())
