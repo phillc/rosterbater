@@ -41,7 +41,7 @@ search = (nodes, neededTeamIds, currentPath) ->
 
   longestPath = []
 
-  _.each neededTeamIds, (neededTeamId) =>
+  _.every neededTeamIds, (neededTeamId) =>
     if beatenTeam = _.findWhere(nodes[tail.teamId], teamId: neededTeamId)
       newNeededTeamIds = _.reject neededTeamIds, (teamId) -> teamId == beatenTeam.teamId
       newCurrentPath = currentPath.concat([beatenTeam])
@@ -49,5 +49,7 @@ search = (nodes, neededTeamIds, currentPath) ->
       path = search(nodes, newNeededTeamIds, newCurrentPath)
       if path.length > longestPath.length
         longestPath = path
+
+    return (currentPath.length + neededTeamIds.length + 1) != longestPath.length
 
   return longestPath

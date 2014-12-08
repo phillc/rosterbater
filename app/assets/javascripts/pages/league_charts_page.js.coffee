@@ -1,9 +1,10 @@
 class ChartsView extends Backbone.View
   template: _.template """
+    <div class="page-header"><h4>Standings</h4></div>
     <div id="standings-chart"></div>
-    <hr />
+    <div class="page-header"><h4>Points per week</h4></div>
     <div id="points-per-week-chart"></div>
-    <hr />
+    <div class="page-header"><h4>Points (cumulative)</h4></div>
     <div id="points-chart"></div>
   """
 
