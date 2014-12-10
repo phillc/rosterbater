@@ -5,6 +5,8 @@
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-4379922-6', 'auto');
+  ga('require', 'linkid', 'linkid.js');
+  ga('set', 'pageGroup1', '<%= controller.controller_name %>.<%= controller.action_name %>')
   ga('send', 'pageview');
 
 </script>
