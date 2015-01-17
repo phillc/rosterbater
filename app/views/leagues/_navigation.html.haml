@@ -9,6 +9,13 @@
       - if @league.sync_finished_at
         %p.navbar-text
           Last synced #{time_ago_in_words(@league.sync_finished_at)} ago.
+      %p.navbar-text
+        Share this league:
+        .league-social-button
+          <a href="https://twitter.com/share" class="twitter-share-button" data-text="Fantasy football visualizations for #{@league.name}" data-via="rosterbaterapp" data-count="none">Tweet</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        .league-social-button
+          <div class="fb-share-button" data-href="#{request.original_url}" data-layout="button"></div>
 
 .row
   .col-md-8

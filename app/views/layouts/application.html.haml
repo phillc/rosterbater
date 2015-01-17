@@ -6,7 +6,7 @@
     %meta{content: "width=device-width, initial-scale=1.0", name: "viewport"}
 
     %meta{property: "og:title", content: "Fantasy Football Visualizations"}
-    %meta{property: "og:description", content: "This is a simple tool that gives a visualization of your draft after automatically importing your league's draft results. Colors represent the difference between where a player was picked vs their ranking, to help see which picks were good deals and which were reaches. You can compare draft picks against Yahoo's Average Draft Pick, or to Expert Consensus Rankings in either PPR or standard formats."}
+    %meta{property: "og:description", content: "Rosterbater is a simple tool that gives a visualization of your draft after automatically importing your league's draft results. Colors represent the difference between where a player was picked vs their ranking, to help see which picks were good deals and which were reaches. You can compare draft picks against Yahoo's Average Draft Pick, or to Expert Consensus Rankings in either PPR or standard formats."}
     %title= content_for?(:title) ? yield(:title) : "Rosterbater - Fantasy Football Visualizations"
 
     = yield(:head)
@@ -16,12 +16,27 @@
 
     = csrf_meta_tags
   %body
+    <div id="fb-root"></div>
+    :javascript
+      (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
+      fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
     %nav.main-nav.navbar.navbar-inverse.navbar-static-top(role="navigation")
       .container-fluid
         .navbar-header
           %a(class="navbar-brand" href="/") Rosterbater
 
         %ul.nav.navbar-nav.navbar-right
+          %li.social-button
+            <a href="https://twitter.com/share" class="twitter-share-button" data-text="Fantasy football visualizations" data-via="rosterbaterapp" data-url="http://rosterbater.com">Tweet</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+          %li.social-button
+            <div class="fb-share-button" data-href="http://rosterbater.com" data-layout="button_count"></div>
+
           - if policy(:game).index?
             %li= link_to "Game Admin", games_path
           - if current_user

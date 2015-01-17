@@ -21,6 +21,23 @@
 
 .main-nav {
   margin-bottom: 0px;
+
+  .social-button {
+    margin-top: 15px;
+    min-width: 109px;
+
+    a {
+      padding: 0;
+    }
+  }
+}
+
+.sub-nav {
+  .league-social-button {
+    margin-top: 15px;
+    margin-right: 10px;
+    float: left;
+  }
 }
 
 footer.footer {
