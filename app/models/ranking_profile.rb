@@ -7,11 +7,13 @@ class RankingProfile < ActiveRecord::Base
 
   def link
     mappings = {
-      "Timothy" => "Tim"
+      "Timothy" => "Tim",
+      "Christopher" => "Chris",
+      "Steve" => "Stevie"
     }
     if player = game.players.find_by(full_name: name)
       update(player: player)
-    elsif rankings.map(&:position).include?("DST")
+    elsif rankings.map(&:position).any?{|position| position =~ /^DST/}
       player = game.players.find_by(display_position: "DEF", editorial_team_full_name: name)
       update(player: player) if player
     else
@@ -21,7 +23,7 @@ class RankingProfile < ActiveRecord::Base
       end
       if !player
         clean = ->(val){ "trim(both ' ' from
-                            regexp_replace(lower(#{val}), '(\\.|jr)', '', 'g')
+                            regexp_replace(lower(#{val}), '(\\.|jr|sr)', '', 'g')
                           )" }
         player = game.players.where("#{clean.("full_name")} = #{clean.("?")}", name).first
       end
