@@ -4,7 +4,7 @@ class YahooService
   end
 
   def get_yahoo_games
-    get "/games;game_codes=nfl;seasons=2014,2013,2012"
+    get "/games;game_codes=nfl;seasons=#{(2012..Time.now.year).to_a.join(",")}"
   end
 
   def games
