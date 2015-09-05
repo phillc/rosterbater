@@ -2,7 +2,7 @@
   %h3 Your leagues
 
   - if policy(:league).refresh?
-    = link_to "Sync your leagues with Yahoo", refresh_leagues_path, method: :post, class: "btn btn-primary btn-lg"
+    = link_to "Sync your leagues with Yahoo", refresh_leagues_path, method: :post, class: "btn btn-primary btn-lg", data: { disable_with: "Syncing..." }
 
   - if current_user.sync_finished_at
     %p Last synced #{time_ago_in_words(current_user.sync_finished_at)} ago.

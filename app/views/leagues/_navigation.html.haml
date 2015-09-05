@@ -8,7 +8,7 @@
         - if @league.sync_finished_at
           Last synced #{time_ago_in_words(@league.sync_finished_at)} ago.
       - if policy(@league).sync?
-        = link_to "Sync this league with Yahoo", sync_league_path(@league), method: :post, class: "btn btn-info navbar-btn pull-left"
+        = link_to "Sync this league with Yahoo", sync_league_path(@league), method: :post, class: "btn btn-info navbar-btn pull-left", data: { disable_with: "Syncing..." }
       %p.navbar-text
         Share this league:
       %ul.nav.navbar-nav
