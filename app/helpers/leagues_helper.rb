@@ -1,6 +1,7 @@
 module LeaguesHelper
-  def ranking_class(info)
-    html_class = case rank = info.vs_pick
+  def ranking_class(ranking_type, info)
+    return "position-#{info.position.downcase}" if ranking_type == "position"
+    case rank = info.vs_pick
     when 13..24
       "good-4"
     when 7..12

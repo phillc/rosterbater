@@ -9,14 +9,15 @@
 .btn-group.btn-group-justified(role="group")
   - if !current_user
     = link_to "Get your own draft visualized", root_path, class: "btn btn-danger"
-  - ["Yahoo ADP", "ECR Standard", "ECR Half PPR", "ECR PPR"].each do |ranking_label|
+  - ["Yahoo ADP", "ECR Standard", "ECR Half PPR", "ECR PPR", "Position"].each do |ranking_label|
     - ranking_param = ranking_label.downcase.split(" ").join("_")
+    - prefix = ranking_label == "Position" ? "by" : "vs."
     - if @ranking_type == ranking_param
       %span.btn.btn-default.btn-primary.disabled
-        vs.
+        = prefix
         = ranking_label
     - else
-      = link_to "vs. #{ranking_label}", draft_board_league_path(@league, ranking: ranking_param), class: "btn btn-primary"
+      = link_to "#{prefix} #{ranking_label}", draft_board_league_path(@league, ranking: ranking_param), class: "btn btn-primary"
 
 %p This is a visualization of your draft. The colors represent the difference between where a player was picked, vs their ranking. Click the buttons above to compare draft picks against Yahoo's Average Draft Pick, or to #{link_to "Expert Consensus Rankings", "http://www.fantasypros.com/nfl/rankings/consensus-cheatsheets.php"} in either PPR or standard. For example, If Jamaal Charles was picked 3rd overall in your league but was ranked second, it would show up light green for being a late pick. Green picks are late picks against the ranking, where purple picks are reaches for players too early according to the ranking.
 
@@ -59,15 +60,17 @@
             %td.round-number= i + 1
             - @picks.each do |(_, pick_infos)|
               - info = pick_infos[i]
-              %td{class: ranking_class(info)}
+              %td{class: ranking_class(@ranking_type, info)}
                 %div
                   = info.name
                 %div
                   = info.actual_pick
                   - if @league.is_auction_draft?
                     ($#{info.cost})
-                  vs
-                  = info.rank_value
+
+                  - if info.rank_value
+                    vs
+                    = info.rank_value
                 %div
                   #{info.team_abbr} - #{info.position}
 

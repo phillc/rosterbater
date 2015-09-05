@@ -67,6 +67,7 @@ class LeaguesController < ApplicationController
             when "ecr_standard"; draft_pick.ecr_standard_info
             when "ecr_ppr"; draft_pick.ecr_ppr_info
             when "ecr_half_ppr"; draft_pick.ecr_half_ppr_info
+            when "position"; draft_pick.position_info
             end
 
           acc[draft_pick.team] << info

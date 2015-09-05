@@ -28,6 +28,10 @@ class DraftPick < ActiveRecord::Base
     EcrRankingInfo.new(self, "half_ppr")
   end
 
+  def position_info
+    PositionInfo.new(self)
+  end
+
   class InfoBase
     attr_reader :draft_pick
 
@@ -53,6 +57,10 @@ class DraftPick < ActiveRecord::Base
 
     def cost
       @draft_pick.cost
+    end
+
+    def rank_value
+      nil
     end
 
     protected
@@ -109,6 +117,12 @@ class DraftPick < ActiveRecord::Base
         .rankings
         .where(ranking_profile_id: ranking_profile)
         .first
+    end
+  end
+
+  class PositionInfo < InfoBase
+    def initialize(draft_pick)
+      @draft_pick = draft_pick
     end
   end
 end
