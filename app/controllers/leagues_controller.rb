@@ -54,29 +54,23 @@ class LeaguesController < ApplicationController
                                           else "ecr_standard"
                                         end
 
-    picks =
+    @picks =
       @league
         .draft_picks
         .order(auction_pick: :asc, pick: :asc)
+        .each
+        .with_object({}) do |draft_pick, acc|
+          acc[draft_pick.team] ||= []
 
-    if @ranking_type == "position"
-    else
-      @picks =
-        picks
-          .each
-          .with_object({}) do |draft_pick, acc|
-            acc[draft_pick.team] ||= []
+          info = case @ranking_type
+            when "yahoo_adp"; draft_pick.yahoo_info
+            when "ecr_standard"; draft_pick.ecr_standard_info
+            when "ecr_ppr"; draft_pick.ecr_ppr_info
+            when "ecr_half_ppr"; draft_pick.ecr_half_ppr_info
+            end
 
-            info = case @ranking_type
-              when "yahoo_adp"; draft_pick.yahoo_info
-              when "ecr_standard"; draft_pick.ecr_standard_info
-              when "ecr_ppr"; draft_pick.ecr_ppr_info
-              when "ecr_half_ppr"; draft_pick.ecr_half_ppr_info
-              end
-
-            acc[draft_pick.team] << info
-          end
-    end
+          acc[draft_pick.team] << info
+        end
   end
 
   def playoffs
