@@ -33,6 +33,8 @@ Rails.application.routes.draw do
 
     member do
       post :sync
+      get :weekly
+      get :players
       get :draft_board
       get :playoffs
       get :parity

@@ -1,5 +1,5 @@
 class LeaguesController < ApplicationController
-  before_action :find_league, only: [:show, :draft_board, :playoffs, :parity, :charts]
+  before_action :find_league, only: [:show, :weekly, :players, :draft_board, :playoffs, :parity, :charts]
 
   rescue_from Pundit::NotAuthorizedError, with: :please_log_in
 
@@ -33,6 +33,19 @@ class LeaguesController < ApplicationController
   end
 
   def show
+    authorize @league, :show?
+  end
+
+  def weekly
+    authorize @league, :show?
+
+    @week = (params[:week].presence || @league.current_week).to_i
+    @matchups = @league.matchups.where(week: @week)
+    @matchup_stats = InterestingStatsService.by_matchup(@matchups)
+    @team_stats = InterestingStatsService.by_team(@matchups.map(&:matchup_teams).flatten)
+  end
+
+  def players
     authorize @league, :show?
   end
 
