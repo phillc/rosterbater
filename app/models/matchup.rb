@@ -1,5 +1,5 @@
 class Matchup < ActiveRecord::Base
-  has_many :matchup_teams, autosave: true
+  has_many :matchup_teams, autosave: true, dependent: :destroy
 
   def as_json(options={})
     json = super(only: [:id, :week, :status, :is_tied])

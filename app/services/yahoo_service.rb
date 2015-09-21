@@ -181,7 +181,7 @@ class YahooService
 
   def sync_league_matchups(league)
     league_matchups = league.matchups.to_a
-    matchups(league).each do |yahoo_matchup|
+    league.matchups = matchups(league).map do |yahoo_matchup|
       matchup = league_matchups
         .detect{ |league_matchup|
           (Set.new(league_matchup.matchup_teams.map(&:yahoo_team_key)) ==
@@ -200,6 +200,8 @@ class YahooService
       end
 
       matchup.save!
+
+      matchup
     end
   end
 

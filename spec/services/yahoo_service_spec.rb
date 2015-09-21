@@ -601,7 +601,7 @@ describe "YahooService" do
 
       mt = MatchupTeam
              .joins(:matchup)
-             .where(yahoo_team_key: "331.l.6781.t.1", matchups: { week: 1})
+             .where(yahoo_team_key: "331.l.6781.t.1", matchups: { week: 1 })
              .first
 
       matchup = mt.matchup
@@ -615,6 +615,18 @@ describe "YahooService" do
 
       matchup.reload
       expect(matchup.status).to eq "postevent"
+    end
+
+    it "removes stale matchups" do
+      teams = 12
+      weeks = 13
+
+      create(:matchup, league_id: league.id)
+
+      service.sync_league_matchups(league)
+
+      expect(league.matchups.count).to eq ((teams/2) * weeks)
+      expect(MatchupTeam.count).to eq (teams * weeks)
     end
   end
 end
