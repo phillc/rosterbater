@@ -480,6 +480,7 @@ describe "YahooService" do
             expect(league.num_playoff_consolation_teams).to eq 4
             expect(league.playoff_start_week).to eq 15
             expect(league.settings).to include({"draft_type" => "live", "max_teams" => "14"})
+            expect(league.current_week).to eq 16
           end
         end
       end

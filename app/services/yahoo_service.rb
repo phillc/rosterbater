@@ -110,6 +110,7 @@ class YahooService
   def sync_league_details(league)
     details = league_details(league)
 
+    details.update(league)
     sync_league_settings(league, details)
     sync_league_teams(league, details)
     sync_league_draft_results(league, details)
@@ -470,6 +471,10 @@ class YahooService
 
     def settings
       YahooLeagueSettings.new(@doc.search("league/settings"))
+    end
+
+    def update(league)
+      YahooLeague.new(@doc.search("league")).update(league)
     end
   end
 
