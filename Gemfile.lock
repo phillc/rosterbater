@@ -9,6 +9,14 @@ GIT
       jquery-rails
       railties
 
+GIT
+  remote: git://github.com/phillc/omniauth-yahoo.git
+  revision: cd1226c51fdc7ca3def69f3280e47cc0c397a77a
+  branch: master
+  specs:
+    omniauth-yahoo (0.0.7)
+      omniauth-oauth (~> 1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -169,8 +177,6 @@ GEM
     omniauth-oauth (1.1.0)
       oauth
       omniauth (~> 1.0)
-    omniauth-yahoo (0.0.7)
-      omniauth-oauth (~> 1.0)
     pg (0.18.3)
     pry (0.10.1)
       coderay (~> 1.1.0)
@@ -304,7 +310,7 @@ DEPENDENCIES
   nokogiri
   oauth
   omniauth
-  omniauth-yahoo
+  omniauth-yahoo!
   pg
   pry-rails
   puma
