@@ -26,7 +26,7 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 
 
 gem 'bootstrap-sass'
-gem 'd3_rails'
+gem 'd3_rails', '3.5.3'
 gem 'factory_girl_rails'
 gem 'foreigner'
 gem 'haml-rails'
