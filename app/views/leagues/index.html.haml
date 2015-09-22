@@ -26,7 +26,7 @@
               = link_to "Go", league_path(league), class: "btn btn-primary btn-lg"
               = link_to league.name, league_path(league)
             %td
-              = league.start_date.year
+              = league.start_date.try(:year)
             %td
               = league.num_teams
             %td
