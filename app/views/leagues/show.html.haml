@@ -9,11 +9,14 @@
   No teams present. Please sync this league with Yahoo.
 - else
   - team_attrs = %w(waiver_priority faab_balance number_of_moves number_of_trades has_clinched_playoffs points_for points_against rank wins losses ties)
+  - stat_attrs = %w(mean std_dev)
   %table#league-teams
     %thead
       %tr
         %th(width="33%") Name
         - team_attrs.each do |attr|
+          %th= attr.humanize
+        - stat_attrs.each do |attr|
           %th= attr.humanize
     %tbody
       - @league.teams.by_rank.each do |team|
@@ -25,6 +28,8 @@
               = team.name
           - team_attrs.each do |attr|
             %td= team.public_send(attr)
+          - stat_attrs.each do |attr|
+            %td= team.stats.public_send(attr)
 
 - if !@league.matchups.empty?
   = large_banner_ad

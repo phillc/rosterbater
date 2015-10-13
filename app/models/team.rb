@@ -10,4 +10,36 @@ class Team < ActiveRecord::Base
   def as_json(options={})
     super(only: [:id, :name, :logo_url])
   end
+
+  def stats
+    @stats ||= TeamStats.new(self)
+  end
+
+  class TeamStats
+    def initialize(team)
+      @team = team
+    end
+
+    def mean
+      sum / scores.length
+    end
+
+    def variance
+      m = mean
+      sum = scores.inject(0){ |acc, i| acc + (i - m) ** 2 }
+      sum / (scores.length - 1).to_f
+    end
+
+    def std_dev
+      Math.sqrt(variance).round
+    end
+
+    def sum
+      scores.sum
+    end
+
+    def scores
+      @scores ||= @team.league.finished_matchup_teams.where(yahoo_team_key: @team.yahoo_team_key).map(&:points)
+    end
+  end
 end
