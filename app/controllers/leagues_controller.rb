@@ -39,7 +39,7 @@ class LeaguesController < ApplicationController
   def weekly
     authorize @league, :show?
 
-    @week = (params[:week].presence || @league.current_week).to_i
+    @week = (params[:week].presence || (@league.current_week - 1)).to_i
     @matchups = @league.matchups.where(week: @week)
     @matchup_stats = InterestingStatsService.by_matchup(@matchups)
     @team_stats = InterestingStatsService.by_team(@matchups.map(&:matchup_teams).flatten)
