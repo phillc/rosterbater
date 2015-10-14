@@ -21,10 +21,12 @@ class Team < ActiveRecord::Base
     end
 
     def mean
+      return 0 unless scores.length > 0
       sum / scores.length
     end
 
     def variance
+      return 0 unless scores.length > 0
       m = mean
       sum = scores.inject(0){ |acc, i| acc + (i - m) ** 2 }
       sum / (scores.length - 1).to_f
