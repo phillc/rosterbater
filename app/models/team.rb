@@ -33,6 +33,7 @@ class Team < ActiveRecord::Base
     end
 
     def std_dev
+      return 0 unless scores.length > 0
       Math.sqrt(variance).round
     end
 
