@@ -26,14 +26,14 @@ class Team < ActiveRecord::Base
     end
 
     def variance
-      return 0 unless scores.length > 0
+      return 0 unless scores.length > 1
       m = mean
       sum = scores.inject(0){ |acc, i| acc + (i - m) ** 2 }
       sum / (scores.length - 1).to_f
     end
 
     def std_dev
-      return 0 unless scores.length > 0
+      return 0 unless scores.length > 1
       Math.sqrt(variance).round
     end
 
