@@ -29,7 +29,7 @@
           - team_attrs.each do |attr|
             %td= team.public_send(attr)
           - stat_attrs.each do |attr|
-            %td= team.stats.public_send(attr)
+            %td= team.stats.public_send(attr).round
 
 - if !@league.matchups.empty?
   = large_banner_ad

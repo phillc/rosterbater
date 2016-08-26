@@ -34,7 +34,7 @@ class Team < ActiveRecord::Base
 
     def std_dev
       return 0 unless scores.length > 1
-      Math.sqrt(variance).round
+      Math.sqrt(variance)
     end
 
     def sum
