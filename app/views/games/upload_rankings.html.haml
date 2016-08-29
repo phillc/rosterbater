@@ -1,0 +1,14 @@
+%h3= @game.name
+%h3= @game.season
+
+= form_for :rankings, url: { action: :update_rankings }, method: :post do |f|
+  = f.label :standard
+  = f.file_field :standard
+  %hr
+  = f.label :ppr
+  = f.file_field :ppr
+  %hr
+  = f.label :half_ppr
+  = f.file_field :half_ppr
+  %hr
+  = f.submit

@@ -24,14 +24,25 @@ class GamesController < ApplicationController
     redirect_to games_path, notice: "Synced game"
   end
 
-  def sync_rankings
-    game = Game.find(params[:id])
-    authorize game, :sync?
+  def upload_rankings
+    @game = Game.find(params[:id])
+    authorize @game, :sync?
+  end
+
+  def update_rankings
+    @game = Game.find(params[:id])
+    authorize @game, :sync?
 
     EcrRankingsService.new.tap do |service|
-      service.sync_standard_draft_rankings(game)
-      service.sync_ppr_draft_rankings(game)
-      service.sync_half_ppr_draft_rankings(game)
+      if standard = params[:rankings][:standard]
+        service.sync_standard_draft_rankings(@game, standard.read)
+      end
+      if ppr = params[:rankings][:ppr]
+        service.sync_ppr_draft_rankings(@game, ppr.read)
+      end
+      if half_ppr = params[:rankings][:half_ppr]
+        service.sync_half_ppr_draft_rankings(@game, half_ppr.read)
+      end
     end
 
     redirect_to games_path, notice: "Synced rankings"

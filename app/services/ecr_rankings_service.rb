@@ -1,47 +1,32 @@
 class EcrRankingsService
-  include HTTParty
-  base_uri "http://www.fantasypros.com/nfl/rankings"
-
-  def get_standard_draft_rankings
-    get "/consensus-cheatsheets.php?export=xls"
+  def standard_draft_report(file)
+    EcrReport.new(file)
   end
 
-  def get_ppr_draft_rankings
-    get "/ppr-cheatsheets.php?export=xls"
+  def ppr_draft_report(file)
+    EcrReport.new(file)
   end
 
-  def get_half_ppr_draft_rankings
-    get "/half-point-ppr-cheatsheets.php?export=xls"
+  def half_ppr_draft_report(file)
+    EcrReport.new(file)
   end
 
-  def standard_draft_report
-    EcrReport.new(get_standard_draft_rankings)
+  def sync_standard_draft_rankings(game, file)
+    store_report(standard_draft_report(file), period: "draft",
+                                              ranking_type: "standard",
+                                              game: game)
   end
 
-  def ppr_draft_report
-    EcrReport.new(get_ppr_draft_rankings)
+  def sync_ppr_draft_rankings(game, file)
+    store_report(ppr_draft_report(file), period: "draft",
+                                         ranking_type: "ppr",
+                                         game: game)
   end
 
-  def half_ppr_draft_report
-    EcrReport.new(get_half_ppr_draft_rankings)
-  end
-
-  def sync_standard_draft_rankings(game)
-    store_report(standard_draft_report, period: "draft",
-                                        ranking_type: "standard",
-                                        game: game)
-  end
-
-  def sync_ppr_draft_rankings(game)
-    store_report(ppr_draft_report, period: "draft",
-                                   ranking_type: "ppr",
-                                   game: game)
-  end
-
-  def sync_half_ppr_draft_rankings(game)
-    store_report(half_ppr_draft_report, period: "draft",
-                                        ranking_type: "half_ppr",
-                                        game: game)
+  def sync_half_ppr_draft_rankings(game, file)
+    store_report(half_ppr_draft_report(file), period: "draft",
+                                              ranking_type: "half_ppr",
+                                              game: game)
   end
 
   protected
@@ -86,7 +71,7 @@ class EcrRankingsService
 
     def rankings
       @doc
-        .drop(6)
+        .drop(5)
         .map { |draft_ranking| EcrRanking.new(draft_ranking) }
     end
   end
