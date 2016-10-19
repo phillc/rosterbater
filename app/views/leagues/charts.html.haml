@@ -1,4 +1,4 @@
-- load_javascript_class "LeagueChartsPage", matchups: @matchups, teams: @teams, weeks: @league.weeks_in_a_season
+- load_javascript_class "LeagueChartsPage", matchups: @matchups, teams: @teams, weeks: [@league.weeks_in_a_season, @league.current_week - 1].min
 
 = render "leagues/navigation"
 
