@@ -66,7 +66,7 @@ class EcrRankingsService
     end
 
     def title
-      @doc[2].first.strip
+      @doc[1].first.strip
     end
 
     def rankings
