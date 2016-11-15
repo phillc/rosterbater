@@ -6,6 +6,8 @@ window.APP.models.Team = class Team extends Backbone.Model
     ties: 0
     unknowns: 0
     points_for: 0.0
+    points_against: 0.0
+    projection: 0.0
 
   incrementWins: ->
     @set("wins", @get("wins") + 1)
@@ -25,6 +27,23 @@ window.APP.models.Team = class Team extends Backbone.Model
 
   pointsFor: ->
     @get("points_for").toFixed(2)
+
+  addProjection: (amount) ->
+    @set("last_projection", amount)
+    @set("projection", (@get("projection") + amount))
+
+  lastPerformance: ->
+    @get("last_points_for") - @get("last_projection")
+
+  performance: ->
+    @get("points_for") - @get("projection")
+
+  addPointsAgainst: (amount) ->
+    @set("last_points_against", amount)
+    @set("points_against", (@get("points_against") + amount))
+
+  lastDifferential: ->
+    @get("last_points_for") - @get("last_points_against")
 
   outcomes: ->
     results = []
@@ -55,13 +74,19 @@ window.APP.collections.TeamCollection = class TeamCollection extends Backbone.Co
       team.set("ties", 0)
       team.set("unknowns", 0)
       team.set("points_for", 0)
+      team.set("points_against", 0)
 
   calculateRecords: (matchups) ->
     matchups.each (matchup) =>
-      teams = matchup.get("teams").map (team) => @findWhere(id: team.id)
+      mteams = matchup.get("teams")
+      teams = mteams.map (team) => @findWhere(id: team.id)
 
-      _(matchup.get("teams")).each (team) ->
-        _(teams).findWhere(id: team.id).addPointsFor(parseFloat(team.points))
+      _(mteams).each (mteam) ->
+        team = _(teams).findWhere(id: mteam.id)
+        opponent = _(mteams).find (mt) -> mt.id != mteam.id
+        team.addPointsFor(parseFloat(mteam.points))
+        team.addProjection(parseFloat(mteam.projected_points))
+        team.addPointsAgainst(parseFloat(opponent.points))
 
       result = matchup.get("result")
       switch result

@@ -6,6 +6,16 @@ class ChartsView extends Backbone.View
     <div id="points-per-week-chart"></div>
     <div class="page-header"><h4>Points (cumulative)</h4></div>
     <div id="points-chart"></div>
+    <div class="page-header"><h4>Projection per week</h4></div>
+    <div id="projection-per-week-chart"></div>
+    <div class="page-header"><h4>Projection (cumulative)</h4></div>
+    <div id="total-projection-chart"></div>
+    <div class="page-header"><h4>Performance (actual - projected)</h4></div>
+    <div id="points-performance-chart"></div>
+    <div class="page-header"><h4>Performance (cumulative)</h4></div>
+    <div id="points-total-performance-chart"></div>
+    <div class="page-header"><h4>Points differential vs opponent</h4></div>
+    <div id="points-differential-chart"></div>
   """
 
   initialize: ({@teams, @weekStandings, @weeks}) ->
@@ -23,6 +33,26 @@ class ChartsView extends Backbone.View
       selector: "#points-chart"
       yLabel: "Points (cumulative)"
       dataPoint: "points_for"
+    @renderPointsChart
+      selector: "#projection-per-week-chart"
+      yLabel: "Points"
+      dataPoint: "week_projection"
+    @renderPointsChart
+      selector: "#total-projection-chart"
+      yLabel: "Projection (cumulative)"
+      dataPoint: "total_projection"
+    @renderPointsChart
+      selector: "#points-performance-chart"
+      yLabel: "actual - projected"
+      dataPoint: "week_performance"
+    @renderPointsChart
+      selector: "#points-total-performance-chart"
+      yLabel: "actual - projected"
+      dataPoint: "total_performance"
+    @renderPointsChart
+      selector: "#points-differential-chart"
+      yLabel: "Points for - points against"
+      dataPoint: "week_differential"
 
   renderPointsChart: ({yLabel, dataPoint, selector}) ->
     margin = { top: 30, right: 250, bottom: 70, left: 75 }
@@ -277,6 +307,11 @@ window.LeagueChartsPage = class LeagueChartsPage
         points_for: team.get("points_for")
         points_for_str: team.pointsFor()
         week_points_for: team.get("last_points_for")
+        week_projection: team.get("last_projection")
+        total_projection: team.get("projection")
+        week_performance: team.lastPerformance()
+        total_performance: team.performance()
+        week_differential: team.lastDifferential()
         wins: team.get("wins")
         losses: team.get("losses")
         ties: team.get("ties")
