@@ -171,7 +171,7 @@ class ChartsView extends Backbone.View
       .attr("x", legendX2)
       .attr("y", height)
       .attr("class", "legend")
-      .text("show all")
+      .text("(show all)")
       .on "click", =>
         @teams.each (team) ->
           showTeam(team)
@@ -203,23 +203,23 @@ class ChartsView extends Backbone.View
         .attr("y", teamY)
         .attr("class", "legend")
         .style "fill", -> color(team.id)
-        .text("hide")
+        .text("(hide)")
         .on "click", ->
           hideTeam(team)
       svg.append("text")
-        .attr("x", legendX2 + 30)
+        .attr("x", legendX2 + 40)
         .attr("y", teamY)
         .attr("class", "legend")
         .style "fill", -> color(team.id)
-        .text("show")
+        .text("(show)")
         .on "click", ->
           showTeam(team)
       svg.append("text")
-        .attr("x", legendX2 + 70)
+        .attr("x", legendX2 + 90)
         .attr("y", teamY)
         .attr("class", "legend")
         .style "fill", -> color(team.id)
-        .text("show only")
+        .text("(show only)")
         .on "click", =>
           @teams.each (t) ->
             if t.id == team.id
