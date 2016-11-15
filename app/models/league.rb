@@ -67,4 +67,8 @@ class League < ActiveRecord::Base
   def weeks_remaining
     playoff_start_week - current_week
   end
+
+  def complete?
+    teams.any?
+  end
 end

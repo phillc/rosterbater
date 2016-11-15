@@ -1,5 +1,6 @@
 class LeaguesController < ApplicationController
   before_action :find_league, only: [:show, :weekly, :players, :draft_board, :playoffs, :parity, :charts]
+  before_action :ensure_synced, only: [:weekly, :players, :draft_board, :playoffs, :parity, :charts]
 
   rescue_from Pundit::NotAuthorizedError, with: :please_log_in
 
@@ -112,5 +113,11 @@ class LeaguesController < ApplicationController
 
   def find_league
     @league = League.find(params[:id])
+  end
+
+  def ensure_synced
+    if !@league.complete?
+      redirect_to league_path(@league), status: 302, notice: "Please sync this league"
+    end
   end
 end

@@ -8,30 +8,27 @@
 .page-header
   %h2
     Weekly Stats for week #{@week}
-- if @league.teams.empty?
-  No teams present. Please sync this league with Yahoo.
-- else
-  - @matchups.each do |matchup|
-    %ul.list-group
-      %li.list-group-item.active
-        = matchup.matchup_teams.map(&:team).map(&:name).join(" vs ")
-      - @matchup_stats.select{|stat| stat.matchup_id == matchup.id}.each do |stat|
+- @matchups.each do |matchup|
+  %ul.list-group
+    %li.list-group-item.active
+      = matchup.matchup_teams.map(&:team).map(&:name).join(" vs ")
+    - @matchup_stats.select{|stat| stat.matchup_id == matchup.id}.each do |stat|
+      %li.list-group-item
+        Matchup:
+        - if stat.importance == :high
+          Highest
+        - if stat.importance == :low
+          Lowest
+        = stat.label
+        = stat.value
+    - matchup.matchup_teams.map(&:team).each do |team|
+      - @team_stats.select{|stat| stat.team_id == team.id}.each do |stat|
         %li.list-group-item
-          Matchup:
+          #{team.name}:
           - if stat.importance == :high
             Highest
           - if stat.importance == :low
             Lowest
           = stat.label
           = stat.value
-      - matchup.matchup_teams.map(&:team).each do |team|
-        - @team_stats.select{|stat| stat.team_id == team.id}.each do |stat|
-          %li.list-group-item
-            #{team.name}:
-            - if stat.importance == :high
-              Highest
-            - if stat.importance == :low
-              Lowest
-            = stat.label
-            = stat.value
 

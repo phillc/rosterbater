@@ -5,8 +5,12 @@
 .page-header
   %h2
     Sortable League Stats
-- if @league.teams.empty?
-  No teams present. Please sync this league with Yahoo.
+- if !@league.complete?
+  %p No teams present. Please sync this league with Yahoo.
+  - if policy(@league).sync?
+    = link_to "Sync this league with Yahoo", sync_league_path(@league), method: :post, class: "btn btn-info navbar-btn pull-left", data: { disable_with: "Syncing..." }
+  - else
+    %p Please refresh in a few minutes to sync.
 - else
   - team_attrs = %w(waiver_priority faab_balance number_of_moves number_of_trades has_clinched_playoffs points_for points_against rank wins losses ties)
   - stat_attrs = %w(mean std_dev)
