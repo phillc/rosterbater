@@ -69,6 +69,6 @@ class League < ActiveRecord::Base
   end
 
   def complete?
-    teams.any?
+    teams.any? && sync_finished_at?
   end
 end
