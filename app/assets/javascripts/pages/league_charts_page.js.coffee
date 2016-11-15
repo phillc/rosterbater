@@ -55,8 +55,8 @@ class ChartsView extends Backbone.View
       dataPoint: "week_differential"
 
   renderPointsChart: ({yLabel, dataPoint, selector}) ->
-    margin = { top: 30, right: 250, bottom: 70, left: 75 }
-    width = 800 - margin.left - margin.right
+    margin = { top: 30, right: 400, bottom: 70, left: 75 }
+    width = 1000 - margin.left - margin.right
     height = 600 - margin.top - margin.bottom
 
     x = d3.scale.linear()
@@ -84,16 +84,72 @@ class ChartsView extends Backbone.View
       .x (d) -> x(d.week)
       .y (d) -> y(d[dataPoint])
 
-    svg = d3.select(selector)
+    options =
+      selector: selector
+      height: height
+      width: width
+      margin: margin
+      line: pointsLine
+      xAxis: xAxis
+      yAxis: yAxis
+      yLabel: yLabel
+    svg = @createSvg(options)
+    @addData(svg, options)
+    @addHelpText(svg, options)
+    @addAxis(svg, options)
+
+  renderStandingsChart: ({selector}) ->
+    margin = { top: 30, right: 400, bottom: 70, left: 75 }
+    width = 1000 - margin.left - margin.right
+    height = 300 - margin.top - margin.bottom
+
+    x = d3.scale.linear()
+      .domain([1, @weeks])
+      .range([0, width])
+    y = d3.scale.linear()
+      .domain([@teams.size(), 1])
+      .range([height, 0])
+
+    xAxis = d3.svg.axis().scale(x)
+        .orient("bottom").ticks(@weeks)
+        .innerTickSize(-height)
+        .outerTickSize(0)
+
+    yAxis = d3.svg.axis().scale(y)
+        .orient("left").ticks(@teams.size())
+
+    standingLine = d3.svg.line()
+      .x (d) -> x(d.week)
+      .y (d) -> y(d.standing)
+
+    options =
+      selector: selector
+      height: height
+      width: width
+      margin: margin
+      line: standingLine
+      xAxis: xAxis
+      yAxis: yAxis
+      yLabel: "Standing"
+    svg = @createSvg(options)
+    @addData(svg, options)
+    @addHelpText(svg, options)
+    @addAxis(svg, options)
+
+  createSvg: ({selector, width, height, margin}) ->
+    d3.select(selector)
       .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
+
+  addData: (svg, {height, width, margin, line, selector}) ->
+    legendX = width + margin.right / 15
+    legendX2 = width + (margin.right / 2) + 25
     color = d3.scale.category20()
 
-    legendX = width + margin.right / 15
     @teams.map (team, teamIndex) =>
       values = _.times @weeks, (i) =>
         week = i + 1
@@ -103,51 +159,77 @@ class ChartsView extends Backbone.View
         .style "stroke", -> color(team.id)
         .attr "id", "line-#{team.id}"
         .attr "class", "line-path"
-        .attr "d", pointsLine(values)
+        .attr "d", line(values)
         .attr "fill", "none"
         .attr "stroke-width", "3"
 
       svg.append("text")
         .attr("x", legendX)
-        .attr("y", teamIndex * height / 12)
+        .attr("y", teamIndex * height / (@teams.size() + 1))
         .attr("class", "legend")
         .attr("id", "legend-#{team.id}")
         .style "fill", -> color(team.id)
         .text(team.get("name"))
         .on "click", ->
           currentlyHidden = team.get("hidden")
-          newLineOpacity = if currentlyHidden then 1 else 0
-          newLegendOpacity = if currentlyHidden then 1 else 0.5
-          newLegendDecoration = if currentlyHidden then "none" else "line-through"
           team.set("hidden", !currentlyHidden)
 
+          newLineOpacity = if currentlyHidden then 1 else 0
+          newLegendX = if currentlyHidden then legendX else legendX2
           d3.select("#{selector} #line-#{team.id}")
-            .transition().duration(700)
+            .transition()
+            .duration(700)
             .style("opacity", newLineOpacity)
           d3.select("#{selector} #legend-#{team.id}")
-            .transition().duration(700)
-            .style("opacity", newLegendOpacity)
-            .style("text-decoration", newLegendDecoration)
-        .on "dblclick", =>
-          @teams.each (t) -> t.set("hidden", true)
-          team.set("hidden", false)
-          d3.selectAll("#{selector} .line-path")
-            .transition().duration(700)
-            .style("opacity", 0)
-          d3.select("#{selector} #line-#{team.id}")
-            .transition().duration(700)
-            .style("opacity", 1)
+            .transition()
+            .duration(700)
+            .attr("x", newLegendX)
 
+        .on "dblclick", =>
+          currentlyHidden = team.get("hidden")
+          if currentlyHidden
+            @teams.each (t) -> t.set("hidden", false)
+            d3.selectAll("#{selector} .line-path")
+              .transition()
+              .duration(700)
+              .style("opacity", 1)
+            d3.select("#{selector} .legend")
+              .transition()
+              .duration(700)
+              .attr("x", legendX)
+          else
+            @teams.each (t) -> t.set("hidden", true)
+            team.set("hidden", false)
+            d3.selectAll("#{selector} .line-path")
+              .transition()
+              .duration(700)
+              .style("opacity", 0)
+            d3.select("#{selector} .legend")
+              .transition()
+              .duration(700)
+              .attr("x", legendX2)
+            d3.select("#{selector} #line-#{team.id}")
+              .transition()
+              .duration(700)
+              .style("opacity", 1)
+            d3.select("#{selector} #legend-#{team.id}")
+              .transition()
+              .duration(700)
+              .attr("x", legendX)
+
+  addHelpText: (svg, {height, width, margin}) ->
+    left = width + (margin.right / 2) + 25
     helpText = svg.append("text")
-      .attr("x", legendX + 20)
-      .attr("y", (@teams.size() + 1)  * height / 12)
+      .attr("x", left)
+      .attr("y", height)
     helpText.append("tspan")
       .text("(click or double click")
     helpText.append("tspan")
       .attr("dy", "1em")
-      .attr("x", legendX + 20)
+      .attr("x", left + 20)
       .text("name to hide)")
 
+  addAxis: (svg, {height, width, xAxis, yAxis, yLabel, margin}) ->
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
@@ -173,118 +255,6 @@ class ChartsView extends Backbone.View
       .attr("y", height + (margin.bottom / 2))
       .text("Week")
 
-  renderStandingsChart: ({selector}) ->
-    margin = { top: 30, right: 250, bottom: 70, left: 50 }
-    width = 800 - margin.left - margin.right
-    height = 300 - margin.top - margin.bottom
-
-    x = d3.scale.linear()
-      .domain([1, @weeks])
-      .range([0, width])
-    y = d3.scale.linear()
-      .domain([@teams.size(), 1])
-      .range([height, 0])
-
-    xAxis = d3.svg.axis().scale(x)
-        .orient("bottom").ticks(@weeks)
-        .innerTickSize(-height)
-        .outerTickSize(0)
-
-    yAxis = d3.svg.axis().scale(y)
-        .orient("left").ticks(@teams.size())
-
-    standingLine = d3.svg.line()
-      .x (d) -> x(d.week)
-      .y (d) -> y(d.standing)
-
-    svg = d3.select(selector)
-      .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-
-    color = d3.scale.category20()
-
-    legendX = width + margin.right / 15
-    @teams.map (team, teamIndex) =>
-      values = _.times @weeks, (i) =>
-        week = i + 1
-        _(@weekStandings[week]).findWhere(id: team.get("id"))
-
-      svg.append("path")
-        .style "stroke", -> color(team.id)
-        .attr "id", "line-#{team.id}"
-        .attr "class", "line-path"
-        .attr "d", standingLine(values)
-        .attr "fill", "none"
-        .attr "stroke-width", "3"
-
-      svg.append("text")
-        .attr("x", legendX)
-        .attr("y", teamIndex * height / 12)
-        .attr("class", "legend")
-        .attr("id", "legend-#{team.id}")
-        .style "fill", -> color(team.id)
-        .text(team.get("name"))
-        .on "click", ->
-          currentlyHidden = team.get("hidden")
-          newLineOpacity = if currentlyHidden then 1 else 0
-          newLegendOpacity = if currentlyHidden then 1 else 0.5
-          newLegendDecoration = if currentlyHidden then "none" else "line-through"
-          team.set("hidden", !currentlyHidden)
-
-          d3.select("#{selector} #line-#{team.id}")
-            .transition().duration(700)
-            .style("opacity", newLineOpacity)
-          d3.select("#{selector} #legend-#{team.id}")
-            .transition().duration(700)
-            .style("opacity", newLegendOpacity)
-            .style("text-decoration", newLegendDecoration)
-        .on "dblclick", =>
-          @teams.each (t) -> t.set("hidden", true)
-          team.set("hidden", false)
-          d3.selectAll("#{selector} .line-path")
-            .transition().duration(700)
-            .style("opacity", 0)
-          d3.select("#{selector} #line-#{team.id}")
-            .transition().duration(700)
-            .style("opacity", 1)
-
-    helpText = svg.append("text")
-      .attr("x", legendX + 20)
-      .attr("y", (@teams.size() + 1)  * height / 12)
-    helpText.append("tspan")
-      .text("(click or double click")
-    helpText.append("tspan")
-      .attr("dy", "1em")
-      .attr("x", legendX + 20)
-      .text("name to hide)")
-
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis)
-
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-
-    svg.append("text")
-      .attr("class", "ylabel")
-      .attr("y", 0 - margin.left) # x and y switched due to rotation!!
-      .attr("x", 0 - (height / 2))
-      .attr("dy", "1em")
-      .attr("transform", "rotate(-90)")
-      .style("text-anchor", "middle")
-      .text("Standing")
-
-    svg.append("text")
-      .attr("class", "xlabel")
-      .attr("text-anchor", "middle")
-      .attr("x", width / 2)
-      .attr("y", height + (margin.bottom / 2))
-      .text("Week")
 
 window.LeagueChartsPage = class LeagueChartsPage
   constructor: ({@matchups, @teams, @weeks}) ->
