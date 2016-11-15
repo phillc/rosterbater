@@ -95,13 +95,12 @@ class ChartsView extends Backbone.View
       yLabel: yLabel
     svg = @createSvg(options)
     @addData(svg, options)
-    @addHelpText(svg, options)
     @addAxis(svg, options)
 
   renderStandingsChart: ({selector}) ->
     margin = { top: 30, right: 400, bottom: 70, left: 75 }
     width = 1000 - margin.left - margin.right
-    height = 300 - margin.top - margin.bottom
+    height = Math.max(200, @teams.size() * 30) - margin.top - margin.bottom
 
     x = d3.scale.linear()
       .domain([1, @weeks])
@@ -133,7 +132,6 @@ class ChartsView extends Backbone.View
       yLabel: "Standing"
     svg = @createSvg(options)
     @addData(svg, options)
-    @addHelpText(svg, options)
     @addAxis(svg, options)
 
   createSvg: ({selector, width, height, margin}) ->
@@ -150,7 +148,36 @@ class ChartsView extends Backbone.View
     legendX2 = width + (margin.right / 2) + 25
     color = d3.scale.category20()
 
+    hideTeam = (team) ->
+      d3.select("#{selector} #line-#{team.id}")
+        .transition()
+        .duration(700)
+        .style("opacity", 0)
+      d3.select("#{selector} #legend-#{team.id}")
+        .transition()
+        .duration(700)
+        .style("opacity", 0)
+    showTeam = (team) ->
+      d3.select("#{selector} #line-#{team.id}")
+        .transition()
+        .duration(700)
+        .style("opacity", 1)
+      d3.select("#{selector} #legend-#{team.id}")
+        .transition()
+        .duration(700)
+        .style("opacity", 1)
+
+    svg.append("text")
+      .attr("x", legendX2)
+      .attr("y", height)
+      .attr("class", "legend")
+      .text("show all")
+      .on "click", =>
+        @teams.each (team) ->
+          showTeam(team)
+
     @teams.map (team, teamIndex) =>
+      teamY = teamIndex * height / (@teams.size() + 1)
       values = _.times @weeks, (i) =>
         week = i + 1
         _(@weekStandings[week]).findWhere(id: team.get("id"))
@@ -165,69 +192,40 @@ class ChartsView extends Backbone.View
 
       svg.append("text")
         .attr("x", legendX)
-        .attr("y", teamIndex * height / (@teams.size() + 1))
+        .attr("y", teamY)
         .attr("class", "legend")
         .attr("id", "legend-#{team.id}")
         .style "fill", -> color(team.id)
         .text(team.get("name"))
+
+      svg.append("text")
+        .attr("x", legendX2)
+        .attr("y", teamY)
+        .attr("class", "legend")
+        .style "fill", -> color(team.id)
+        .text("hide")
         .on "click", ->
-          currentlyHidden = team.get("hidden")
-          team.set("hidden", !currentlyHidden)
-
-          newLineOpacity = if currentlyHidden then 1 else 0
-          newLegendX = if currentlyHidden then legendX else legendX2
-          d3.select("#{selector} #line-#{team.id}")
-            .transition()
-            .duration(700)
-            .style("opacity", newLineOpacity)
-          d3.select("#{selector} #legend-#{team.id}")
-            .transition()
-            .duration(700)
-            .attr("x", newLegendX)
-
-        .on "dblclick", =>
-          currentlyHidden = team.get("hidden")
-          if currentlyHidden
-            @teams.each (t) -> t.set("hidden", false)
-            d3.selectAll("#{selector} .line-path")
-              .transition()
-              .duration(700)
-              .style("opacity", 1)
-            d3.select("#{selector} .legend")
-              .transition()
-              .duration(700)
-              .attr("x", legendX)
-          else
-            @teams.each (t) -> t.set("hidden", true)
-            team.set("hidden", false)
-            d3.selectAll("#{selector} .line-path")
-              .transition()
-              .duration(700)
-              .style("opacity", 0)
-            d3.select("#{selector} .legend")
-              .transition()
-              .duration(700)
-              .attr("x", legendX2)
-            d3.select("#{selector} #line-#{team.id}")
-              .transition()
-              .duration(700)
-              .style("opacity", 1)
-            d3.select("#{selector} #legend-#{team.id}")
-              .transition()
-              .duration(700)
-              .attr("x", legendX)
-
-  addHelpText: (svg, {height, width, margin}) ->
-    left = width + (margin.right / 2) + 25
-    helpText = svg.append("text")
-      .attr("x", left)
-      .attr("y", height)
-    helpText.append("tspan")
-      .text("(click or double click")
-    helpText.append("tspan")
-      .attr("dy", "1em")
-      .attr("x", left + 20)
-      .text("name to hide)")
+          hideTeam(team)
+      svg.append("text")
+        .attr("x", legendX2 + 30)
+        .attr("y", teamY)
+        .attr("class", "legend")
+        .style "fill", -> color(team.id)
+        .text("show")
+        .on "click", ->
+          showTeam(team)
+      svg.append("text")
+        .attr("x", legendX2 + 70)
+        .attr("y", teamY)
+        .attr("class", "legend")
+        .style "fill", -> color(team.id)
+        .text("show only")
+        .on "click", =>
+          @teams.each (t) ->
+            if t.id == team.id
+              showTeam(t)
+            else
+              hideTeam(t)
 
   addAxis: (svg, {height, width, xAxis, yAxis, yLabel, margin}) ->
     svg.append("g")
