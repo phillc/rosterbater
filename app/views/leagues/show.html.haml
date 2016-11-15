@@ -8,7 +8,8 @@
 - if !@league.complete?
   %p No teams present. Please sync this league with Yahoo.
   - if policy(@league).sync?
-    = link_to "Sync this league with Yahoo", sync_league_path(@league), method: :post, class: "btn btn-info navbar-btn pull-left", data: { disable_with: "Syncing..." }
+    %p
+      = link_to "Sync this league with Yahoo", sync_league_path(@league), method: :post, class: "btn btn-info navbar-btn pull-left", data: { disable_with: "Syncing..." }
   - else
     %p Please refresh in a few minutes to sync.
 - else
