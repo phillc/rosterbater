@@ -110,12 +110,14 @@ class ChartsView extends Backbone.View
       .range([height, 0])
 
     xAxis = d3.svg.axis().scale(x)
-        .orient("bottom").ticks(@weeks)
+        .orient("bottom")
+        .ticks(@weeks)
         .innerTickSize(-height)
         .outerTickSize(0)
 
     yAxis = d3.svg.axis().scale(y)
-        .orient("left").ticks(@teams.size())
+        .orient("left")
+        .ticks(@teams.size())
 
     standingLine = d3.svg.line()
       .x (d) -> x(d.week)

@@ -62,16 +62,15 @@ class EcrRankingsService
 
     def initialize(original)
       @original = original
-      @doc = CSV.parse(original, col_sep: "\t")
+      @doc = CSV.parse(original).reject{|row| row.size <= 1}
     end
 
     def title
-      @doc[1].first.strip
+      Time.now.to_s
     end
 
     def rankings
       @doc
-        .drop(5)
         .map { |draft_ranking| EcrRanking.new(draft_ranking) }
     end
   end
