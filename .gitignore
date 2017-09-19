@@ -19,3 +19,5 @@
 .env.development
 
 coverage
+
+.DS_Store

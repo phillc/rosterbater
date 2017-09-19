@@ -13,11 +13,11 @@ describe LeaguePolicy do
     end
 
     it "denies if the user recently hasn't finished a sync" do
-      expect(subject).to_not permit(build(:user, sync_started_at: 2.minutes.ago, sync_finished_at: nil))
+      expect(subject).to_not permit(build(:user, sync_started_at: 20.seconds.ago, sync_finished_at: nil))
     end
 
     it "denies if the user recently finished a sync" do
-      expect(subject).to_not permit(build(:user, sync_started_at: 2.minutes.ago, sync_finished_at: 1.minute.ago))
+      expect(subject).to_not permit(build(:user, sync_started_at: 20.seconds.ago, sync_finished_at: 1.minute.ago))
     end
 
     it "grants if the user finished a sync a while ago" do
@@ -25,7 +25,7 @@ describe LeaguePolicy do
     end
 
     it "denies if the user starts up another sync" do
-      expect(subject).to_not permit(build(:user, sync_started_at: 2.minutes.ago, sync_finished_at: 44.minutes.ago))
+      expect(subject).to_not permit(build(:user, sync_started_at: 20.seconds.ago, sync_finished_at: 44.minutes.ago))
     end
   end
 end

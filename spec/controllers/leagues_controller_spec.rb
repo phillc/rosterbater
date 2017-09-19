@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LeaguesController do
   let(:user) { create(:user) }
-  let!(:league) { create(:league, users: [user]) }
+  let!(:league) { create(:league, users: [user], sync_finished_at: 1.hour.ago) }
 
   before do
     login_as(user)
@@ -39,6 +39,7 @@ describe LeaguesController do
       create(:draft_pick, pick: 1, yahoo_team_key: "teamkey1", yahoo_player_key: "pick1", league: league)
 
       get 'draft_board', id: league
+      expect(response).to be_success
 
       team, infos = assigns(:picks).first
       expect(team).to eq team1

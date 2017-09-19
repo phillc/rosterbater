@@ -209,25 +209,9 @@ class YahooService
   def get(path)
     Rails.logger.info "YahooService request: #{path}"
     retries = 0
-    # begin
-      response = fantasy_token.get "/fantasy/v2/#{path}"
-      Rails.logger.info "response: #{response.body}"
-    # rescue OAuth::Problem => e
-    #   if retries < 2
-    #     if e.problem == "token_expired"
-    #       refresh_token!
-    #       retries = retries + 1
-    #       retry
-    #     elsif e.problem == "consumer_key_unknown"
-    #       retries = retries + 1
-    #       retry
-    #     else
-    #       raise
-    #     end
-    #   else
-    #     raise
-    #   end
-    # end
+    refresh_token
+    response = token.get "/fantasy/v2/#{path}"
+    Rails.logger.info "response: #{response.body}"
     Nokogiri::XML(response.body)
   end
 
@@ -235,15 +219,12 @@ class YahooService
 
   def oauth_client
     @oauth_client ||= begin
-      options = {
-        site: 'https://api.login.yahoo.com',
-        # scheme: :query_string,
-        # request_token_path: '/oauth/v2/get_request_token',
-        # access_token_path: '/oauth/v2/get_token',
-        # authorize_path: '/oauth/v2/request_auth'
-      }
-      client = OAuth2::Client.new(APP_CONFIG[:yahoo][:key], APP_CONFIG[:yahoo][:secret], options)
-      # client.http.set_debug_output($stdout)
+                        options = {
+                          site: 'https://api.login.yahoo.com',
+                          authorize_url: '/oauth2/request_auth',
+                          token_url: '/oauth2/get_token'
+                        }
+                        client = OAuth2::Client.new(APP_CONFIG[:yahoo][:key], APP_CONFIG[:yahoo][:secret], options)
       client
     end
   end
@@ -254,27 +235,31 @@ class YahooService
         site: "https://fantasysports.yahooapis.com"
       }
       client = OAuth2::Client.new(APP_CONFIG[:yahoo][:key], APP_CONFIG[:yahoo][:secret], options)
-      # client.http.set_debug_output($stdout)
       client
     end
   end
 
-  def fantasy_token
-    OAuth2::AccessToken.from_hash(fantasy_client, oauth_hash)
+  def token
+    OAuth2::AccessToken.from_hash(fantasy_client, access_token: @user.yahoo_token)
   end
 
-  def oauth_hash
-    {
-      access_token: @user.yahoo_token
-    }
+  def refresh_token
+    if !@user.yahoo_expires_at || (@user.yahoo_expires_at - 30.seconds).past?
+      refresh_token!
+    end
   end
 
   def refresh_token!
-    request_token = OAuth::RequestToken.new(oauth_consumer, oauth_hash)
+    auth = "Basic #{Base64.strict_encode64("#{APP_CONFIG[:yahoo][:key]}:#{APP_CONFIG[:yahoo][:secret]}")}"
 
-    access_token = request_token.get_access_token({oauth_session_handle: @user.yahoo_session_handle, token: token})
+    new_token = oauth_client.get_token({
+      refresh_token: @user.yahoo_refresh_token,
+      grant_type: 'refresh_token',
+      headers: { 'Authorization' => auth } })
 
-    @user.update(yahoo_token: access_token.token, yahoo_token_secret: access_token.secret)
+      @user.update!(yahoo_token: new_token.token,
+                    yahoo_refresh_token: new_token.refresh_token,
+                    yahoo_expires_at: Time.at(new_token.expires_at))
   end
 
   class Base

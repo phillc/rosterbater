@@ -62,7 +62,7 @@ class EcrRankingsService
 
     def initialize(original)
       @original = original
-      @doc = CSV.parse(original).reject{|row| row.size <= 1}
+      @doc = CSV.parse(original).drop(1).reject{|row| row.size <= 1}
     end
 
     def title
@@ -78,14 +78,15 @@ class EcrRankingsService
   class EcrRanking
     HEADERS = ["Rank",
                "Player Name",
-               "Position",
                "Team",
+               "Position",
                "Bye Week",
                "Best Rank",
                "Worst Rank",
                "Ave Rank",
                "Std Dev",
-               "ADP"]
+               "ADP",
+               "vs ADP"]
 
     HEADERS.each.with_index do |header, i|
       define_method header.downcase.split(" ").join("_") do

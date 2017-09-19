@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
     user.name = auth.info.name
     user.yahoo_token = auth.credentials.token
     user.yahoo_refresh_token = auth.credentials.refresh_token
-    user.yahoo_expires_at = auth.credentials.expires_at
+    user.yahoo_expires_at = Time.at(auth.credentials.expires_at)
     user.save!
 
     sign_in user
