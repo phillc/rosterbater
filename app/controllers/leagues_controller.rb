@@ -16,7 +16,7 @@ class LeaguesController < ApplicationController
     else
       authorize :league, :refresh?
 
-      YahooService.new(current_user).sync_leagues(Game.all)
+      YahooService.new(current_user).sync_leagues([Game.most_recent])
       # Game.all.each do |game|
       #   YahooService.new(current_user).sync_leagues(game)
       # end

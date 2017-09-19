@@ -11,13 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141202171642) do
+ActiveRecord::Schema.define(version: 20170919020140) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
-  create_table "draft_picks", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "draft_picks", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.integer  "pick",             null: false
     t.integer  "round",            null: false
     t.string   "yahoo_team_key",   null: false
@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 20141202171642) do
 
   add_index "draft_picks", ["league_id", "pick"], name: "index_draft_picks_on_league_id_and_pick", unique: true, using: :btree
 
-  create_table "games", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "games", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.integer  "yahoo_game_key", null: false
     t.integer  "yahoo_game_id",  null: false
     t.string   "name",           null: false
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 20141202171642) do
   add_index "games", ["yahoo_game_id"], name: "index_games_on_yahoo_game_id", unique: true, using: :btree
   add_index "games", ["yahoo_game_key"], name: "index_games_on_yahoo_game_key", unique: true, using: :btree
 
-  create_table "leagues", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "leagues", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "name",                                          null: false
     t.string   "yahoo_league_key",                              null: false
     t.integer  "yahoo_league_id",                               null: false
@@ -78,14 +78,14 @@ ActiveRecord::Schema.define(version: 20141202171642) do
 
   add_index "leagues", ["yahoo_league_key"], name: "index_leagues_on_yahoo_league_key", unique: true, using: :btree
 
-  create_table "leagues_users", id: false, force: true do |t|
+  create_table "leagues_users", id: false, force: :cascade do |t|
     t.uuid "league_id"
     t.uuid "user_id"
   end
 
   add_index "leagues_users", ["league_id", "user_id"], name: "index_leagues_users_on_league_id_and_user_id", unique: true, using: :btree
 
-  create_table "managers", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "managers", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "name"
     t.string   "image_url"
     t.string   "yahoo_guid"
@@ -98,7 +98,7 @@ ActiveRecord::Schema.define(version: 20141202171642) do
 
   add_index "managers", ["yahoo_guid", "team_id"], name: "index_managers_on_yahoo_guid_and_team_id", unique: true, using: :btree
 
-  create_table "matchup_teams", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "matchup_teams", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.uuid     "matchup_id",       null: false
     t.string   "yahoo_team_key",   null: false
     t.boolean  "is_winner"
@@ -110,7 +110,7 @@ ActiveRecord::Schema.define(version: 20141202171642) do
 
   add_index "matchup_teams", ["matchup_id", "yahoo_team_key"], name: "index_matchup_teams_on_matchup_id_and_yahoo_team_key", unique: true, using: :btree
 
-  create_table "matchups", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "matchups", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.uuid     "league_id",      null: false
     t.integer  "week"
     t.string   "status"
@@ -121,7 +121,7 @@ ActiveRecord::Schema.define(version: 20141202171642) do
     t.datetime "updated_at"
   end
 
-  create_table "players", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "players", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "yahoo_player_key",                      null: false
     t.string   "yahoo_player_id",                       null: false
     t.string   "full_name"
@@ -153,7 +153,7 @@ ActiveRecord::Schema.define(version: 20141202171642) do
 
   add_index "players", ["yahoo_player_key"], name: "index_players_on_yahoo_player_key", unique: true, using: :btree
 
-  create_table "ranking_profiles", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "ranking_profiles", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.uuid     "game_id",          null: false
     t.string   "name",             null: false
     t.string   "yahoo_player_key"
@@ -163,7 +163,7 @@ ActiveRecord::Schema.define(version: 20141202171642) do
 
   add_index "ranking_profiles", ["game_id", "name"], name: "index_ranking_profiles_on_game_id_and_name", unique: true, using: :btree
 
-  create_table "ranking_reports", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "ranking_reports", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.uuid     "game_id",      null: false
     t.text     "original"
     t.string   "title"
@@ -173,7 +173,7 @@ ActiveRecord::Schema.define(version: 20141202171642) do
     t.datetime "updated_at"
   end
 
-  create_table "rankings", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "rankings", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.integer  "rank",               null: false
     t.string   "position"
     t.string   "team"
@@ -192,7 +192,7 @@ ActiveRecord::Schema.define(version: 20141202171642) do
   add_index "rankings", ["rank", "ranking_report_id"], name: "index_rankings_on_rank_and_ranking_report_id", unique: true, using: :btree
   add_index "rankings", ["ranking_profile_id", "ranking_report_id"], name: "index_rankings_on_ranking_profile_id_and_ranking_report_id", unique: true, using: :btree
 
-  create_table "teams", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "teams", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "name",                  null: false
     t.string   "yahoo_team_key",        null: false
     t.integer  "yahoo_team_id",         null: false
@@ -216,47 +216,36 @@ ActiveRecord::Schema.define(version: 20141202171642) do
 
   add_index "teams", ["yahoo_team_key"], name: "index_teams_on_yahoo_team_key", unique: true, using: :btree
 
-  create_table "users", id: :uuid, default: "uuid_generate_v4()", force: true do |t|
+  create_table "users", id: :uuid, default: "uuid_generate_v4()", force: :cascade do |t|
     t.string   "provider"
     t.string   "email"
-    t.string   "yahoo_uid",            null: false
+    t.string   "yahoo_uid",           null: false
     t.string   "name"
     t.text     "yahoo_token"
-    t.string   "yahoo_token_secret"
-    t.string   "yahoo_session_handle"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "sync_finished_at"
     t.datetime "sync_started_at"
+    t.string   "yahoo_refresh_token"
+    t.datetime "yahoo_expires_at"
   end
 
   add_index "users", ["yahoo_uid"], name: "index_users_on_yahoo_uid", unique: true, using: :btree
 
   add_foreign_key "draft_picks", "leagues", name: "draft_picks_league_id_fk"
-  add_foreign_key "draft_picks", "teams", name: "draft_picks_yahoo_team_key_fk", column: "yahoo_team_key", primary_key: "yahoo_team_key"
-
+  add_foreign_key "draft_picks", "teams", column: "yahoo_team_key", primary_key: "yahoo_team_key", name: "draft_picks_yahoo_team_key_fk"
   add_foreign_key "leagues", "games", name: "leagues_game_id_fk"
-
   add_foreign_key "leagues_users", "leagues", name: "leagues_users_league_id_fk"
   add_foreign_key "leagues_users", "users", name: "leagues_users_user_id_fk"
-
   add_foreign_key "managers", "teams", name: "managers_team_id_fk"
-
   add_foreign_key "matchup_teams", "matchups", name: "matchup_teams_matchup_id_fk"
-  add_foreign_key "matchup_teams", "teams", name: "matchup_teams_yahoo_team_key_fk", column: "yahoo_team_key", primary_key: "yahoo_team_key"
-
+  add_foreign_key "matchup_teams", "teams", column: "yahoo_team_key", primary_key: "yahoo_team_key", name: "matchup_teams_yahoo_team_key_fk"
   add_foreign_key "matchups", "leagues", name: "matchups_league_id_fk"
-
   add_foreign_key "players", "games", name: "players_game_id_fk"
-
   add_foreign_key "ranking_profiles", "games", name: "ranking_profiles_game_id_fk"
-  add_foreign_key "ranking_profiles", "players", name: "ranking_profiles_yahoo_player_key_fk", column: "yahoo_player_key", primary_key: "yahoo_player_key"
-
+  add_foreign_key "ranking_profiles", "players", column: "yahoo_player_key", primary_key: "yahoo_player_key", name: "ranking_profiles_yahoo_player_key_fk"
   add_foreign_key "ranking_reports", "games", name: "ranking_reports_game_id_fk"
-
   add_foreign_key "rankings", "ranking_profiles", name: "rankings_ranking_profile_id_fk"
   add_foreign_key "rankings", "ranking_reports", name: "rankings_ranking_report_id_fk"
-
   add_foreign_key "teams", "leagues", name: "teams_league_id_fk"
-
 end

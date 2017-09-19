@@ -4,7 +4,7 @@ class YahooService
   end
 
   def get_yahoo_games
-    get "/games;game_codes=nfl;seasons=#{(2012..Time.now.year).to_a.join(",")}"
+    get "/games;game_codes=nfl;seasons=#{(Time.now.year..Time.now.year).to_a.join(",")}"
   end
 
   def games
@@ -209,63 +209,63 @@ class YahooService
   def get(path)
     Rails.logger.info "YahooService request: #{path}"
     retries = 0
-    begin
-      response = token.get path
-    rescue OAuth::Problem => e
-      if retries < 2
-        if e.problem == "token_expired"
-          refresh_token!
-          retries = retries + 1
-          retry
-        elsif e.problem == "consumer_key_unknown"
-          retries = retries + 1
-          retry
-        else
-          raise
-        end
-      else
-        raise
-      end
-    end
+    # begin
+      response = fantasy_token.get "/fantasy/v2/#{path}"
+      Rails.logger.info "response: #{response.body}"
+    # rescue OAuth::Problem => e
+    #   if retries < 2
+    #     if e.problem == "token_expired"
+    #       refresh_token!
+    #       retries = retries + 1
+    #       retry
+    #     elsif e.problem == "consumer_key_unknown"
+    #       retries = retries + 1
+    #       retry
+    #     else
+    #       raise
+    #     end
+    #   else
+    #     raise
+    #   end
+    # end
     Nokogiri::XML(response.body)
   end
 
   protected
 
-  def oauth_consumer
-    @oauth_consumer ||= begin
+  def oauth_client
+    @oauth_client ||= begin
       options = {
         site: 'https://api.login.yahoo.com',
-        scheme: :query_string,
-        request_token_path: '/oauth/v2/get_request_token',
-        access_token_path: '/oauth/v2/get_token',
-        authorize_path: '/oauth/v2/request_auth'
+        # scheme: :query_string,
+        # request_token_path: '/oauth/v2/get_request_token',
+        # access_token_path: '/oauth/v2/get_token',
+        # authorize_path: '/oauth/v2/request_auth'
       }
-      consumer = OAuth::Consumer.new(APP_CONFIG[:yahoo][:key], APP_CONFIG[:yahoo][:secret], options)
-      consumer.http.set_debug_output($stdout)
-      consumer
+      client = OAuth2::Client.new(APP_CONFIG[:yahoo][:key], APP_CONFIG[:yahoo][:secret], options)
+      # client.http.set_debug_output($stdout)
+      client
     end
   end
 
-  def fantasy_consumer
-    @fantasy_consumer ||= begin
+  def fantasy_client
+    @fantasy_client ||= begin
       options = {
-        site: "http://fantasysports.yahooapis.com/fantasy/v2"
+        site: "https://fantasysports.yahooapis.com"
       }
-      consumer = OAuth::Consumer.new(APP_CONFIG[:yahoo][:key], APP_CONFIG[:yahoo][:secret], options)
-      consumer.http.set_debug_output($stdout)
-      consumer
+      client = OAuth2::Client.new(APP_CONFIG[:yahoo][:key], APP_CONFIG[:yahoo][:secret], options)
+      # client.http.set_debug_output($stdout)
+      client
     end
   end
 
-  def token
-    OAuth::AccessToken.from_hash(fantasy_consumer, oauth_hash)
+  def fantasy_token
+    OAuth2::AccessToken.from_hash(fantasy_client, oauth_hash)
   end
 
   def oauth_hash
     {
-      oauth_token: @user.yahoo_token,
-      oauth_token_secret: @user.yahoo_token_secret
+      access_token: @user.yahoo_token
     }
   end
 
