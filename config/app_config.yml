@@ -2,4 +2,5 @@ defaults:
   yahoo:
     key: <%= ENV['YAHOO_KEY'] %>
     secret: <%= ENV['YAHOO_SECRET'] %>
+    admin_uid: <%= ENV['YAHOO_ADMIN_UID'] %>
 

@@ -6,6 +6,6 @@ class User < ActiveRecord::Base
   validates :yahoo_uid, presence: true, uniqueness: true
 
   def admin?
-    yahoo_uid == "JBAMN3TTXS5EN3SAWHYJKRRGNU"
+    APP_CONFIG[:yahoo][:admin_uid]
   end
 end

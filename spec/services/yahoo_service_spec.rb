@@ -61,8 +61,7 @@ describe "YahooService" do
   describe "players" do
     let(:game) { create(:game) }
     let(:league) { create(:league, game: game) }
-    let(:response) { double("response") }
-    let(:token) { double("token", get: response) }
+    let(:token) { double("token") }
 
     before do
       expect(service).to receive(:token).and_return(token).at_least(:once)
@@ -70,16 +69,23 @@ describe "YahooService" do
 
     describe "#players" do
       it "goes through the pages" do
-        expect(response).to receive(:body)
-                              .and_return fixture("get_yahoo_game_players_1.xml"),
-                                          fixture("get_yahoo_game_players_2.xml"),
-                                          fixture("get_yahoo_game_players_3.xml")
-        expect(service.players(game).to_a.size).to eq 74
+        expect(token).to receive(:get)
+                           .once
+                           .and_return(double(body: fixture("get_yahoo_game_players_1.xml")))
+        expect(token).to receive(:get)
+                           .once
+                           .and_return(double(body: fixture("get_yahoo_game_players_2.xml")))
+        expect(token).to receive(:get)
+                           .once
+                           .and_return(double(body: fixture("get_yahoo_game_players_3.xml")))
+        players = service.players(game).to_a
+        expect(players.size).to eq 74
       end
 
       it "retains the player attributes" do
-        expect(response).to receive(:body)
-                              .and_return fixture("get_yahoo_game_players_1.xml")
+        expect(token).to receive(:get)
+                           .once
+                           .and_return(double(body: fixture("get_yahoo_game_players_1.xml")))
         player = service.players(game).first
         expect(player.player_key).to eq "314.p.8261"
         expect(player.player_id).to eq "8261"
@@ -110,10 +116,15 @@ describe "YahooService" do
 
     describe "#sync_game" do
       before do
-        expect(response).to receive(:body)
-                              .and_return fixture("get_yahoo_game_players_1.xml"),
-                                          fixture("get_yahoo_game_players_2.xml"),
-                                          fixture("get_yahoo_game_players_3.xml")
+        expect(token).to receive(:get)
+                           .once
+                           .and_return(double(body: fixture("get_yahoo_game_players_1.xml")))
+        expect(token).to receive(:get)
+                           .once
+                           .and_return(double(body: fixture("get_yahoo_game_players_2.xml")))
+        expect(token).to receive(:get)
+                           .once
+                           .and_return(double(body: fixture("get_yahoo_game_players_3.xml")))
       end
 
       it "saves the players" do
@@ -125,10 +136,15 @@ describe "YahooService" do
       it "does not duplicate" do
         service.sync_game(game)
 
-        expect(response).to receive(:body)
-                              .and_return fixture("get_yahoo_game_players_1.xml"),
-                                          fixture("get_yahoo_game_players_2.xml"),
-                                          fixture("get_yahoo_game_players_3.xml")
+        expect(token).to receive(:get)
+                           .once
+                           .and_return(double(body: fixture("get_yahoo_game_players_1.xml")))
+        expect(token).to receive(:get)
+                           .once
+                           .and_return(double(body: fixture("get_yahoo_game_players_2.xml")))
+        expect(token).to receive(:get)
+                           .once
+                           .and_return(double(body: fixture("get_yahoo_game_players_3.xml")))
 
         expect {
           service.sync_game(game)
