@@ -1,4 +1,4 @@
-class CreatePlayers < ActiveRecord::Migration
+class CreatePlayers < ActiveRecord::Migration[4.2]
   def change
     create_table :players, id: :uuid do |t|
       t.string :yahoo_player_key, null: false

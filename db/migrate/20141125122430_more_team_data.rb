@@ -1,4 +1,4 @@
-class MoreTeamData < ActiveRecord::Migration
+class MoreTeamData < ActiveRecord::Migration[4.2]
   def change
     change_table :teams do |t|
       t.boolean :has_clinched_playoffs

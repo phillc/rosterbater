@@ -1,4 +1,4 @@
-class CreateRankings < ActiveRecord::Migration
+class CreateRankings < ActiveRecord::Migration[4.2]
   def change
     create_table :ranking_reports, id: :uuid do |t|
       t.uuid :game_id, null: false

@@ -1,4 +1,4 @@
-class CreateDraftPicks < ActiveRecord::Migration
+class CreateDraftPicks < ActiveRecord::Migration[4.2]
   def change
     create_table :draft_picks, id: :uuid do |t|
       t.integer :pick,             null: false

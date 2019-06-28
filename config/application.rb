@@ -30,7 +30,7 @@ module Kapsh
     config.assets.precompile += ["parity_worker.js"]
 
     config.generators do |g|
-      g.factory_girl dir: "spec/factories", suffix: 'factory'
+      g.factory_bot dir: "spec/factories", suffix: 'factory'
     end
   end
 end

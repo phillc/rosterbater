@@ -1,4 +1,4 @@
-class CreateLeagues < ActiveRecord::Migration
+class CreateLeagues < ActiveRecord::Migration[4.2]
   def change
     create_table :leagues, id: :uuid do |t|
       t.string  :name,             null: false

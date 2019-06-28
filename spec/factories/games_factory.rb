@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :game do
     sequence(:yahoo_game_key) {|n| 200 + n }
     yahoo_game_id { yahoo_game_key }

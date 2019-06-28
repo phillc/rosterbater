@@ -1,4 +1,4 @@
-class MoveStuffAround < ActiveRecord::Migration
+class MoveStuffAround < ActiveRecord::Migration[4.2]
   class User < ActiveRecord::Base; end
   class Ranking < ActiveRecord::Base; end
   class DraftPick < ActiveRecord::Base; end

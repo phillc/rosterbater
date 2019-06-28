@@ -1,4 +1,4 @@
-class CreateGames < ActiveRecord::Migration
+class CreateGames < ActiveRecord::Migration[4.2]
   def change
     create_table :games, id: :uuid do |t|
       t.integer :yahoo_game_key, null: false

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :team do
     name { Faker::Company.name }
     sequence(:yahoo_team_key) {|n| "tplayer.#{n}" }

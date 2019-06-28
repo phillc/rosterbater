@@ -1,4 +1,4 @@
-class AddKeys < ActiveRecord::Migration
+class AddKeys < ActiveRecord::Migration[4.2]
   def change
     add_foreign_key "draft_picks", "leagues", name: "draft_picks_league_id_fk"
     add_foreign_key "draft_picks", "players", name: "draft_picks_yahoo_player_key_fk", column: "yahoo_player_key", primary_key: "yahoo_player_key"

@@ -1,4 +1,4 @@
-class AddPlayoffStartWeekToLeagues < ActiveRecord::Migration
+class AddPlayoffStartWeekToLeagues < ActiveRecord::Migration[4.2]
   class League < ActiveRecord::Base; end
 
   def change
