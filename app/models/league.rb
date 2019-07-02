@@ -17,7 +17,7 @@ class League < ActiveRecord::Base
       .where.not(sync_finished_at: nil)
       .group("leagues.id")
       .having("count(leagues.id) > 0")
-      .order("RANDOM()")
+      .order(Arel.sql("RANDOM()"))
   }
   scope :interesting_season, -> {
     joins(:matchups)
@@ -25,9 +25,9 @@ class League < ActiveRecord::Base
       .where(start_week: 1)
       .group("leagues.id")
       .having("count(leagues.id) > 0")
-      .order("RANDOM()")
+      .order(Arel.sql("RANDOM()"))
   }
-  scope :active, -> { where(game_id: Game.most_recent) }
+  scope :active, -> { where(game_id: Game.by_season.first(2)) }
 
   validates :name,
             :game,

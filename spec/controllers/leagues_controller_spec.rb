@@ -17,7 +17,7 @@ describe LeaguesController do
 
   describe "GET 'show'" do
     it "returns http success" do
-      get 'show', id: league
+      get 'show', params: { id: league }
       expect(response).to be_success
     end
   end
@@ -38,7 +38,7 @@ describe LeaguesController do
       create(:draft_pick, pick: 2, yahoo_team_key: "teamkey2", yahoo_player_key: "pick2", league: league)
       create(:draft_pick, pick: 1, yahoo_team_key: "teamkey1", yahoo_player_key: "pick1", league: league)
 
-      get 'draft_board', id: league
+      get 'draft_board', params: { id: league }
       expect(response).to be_success
 
       team, infos = assigns(:picks).first
