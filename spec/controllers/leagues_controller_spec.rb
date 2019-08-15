@@ -10,14 +10,14 @@ describe LeaguesController do
 
   describe "GET 'index'" do
     it "returns http success" do
-      get 'index'
+      get leagues_path
       expect(response).to be_success
     end
   end
 
   describe "GET 'show'" do
     it "returns http success" do
-      get 'show', params: { id: league }
+      get league_path(league)
       expect(response).to be_success
     end
   end
