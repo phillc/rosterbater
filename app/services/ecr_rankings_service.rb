@@ -77,6 +77,8 @@ class EcrRankingsService
 
   class EcrRanking
     HEADERS = ["Rank",
+               "Tier",
+               "WSID",
                "Player Name",
                "Team",
                "Position",

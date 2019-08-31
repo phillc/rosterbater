@@ -11,7 +11,7 @@ describe "EcrRankingsService" do
       let(:report) { service.standard_draft_report(standard_rankings) }
 
       it "returns the count of rankings" do
-        expect(report.rankings.size).to eq 371
+        expect(report.rankings.size).to eq 550
       end
 
       it "returns the title" do
@@ -20,7 +20,7 @@ describe "EcrRankingsService" do
 
       it "has the rank" do
         expect(report.rankings.first.rank).to eq "1"
-        expect(report.rankings.last.rank).to eq "371"
+        expect(report.rankings.last.rank).to eq "550"
       end
     end
 
@@ -34,7 +34,7 @@ describe "EcrRankingsService" do
       it "saves the rankings" do
         expect {
           service.sync_standard_draft_rankings(game, standard_rankings)
-        }.to change{ Ranking.count }.by(371)
+        }.to change{ Ranking.count }.by(550)
       end
 
       it "does not duplicate reports" do
@@ -71,14 +71,14 @@ describe "EcrRankingsService" do
         ranking = Ranking.find_by(rank: "1")
 
         expect(ranking.rank).to eq 1
-        expect(ranking.ranking_profile.name).to eq "David Johnson"
+        expect(ranking.ranking_profile.name).to eq "Saquon Barkley"
         expect(ranking.position).to eq "RB1"
-        expect(ranking.team).to eq "ARI"
-        expect(ranking.bye_week).to eq 8
+        expect(ranking.team).to eq "NYG"
+        expect(ranking.bye_week).to eq 11
         expect(ranking.best_rank).to eq "1"
-        expect(ranking.worst_rank).to eq "2"
-        expect(ranking.ave_rank).to eq "1.2"
-        expect(ranking.std_dev).to eq "0.4"
+        expect(ranking.worst_rank).to eq "6"
+        expect(ranking.ave_rank).to eq "1.5"
+        expect(ranking.std_dev).to eq "0.8"
         expect(ranking.adp).to eq "1.0"
       end
     end
@@ -91,7 +91,7 @@ describe "EcrRankingsService" do
       it "saves the rankings" do
         expect {
           service.sync_ppr_draft_rankings(game, ppr_rankings)
-        }.to change{ Ranking.count }.by(376)
+        }.to change{ Ranking.count }.by(526)
       end
     end
   end
@@ -104,7 +104,7 @@ describe "EcrRankingsService" do
         expect(RankingReport.where(ranking_type: "half_ppr").count).to eq 0
         expect {
           service.sync_half_ppr_draft_rankings(game, half_ppr_rankings)
-        }.to change{ Ranking.count }.by(376)
+        }.to change{ Ranking.count }.by(526)
         expect(RankingReport.where(ranking_type: "half_ppr").count).to eq 1
       end
     end
