@@ -10,15 +10,16 @@ describe LeaguesController do
 
   describe "GET 'index'" do
     it "returns http success" do
-      get leagues_path
-      expect(response).to be_success
+      get :index
+
+      expect(response).to have_http_status(:ok)
     end
   end
 
   describe "GET 'show'" do
     it "returns http success" do
-      get league_path(league)
-      expect(response).to be_success
+      get :show, params: { id: league.id }
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -39,7 +40,7 @@ describe LeaguesController do
       create(:draft_pick, pick: 1, yahoo_team_key: "teamkey1", yahoo_player_key: "pick1", league: league)
 
       get 'draft_board', params: { id: league }
-      expect(response).to be_success
+      expect(response).to have_http_status(:ok)
 
       team, infos = assigns(:picks).first
       expect(team).to eq team1

@@ -3,7 +3,7 @@ ruby '2.6.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'pg'
-gem 'rails', '6.0.0.rc1'
+gem 'rails', '6.0.0'
 # Use postgresql as the database for Active Record
 # Use SCSS for stylesheets
 gem 'sass-rails'
@@ -46,7 +46,8 @@ group :development, :test do
   gem 'dotenv-rails'
   gem 'faker'
   gem 'pry-rails'
-  gem 'rspec-rails'
+  gem 'rspec-rails', '4.0.0.beta2'
+  gem 'rails-controller-testing'
   gem 'webmock', require: false
 end
 
