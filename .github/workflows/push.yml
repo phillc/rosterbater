@@ -1,0 +1,53 @@
+name: Building and Testing
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Build
+      run: docker-compose up -d
+    - name: Test
+      run: docker-compose run app rspec
+
+# name: Building and Testing
+# on: push
+# jobs:
+#   testing:
+#     name: Test
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@master
+#     - name: Set up Ruby 2.6
+#       uses: actions/setup-ruby@v1
+#       with:
+#         ruby-version: 2.6.x
+#     - name: Build and test with Rake
+#       run: |
+#         gem install bundler
+#         bundle install --jobs 4 --retry 3
+#         bundle exec rspec
+    # - name: Lint
+    #   uses: actions/action-builder/shell@master
+    #   with:
+    #     entrypoint: make
+    #     args: lint
+    # - name: Build
+    #   uses: actions/action-builder/docker@master
+    #   with:
+    #     entrypoint: make
+    #     args: build
+    # - name: Publish Filter
+    #   uses: actions/bin/filter@master
+    #   with:
+    #     args: branch master
+    # - name: Docker Login
+    #   uses: actions/docker/login@master
+    #   env:
+    #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    # - name: Publish
+    #   uses: actions/action-builder/docker@master
+    #   with:
+    #     entrypoint: make
+    #     args: publish
