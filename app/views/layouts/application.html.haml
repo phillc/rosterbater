@@ -31,12 +31,6 @@
           %a(class="navbar-brand" href="/") Rosterbater
 
         %ul.nav.navbar-nav.navbar-right
-          %li.social-button
-            <a href="https://twitter.com/share" class="twitter-share-button" data-text="Fantasy football visualizations" data-via="rosterbaterapp" data-url="http://rosterbater.com">Tweet</a>
-            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-          %li.social-button
-            <div class="fb-share-button" data-href="http://rosterbater.com" data-layout="button_count"></div>
-
           - if policy(:game).index?
             %li= link_to "Game Admin", games_path
           - if current_user
