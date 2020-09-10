@@ -22,6 +22,9 @@ gem 'jquery-tablesorter'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder'
 
+# until I figure out manifest.js
+gem "sprockets", "<4"
+
 gem 'bootstrap-sass'
 gem 'd3_rails'
 gem 'factory_bot_rails'

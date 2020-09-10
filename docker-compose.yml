@@ -4,6 +4,8 @@ services:
     image: postgres:12-alpine
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
   redis:
     image: redis:5.0.5-alpine
     container_name: redis

@@ -7,5 +7,5 @@ fi
 
 echo "Running RAILS_ENV=$RAILS_ENV $@"
 
-exec bundle exec "$@"
+exec "$@"
 

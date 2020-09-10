@@ -10,5 +10,10 @@ jobs:
     - name: Build
       run: docker-compose up -d
     - name: Test
-      run: docker-compose run app rspec
-
+      run: docker-compose run app bundle exec rspec
+    - name: Lint Code Base
+      uses: github/super-linter@v3
+      env:
+        VALIDATE_ALL_CODEBASE: false
+        DEFAULT_BRANCH: master
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
