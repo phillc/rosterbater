@@ -5,9 +5,7 @@ metadata:
   labels:
     {{- include "chart.labels" . | nindent 4 }}
 spec:
-{{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-{{- end }}
   selector:
     matchLabels:
       {{- include "chart.selectorLabels" . | nindent 6 }}
@@ -35,16 +33,75 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 3000
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          env:
+            - name: ROSTERBATER_DATABASE_HOST
+              value: {{ printf "%s-%s.%s" .Release.Name "postgresql" "default.svc.cluster.local" }}
+            - name: ROSTERBATER_DATABASE_USERNAME
+              value: "postgres"
+            - name: ROSTERBATER_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.existingSecret }}
+                  key: postgresql-password
+            - name: RAILS_ENV
+              value: "production"
+            - name: RACK_ENV
+              value: "production"
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" .Release.Name "app" }}
+                  key: secret-key-base
+            - name: LANG
+              value: "en_US.UTF-8"
+            - name: MAX_THREADS
+              value: "2"
+            - name: MIN_THREADS
+              value: "2"
+            - name: PUMA_WORKERS
+              value: "1"
+            - name: NEW_RELIC_APP_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" .Release.Name "app" }}
+                  key: new-relic-app-name
+            - name: NEW_RELIC_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" .Release.Name "app" }}
+                  key: new-relic-license-key
+            - name: NEW_RELIC_LOG
+              value: stdout
+            - name: RAYGUN_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" .Release.Name "app" }}
+                  key: raygun-apikey
+            - name: YAHOO_ADMIN_UID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" .Release.Name "app" }}
+                  key: yahoo-admin-uid
+            - name: YAHOO_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" .Release.Name "app" }}
+                  key: yahoo-key
+            - name: YAHOO_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" .Release.Name "app" }}
+                  key: yahoo-secret
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

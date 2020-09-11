@@ -22,4 +22,4 @@ coverage
 
 .DS_Store
 
-kubeconfig.yaml
+*kubeconfig.yaml
