@@ -84,5 +84,6 @@ test:
 production:
   <<: *default
   database: rosterbater_production
-  username: rosterbater
+  host: <%= ENV['ROSTERBATER_DATABASE_HOST'] %>
+  username: <%= ENV['ROSTERBATER_DATABASE_USERNAME'] %>
   password: <%= ENV['ROSTERBATER_DATABASE_PASSWORD'] %>
