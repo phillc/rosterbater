@@ -3,7 +3,7 @@ ruby '2.6.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'pg'
-gem 'rails', '6.0.0'
+gem 'rails', '~>6.0.0'
 # Use postgresql as the database for Active Record
 # Use SCSS for stylesheets
 gem 'sass-rails'
