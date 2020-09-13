@@ -10,7 +10,7 @@ jobs:
     - name: Build
       run: docker-compose up -d
     - name: Test
-      run: docker-compose run app bundle exec rspec
+      run: docker-compose run app "rake db:test:prepare && bundle exec rspec"
     - name: Lint Code Base
       uses: github/super-linter@v3
       env:
