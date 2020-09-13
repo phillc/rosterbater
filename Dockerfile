@@ -24,8 +24,7 @@ EXPOSE 3000
 
 FROM rosterbater-base as rosterbater-development
 
-ENV RAILS_ENV=development
-RUN bundle install --jobs 20 --retry 5
+RUN bundle install --jobs 20 --retry 5 --with test
 
 COPY . /app
 
