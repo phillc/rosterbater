@@ -60,12 +60,4 @@ namespace :fixtures do
     recorder.save("get_standard_draft_rankings.xls", service.get_standard_draft_rankings)
     recorder.save("get_ppr_draft_rankings.xls", service.get_ppr_draft_rankings)
   end
-
-  desc "Update Odds fixtures"
-  task update_odds: :environment do
-    service = OddsService.new
-    recorder = XMLRecorder.new
-
-    recorder.save("get_odds.xml", service.get_odds)
-  end
 end
