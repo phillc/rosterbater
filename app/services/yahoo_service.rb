@@ -148,7 +148,6 @@ class YahooService
   end
 
   def sync_league_draft_results(league, details)
-    league_draft_picks = league.draft_picks.all
     draft_results = details.draft_results
     draft_results.each do |yahoo_draft_result|
       pick = league.draft_picks.detect{ |draft_pick| draft_pick.pick == yahoo_draft_result.pick.to_i }
@@ -208,7 +207,6 @@ class YahooService
 
   def get(path)
     Rails.logger.info "YahooService request: #{path}"
-    retries = 0
     refresh_token
     response = token.get "/fantasy/v2/#{path}"
     Rails.logger.info "response: #{response.body}"

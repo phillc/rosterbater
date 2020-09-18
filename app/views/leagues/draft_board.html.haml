@@ -51,14 +51,14 @@
     %thead
       %tr
         %th.round-number #
-        - @picks.each do |(team, _)|
+        - @teams.each do |(team, _)|
           %th= team.name
     %tbody
-      - if !@picks.empty?
-        - @picks.first.last.size.times do |i|
+      - if !@teams.empty?
+        - @teams.first.last.size.times do |i|
           %tr
             %td.round-number= i + 1
-            - @picks.each do |(_, pick_infos)|
+            - @teams.each do |(_, pick_infos)|
               - info = pick_infos[i]
               %td{class: ranking_class(@ranking_type, info)}
                 %div
@@ -73,6 +73,11 @@
                     = info.rank_value
                 %div
                   #{info.team_abbr} - #{info.position}
+        - if @league.is_auction_draft?
+          %tr
+            %td t
+            - @teams.each do |(team, pick_infos)|
+              %td #{pick_infos.map(&:cost).sum}
 
 %br
 %br

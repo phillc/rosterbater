@@ -68,7 +68,7 @@ class LeaguesController < ApplicationController
                                           else "ecr_standard"
                                         end
 
-    @picks =
+    @teams =
       @league
         .draft_picks
         .order(auction_pick: :asc, pick: :asc)

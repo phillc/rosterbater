@@ -42,11 +42,11 @@ describe LeaguesController do
       get 'draft_board', params: { id: league }
       expect(response).to have_http_status(:ok)
 
-      team, infos = assigns(:picks).first
+      team, infos = assigns(:teams).first
       expect(team).to eq team1
       expect(infos.map(&:draft_pick).map(&:yahoo_player_key)).to eq ["pick1", "pick6", "pick7"]
 
-      team, infos = assigns(:picks).to_a.last
+      team, infos = assigns(:teams).to_a.last
       expect(team).to eq team3
       expect(infos.map(&:draft_pick).map(&:yahoo_player_key)).to eq ["pick3", "pick4", "pick9"]
     end
