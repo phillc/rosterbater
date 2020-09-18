@@ -23,7 +23,7 @@ class RankingProfile < ActiveRecord::Base
       end
       if !player
         clean = ->(val){ "trim(both ' ' from
-                            regexp_replace(lower(#{val}), '(\\.|jr|sr)', '', 'g')
+                            regexp_replace(lower(#{val}), '(\\.|jr|sr| i$| ii$| iii$| iv$| v$)', '', 'g')
                           )" }
         player = game.players.where("#{clean.("full_name")} = #{clean.("?")}", name).first
       end

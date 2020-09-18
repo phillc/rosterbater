@@ -5,7 +5,7 @@ describe RankingProfile do
 
   describe "#link" do
     it "can find nothing" do
-      player = create(:player, full_name: "unmatched", game: ranking_profile.game)
+      create(:player, full_name: "unmatched", game: ranking_profile.game)
       expect(ranking_profile.player).to eq nil
 
       ranking_profile.link
@@ -68,6 +68,30 @@ describe RankingProfile do
 
       ranking_profile.reload
       expect(ranking_profile.player).to eq player
+    end
+
+    %w(I II III IV V).each do |numeral| 
+      it "ignores roman numeral #{numeral}" do
+        ranking_profile.update! name: "Chris Herndon"
+        player = create(:player, full_name: "Chris Herndon #{numeral}", game: ranking_profile.game)
+        expect(ranking_profile.player).to eq nil
+
+        ranking_profile.link
+
+        ranking_profile.reload
+        expect(ranking_profile.player).to eq player
+      end
+
+      it "doesn't assume a suffix is a roman numeral" do
+        ranking_profile.update! name: "Chris Herndon"
+        create(:player, full_name: "Chris Herndon#{numeral}", game: ranking_profile.game)
+        expect(ranking_profile.player).to eq nil
+
+        ranking_profile.link
+
+        ranking_profile.reload
+        expect(ranking_profile.player).to eq nil
+      end
     end
 
     it "Timothy is Tim" do
