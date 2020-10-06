@@ -6,6 +6,6 @@ class User < ActiveRecord::Base
   validates :yahoo_uid, presence: true, uniqueness: true
 
   def admin?
-    yahoo_uid == APP_CONFIG[:yahoo][:admin_uid]
+    APP_CONFIG[:yahoo][:all_admin] || yahoo_uid == APP_CONFIG[:yahoo][:admin_uid]
   end
 end

@@ -6,11 +6,9 @@
 - Create yahoo app, with API permissions for Fantasy Sports, and OpenID Connect https://developer.yahoo.com/apps/ . For an easier authentication workflow, set the domain to `rosterbater.test`.
 - Add yahoo key, and yahoo secret to the environment.
   - This project uses dot env, so one way to achieve that is to copy .env.example to .env in the server dirextory and fill them out there.
-- To retrieve player data, add your yahoo uid to the environment.
+- Player data
   - Should only be necessary for draft related tools.
-  - You can get your uid by leaving it blank, starting the app, sign in with yahoo, then running `rails runner 'puts User.first.yahoo_uid'` or `docker-compose run app rails runner 'puts User.first.yahoo_uid'`.
-  - This enables the Game Admin page in the top navigation.
-    - Sync players retrieves player data from yahoo.
+  - In Game Admin, Sync players retrieves player data from yahoo.
 
 To run the app, run `docker-compose up`.
 
