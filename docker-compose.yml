@@ -28,7 +28,10 @@ services:
       - db
     labels:
       - "traefik.enable=true"
+      - "traefik.http.middlewares.https_redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.https_redirect.redirectscheme.permanent=true"
       - "traefik.http.routers.http-app.rule=Host(`rosterbater.test`)"
+      - "traefik.http.routers.http-app.middlewares=https_redirect"
       - "traefik.http.routers.https-app.rule=Host(`rosterbater.test`)"
       - "traefik.http.routers.https-app.tls=true"
   reverse-proxy:
