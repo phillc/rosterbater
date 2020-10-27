@@ -14,11 +14,11 @@
 
 To run the app, run `docker-compose up`.
 
-# Test domain
+## Test domain
 
 The yahoo api requires an https url.
 
-I suggest you add `127.0.0.1 rosterbater.test` to your `/etc/hosts` file. Traefik is configured to create a locally signed ssl cert to serve `https://rosterbater.test`. 
+I suggest you add `127.0.0.1 rosterbater.test` to your `/etc/hosts` file, and run `make dev-cert`. Traefik is configured to create a locally signed ssl cert to serve `https://rosterbater.test`.
 
 ## Notes
 
