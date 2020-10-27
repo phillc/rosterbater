@@ -42,6 +42,7 @@
       %footer.footer
         %p &copy; Rosterbater #{Time.now.year} - #{link_to "See on Github", "https://github.com/phillc/rosterbater"}
 
+    <script src="https://d3js.org/d3.v6.js"></script>
     = javascript_include_tag "application"
     = render "layouts/google_analytics"
     = yield :page_javascripts

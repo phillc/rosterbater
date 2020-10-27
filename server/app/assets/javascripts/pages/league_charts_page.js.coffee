@@ -59,7 +59,7 @@ class ChartsView extends Backbone.View
     width = 1000 - margin.left - margin.right
     height = 600 - margin.top - margin.bottom
 
-    x = d3.scale.linear()
+    x = d3.scaleLinear()
       .domain([1, @weeks])
       .range([0, width])
 
@@ -68,19 +68,17 @@ class ChartsView extends Backbone.View
       week = i + 1
       pointsExtents = pointsExtents.concat(d3.extent @weekStandings[week], (d) -> d[dataPoint])
 
-    y = d3.scale.linear()
+    y = d3.scaleLinear()
       .domain(d3.extent(pointsExtents))
       .range([height, 0])
 
-    xAxis = d3.svg.axis().scale(x)
-        .orient("bottom").ticks(@weeks)
-        .innerTickSize(-height)
-        .outerTickSize(0)
+    xAxis = d3.axisBottom().scale(x)
+        .ticks(@weeks)
 
-    yAxis = d3.svg.axis().scale(y)
-        .orient("left").ticks(@teams.size())
+    yAxis = d3.axisLeft().scale(y)
+        .ticks(@teams.size())
 
-    pointsLine = d3.svg.line()
+    pointsLine = d3.line()
       .x (d) -> x(d.week)
       .y (d) -> y(d[dataPoint])
 
@@ -102,24 +100,20 @@ class ChartsView extends Backbone.View
     width = 1000 - margin.left - margin.right
     height = Math.max(200, @teams.size() * 30) - margin.top - margin.bottom
 
-    x = d3.scale.linear()
+    x = d3.scaleLinear()
       .domain([1, @weeks])
       .range([0, width])
-    y = d3.scale.linear()
+    y = d3.scaleLinear()
       .domain([@teams.size(), 1])
       .range([height, 0])
 
-    xAxis = d3.svg.axis().scale(x)
-        .orient("bottom")
+    xAxis = d3.axisBottom().scale(x)
         .ticks(@weeks)
-        .innerTickSize(-height)
-        .outerTickSize(0)
 
-    yAxis = d3.svg.axis().scale(y)
-        .orient("left")
+    yAxis = d3.axisLeft().scale(y)
         .ticks(@teams.size())
 
-    standingLine = d3.svg.line()
+    standingLine = d3.line()
       .x (d) -> x(d.week)
       .y (d) -> y(d.standing)
 
@@ -148,7 +142,7 @@ class ChartsView extends Backbone.View
   addData: (svg, {height, width, margin, line, selector}) ->
     legendX = width + margin.right / 15
     legendX2 = width + (margin.right / 2) + 25
-    color = d3.scale.category20()
+    color = d3.scaleOrdinal(d3.schemeTableau10)
 
     hideTeam = (team) ->
       d3.select("#{selector} #line-#{team.id}")

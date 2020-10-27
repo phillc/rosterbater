@@ -57,11 +57,10 @@ class ParityView extends Backbone.View
         weekX: centerX + ((radius * .7) * Math.cos(2 * Math.PI * (inc - weekOffset)))
         weekY: centerY + ((radius * .7) * Math.sin(2 * Math.PI * (inc - weekOffset)))
 
-    force = d3.layout.force()
-      .nodes(nodes)
-      .links(links)
-      .size([width, height])
-      .start()
+    force = d3.forceSimulation(nodes)
+      .force("charge", d3.forceManyBody())
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .force("link", d3.forceLink().id((d) -> return d.teamId).links(links))
 
     svg = d3.select("#parity-viz")
       .append("svg")
@@ -109,22 +108,22 @@ class ParityView extends Backbone.View
       .style "fill", (d) -> "url(#logo-#{d.teamId})"
       # .style "fill", "none"
 
-    arc = d3.svg.arc()
+    arc = d3.arc()
       .innerRadius (d) -> dotSize
       .outerRadius (d) -> dotSize * 1.2
       .startAngle(0)
       .endAngle(2 * Math.PI)
 
     path = svg.append("g").selectAll("path")
-      .data(force.links())
+      .data(links)
       .enter().append("path")
       .attr("stroke", "#ccc")
       .attr("stroke-width", 10)
       .attr("fill", "none")
       .attr "marker-end", (d) -> "url(#arrow)"
       .attr "d", (d) ->
-        source = _.findWhere(nodes, teamId: d.source)
-        target = _.findWhere(nodes, teamId: d.target)
+        source = _.findWhere(nodes, teamId: d.source.teamId)
+        target = _.findWhere(nodes, teamId: d.target.teamId)
         dx = target.cx - source.cx
         dy = target.cy - source.cy
         dr = Math.sqrt(dx * dx + dy * dy) / 3
@@ -151,15 +150,15 @@ class ParityView extends Backbone.View
       .attr "transform", (d) -> "translate(#{d.cx},#{d.cy})"
 
     weekText = svg.append("g").selectAll("text")
-      .data(force.links())
+      .data(links)
       .enter().append("text")
       .attr "text-anchor", "middle"
       .style("font-size", 10)
       .attr "x", (d) ->
-        target = _.findWhere(nodes, teamId: d.target)
+        target = _.findWhere(nodes, teamId: d.target.teamId)
         target.weekX
       .attr "y", (d) ->
-        target = _.findWhere(nodes, teamId: d.target)
+        target = _.findWhere(nodes, teamId: d.target.teamId)
         target.weekY
       .attr "dy", "-1em"
     weekText
@@ -170,7 +169,7 @@ class ParityView extends Backbone.View
       .append("tspan")
       .attr("dy", "1em")
       .attr "x", (d) ->
-        target = _.findWhere(nodes, teamId: d.target)
+        target = _.findWhere(nodes, teamId: d.target.teamId)
         target.weekX
       .text (d) ->
         winner = _.find d.matchup.teams, (team) -> team.is_winner

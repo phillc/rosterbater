@@ -82,8 +82,6 @@ GEM
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.6)
-    d3_rails (4.1.1)
-      railties (>= 3.1.0)
     debug_inspector (0.0.3)
     diff-lcs (1.4.4)
     dotenv (2.7.6)
@@ -295,7 +293,6 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass
   coffee-rails
-  d3_rails
   dotenv-rails
   factory_bot_rails
   faker

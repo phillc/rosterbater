@@ -26,7 +26,6 @@ gem 'jbuilder'
 gem "sprockets", "<4"
 
 gem 'bootstrap-sass'
-gem 'd3_rails'
 gem 'factory_bot_rails'
 gem 'haml-rails'
 gem 'httparty'
