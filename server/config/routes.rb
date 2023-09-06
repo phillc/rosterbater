@@ -19,6 +19,8 @@ Rails.application.routes.draw do
     resources :ranking_profiles, only: [:index]
   end
 
+  resource :info, only: [:show]
+
   resources :leagues, only: [:index, :show] do
     collection do
       post :refresh
