@@ -76,19 +76,12 @@ class EcrRankingsService
   end
 
   class EcrRanking
-    HEADERS = ["Rank",
-               "Tier",
-               "WSID",
-               "Player Name",
-               "Team",
-               "Position",
-               "Bye Week",
-               "Best Rank",
-               "Worst Rank",
-               "Ave Rank",
-               "Std Dev",
-               "ADP",
-               "vs ADP"]
+    HEADERS = ["RK",
+               "TIERS",
+               "PLAYER NAME",
+               "TEAM",
+               "POS",
+               "BYE WEEK"]
 
     HEADERS.each.with_index do |header, i|
       define_method header.downcase.split(" ").join("_") do
@@ -101,16 +94,11 @@ class EcrRankingsService
     end
 
     def update(ranking)
+      ranking.rank = rk
+      ranking.position = pos
       %w(
-        rank
-        position
         team
         bye_week
-        best_rank
-        worst_rank
-        ave_rank
-        std_dev
-        adp
       ).each do |attribute|
         ranking.public_send("#{attribute}=", self.public_send(attribute))
       end

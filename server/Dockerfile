@@ -25,6 +25,7 @@ EXPOSE 3000
 
 FROM rosterbater-base as rosterbater-development
 
+RUN apk add --update postgresql
 RUN bundle install --jobs 20 --retry 5 --with test
 
 COPY . /app
