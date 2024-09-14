@@ -1,3 +1,5 @@
+require 'csv'
+
 class EcrRankingsService
   def standard_draft_report(file)
     EcrReport.new(file)
