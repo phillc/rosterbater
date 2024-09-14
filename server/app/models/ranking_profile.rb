@@ -1,6 +1,6 @@
 class RankingProfile < ActiveRecord::Base
   belongs_to :game
-  belongs_to :player, class_name: "Player", foreign_key: "yahoo_player_key", primary_key: "yahoo_player_key"
+  belongs_to :player, class_name: "Player", foreign_key: "yahoo_player_key", primary_key: "yahoo_player_key", optional: true
   has_many :rankings
 
   scope :unlinked, ->{ where(yahoo_player_key: nil) }

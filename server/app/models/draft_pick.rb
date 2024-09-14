@@ -1,7 +1,7 @@
 class DraftPick < ActiveRecord::Base
   belongs_to :league
   belongs_to :team, foreign_key: "yahoo_team_key", primary_key: "yahoo_team_key"
-  belongs_to :drafted_player, class_name: "Player", foreign_key: "yahoo_player_key", primary_key: "yahoo_player_key"
+  belongs_to :drafted_player, class_name: "Player", foreign_key: "yahoo_player_key", primary_key: "yahoo_player_key", optional: true
 
   validates :team,
             :pick,
