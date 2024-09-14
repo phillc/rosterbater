@@ -1,4 +1,4 @@
-FROM ruby:2.7-alpine as rosterbater-base
+FROM ruby:3.1.6-alpine as rosterbater-base
 RUN apk update 
 RUN apk upgrade
 RUN apk add --update ruby-dev build-base \
