@@ -165,6 +165,7 @@ GEM
     json (2.7.2)
     jwt (2.8.2)
       base64
+    libv8-node (23.6.1.0)
     logger (1.6.1)
     loofah (2.22.0)
       crass (~> 1.0.2)
@@ -178,6 +179,8 @@ GEM
     method_source (1.1.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.7)
+    mini_racer (0.18.1)
+      libv8-node (~> 23.6.1.0)
     minitest (5.25.1)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
@@ -364,6 +367,7 @@ DEPENDENCIES
   jbuilder
   jquery-rails
   jquery-tablesorter
+  mini_racer
   newrelic_rpm
   nokogiri
   omniauth
@@ -384,7 +388,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 3.1.6p260
+   ruby 3.3.1p55
 
 BUNDLED WITH
    2.3.27

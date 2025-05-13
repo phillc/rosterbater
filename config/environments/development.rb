@@ -69,4 +69,10 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   config.hosts << 'rosterbater.test'
+  config.hosts << /.*\.replit\.dev/
+  
+  # Allow iframe embedding on Replit
+  config.action_dispatch.default_headers = {
+    'X-Frame-Options' => 'ALLOWFROM replit.com'
+  }
 end

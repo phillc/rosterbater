@@ -1,0 +1,17 @@
+run = "RAILS_ENV=development bundle exec rails server --binding=0.0.0.0"
+hidden = [".bundle"]
+modules = ["ruby-3.3"]
+
+[env]
+RACK_MINI_PROFILER = "off"
+PIDFILE = "/tmp/rails_server.pid"
+
+[nix]
+channel = "stable-24_05"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix"]
+
+[[ports]]
+localPort = 3000
+externalPort = 80

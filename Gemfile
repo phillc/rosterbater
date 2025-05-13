@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '3.1.6'
+ruby '3.3.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'pg'
@@ -12,7 +12,7 @@ gem 'uglifier'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer',  platforms: :ruby
+gem 'mini_racer', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
