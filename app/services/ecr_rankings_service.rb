@@ -42,16 +42,43 @@ class EcrRankingsService
                                ranking_type: ranking_type,
                                game: game
 
-    ecr_report.rankings.each do |ecr_ranking|
-      ranking = report.rankings.build
-      ranking.ranking_profile = RankingProfile
-                                  .where(name: ecr_ranking.player_name,
-                                         game: game)
-                                  .first_or_create!
-      ecr_ranking.update(ranking)
-    end
+    ActiveRecord::Base.transaction do
+      report.save!
 
-    report.save!
+      # Bulk create/fetch ranking profiles
+      player_names = ecr_report.rankings.map(&:player_name)
+      profile_attrs = player_names.map { |name| {name: name, game_id: game.id} }
+
+      RankingProfile.upsert_all(
+        profile_attrs,
+        unique_by: [:game_id, :name],
+        returning: [:id, :name]
+      )
+
+      profiles_by_name = RankingProfile.where(name: player_names, game: game)
+                                     .index_by(&:name)
+
+      # Prepare rankings data with profile ids
+      rankings_data = ecr_report.rankings.map do |ecr_ranking|
+        profile = profiles_by_name[ecr_ranking.player_name]
+        {
+          rank: ecr_ranking.rk,
+          position: ecr_ranking.pos,
+          team: ecr_ranking.team,
+          bye_week: ecr_ranking.bye_week,
+          ranking_report_id: report.id,
+          ranking_profile_id: profile.id,
+          created_at: Time.current,
+          updated_at: Time.current
+        }
+      end
+
+      # Bulk upsert rankings
+      Ranking.upsert_all(
+        rankings_data,
+        unique_by: [:ranking_profile_id, :ranking_report_id]
+      )
+    end
   end
 
 
@@ -95,15 +122,6 @@ class EcrRankingsService
       @row = row
     end
 
-    def update(ranking)
-      ranking.rank = rk
-      ranking.position = pos
-      %w(
-        team
-        bye_week
-      ).each do |attribute|
-        ranking.public_send("#{attribute}=", self.public_send(attribute))
-      end
-    end
+    
   end
 end
