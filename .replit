@@ -1,6 +1,6 @@
 run = "RAILS_ENV=development bundle exec rails server --binding=0.0.0.0"
 hidden = [".bundle"]
-modules = ["ruby-3.3"]
+modules = ["ruby-3.3", "postgresql-15"]
 
 [env]
 RACK_MINI_PROFILER = "off"

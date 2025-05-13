@@ -2,16 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2017_09_19_020140) do
-
+ActiveRecord::Schema[7.1].define(version: 2017_09_19_020140) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
@@ -22,8 +21,8 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.string "yahoo_team_key", null: false
     t.string "yahoo_player_key"
     t.uuid "league_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "cost"
     t.integer "auction_pick"
     t.index ["league_id", "pick"], name: "index_draft_picks_on_league_id_and_pick", unique: true
@@ -37,8 +36,8 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.string "game_type"
     t.string "url"
     t.integer "season", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["code", "season"], name: "index_games_on_code_and_season", unique: true
     t.index ["yahoo_game_id"], name: "index_games_on_yahoo_game_id", unique: true
     t.index ["yahoo_game_key"], name: "index_games_on_yahoo_game_key", unique: true
@@ -59,13 +58,13 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.date "start_date"
     t.date "end_date"
     t.uuid "game_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "sync_finished_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.datetime "sync_finished_at", precision: nil
     t.boolean "is_auction_draft"
     t.date "trade_end_date"
     t.json "settings"
-    t.datetime "sync_started_at"
+    t.datetime "sync_started_at", precision: nil
     t.boolean "has_finished_draft", default: false, null: false
     t.decimal "points_per_reception", default: "0.0", null: false
     t.integer "playoff_start_week"
@@ -87,8 +86,8 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.boolean "is_commissioner"
     t.string "email"
     t.uuid "team_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["yahoo_guid", "team_id"], name: "index_managers_on_yahoo_guid_and_team_id", unique: true
   end
 
@@ -98,8 +97,8 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.boolean "is_winner"
     t.decimal "points"
     t.decimal "projected_points"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["matchup_id", "yahoo_team_key"], name: "index_matchup_teams_on_matchup_id_and_yahoo_team_key", unique: true
   end
 
@@ -110,8 +109,8 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.boolean "is_playoffs"
     t.boolean "is_consolation"
     t.boolean "is_tied"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "players", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -139,8 +138,8 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.string "draft_average_round"
     t.string "draft_average_cost"
     t.string "draft_percent_drafted"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.uuid "game_id", null: false
     t.index ["yahoo_player_key"], name: "index_players_on_yahoo_player_key", unique: true
   end
@@ -149,8 +148,8 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.uuid "game_id", null: false
     t.string "name", null: false
     t.string "yahoo_player_key"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["game_id", "name"], name: "index_ranking_profiles_on_game_id_and_name", unique: true
   end
 
@@ -160,8 +159,8 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.string "title"
     t.string "ranking_type", null: false
     t.string "period", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "rankings", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -176,8 +175,8 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.string "adp"
     t.uuid "ranking_report_id", null: false
     t.uuid "ranking_profile_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["rank", "ranking_report_id"], name: "index_rankings_on_rank_and_ranking_report_id", unique: true
     t.index ["ranking_profile_id", "ranking_report_id"], name: "index_rankings_on_ranking_profile_id_and_ranking_report_id", unique: true
   end
@@ -193,8 +192,8 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.integer "number_of_moves"
     t.integer "number_of_trades"
     t.uuid "league_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "has_clinched_playoffs"
     t.decimal "points_for"
     t.decimal "points_against"
@@ -211,12 +210,12 @@ ActiveRecord::Schema.define(version: 2017_09_19_020140) do
     t.string "yahoo_uid", null: false
     t.string "name"
     t.text "yahoo_token"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "sync_finished_at"
-    t.datetime "sync_started_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.datetime "sync_finished_at", precision: nil
+    t.datetime "sync_started_at", precision: nil
     t.string "yahoo_refresh_token"
-    t.datetime "yahoo_expires_at"
+    t.datetime "yahoo_expires_at", precision: nil
     t.index ["yahoo_uid"], name: "index_users_on_yahoo_uid", unique: true
   end
 
