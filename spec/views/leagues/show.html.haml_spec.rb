@@ -1,4 +1,4 @@
 require 'rails_helper'
 
-describe "leagues/show.html.haml" do
+RSpec.describe "leagues/show.html.haml", type: :view do
 end

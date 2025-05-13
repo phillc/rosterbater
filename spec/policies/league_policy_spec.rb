@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe LeaguePolicy do
+RSpec.describe LeaguePolicy, type: :policy do
   subject { LeaguePolicy }
 
   permissions :refresh? do

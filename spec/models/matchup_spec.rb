@@ -1,4 +1,5 @@
+
 require 'rails_helper'
 
-describe Matchup do
+RSpec.describe Matchup, type: :model do
 end

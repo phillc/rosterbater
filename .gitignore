@@ -15,3 +15,4 @@
 
 # Ignore spec output
 coverage
+spec/examples.txt

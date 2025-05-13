@@ -1,4 +1,4 @@
 require 'rails_helper'
 
-describe LeaguesHelper do
+RSpec.describe LeaguesHelper, type: :helper do
 end

@@ -1,4 +1,5 @@
+
 require 'rails_helper'
 
-describe WelcomeHelper do
+RSpec.describe WelcomeHelper, type: :helper do
 end

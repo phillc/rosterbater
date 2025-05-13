@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe League do
+RSpec.describe League, type: :model do
   let(:league) { build(:league) }
 
   describe ".interesting_draft" do

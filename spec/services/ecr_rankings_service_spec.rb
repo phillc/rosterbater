@@ -1,6 +1,6 @@
-require "rails_helper"
+require 'rails_helper'
 
-describe "EcrRankingsService" do
+RSpec.describe EcrRankingsService, type: :service do
   let(:service) { EcrRankingsService.new }
   let(:game) { create(:game) }
   let(:standard_rankings) { fixture("get_standard_draft_rankings.csv") }

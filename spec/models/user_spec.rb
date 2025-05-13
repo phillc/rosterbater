@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe User do
+RSpec.describe User, type: :model do
   describe "validations" do
     subject(:user) { build(:user) }
     it { should be_valid }

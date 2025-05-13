@@ -1,4 +1,4 @@
 require 'rails_helper'
 
-describe "welcome/index.html.erb" do
+RSpec.describe "welcome/index.html.erb", type: :view do
 end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RankingProfile do
+RSpec.describe RankingProfile, type: :model do
   let(:ranking_profile) { create(:ranking_profile) }
 
   describe "#link" do

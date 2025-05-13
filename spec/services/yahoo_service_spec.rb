@@ -1,6 +1,6 @@
-require "rails_helper"
+require 'rails_helper'
 
-describe "YahooService" do
+RSpec.describe YahooService, type: :service do
   let(:user) { create(:user, yahoo_expires_at: 3.hours.from_now) }
   let(:service) { YahooService.new(user) }
 

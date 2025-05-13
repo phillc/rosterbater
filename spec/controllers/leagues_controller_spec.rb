@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe LeaguesController do
+RSpec.describe LeaguesController, type: :controller do
   let(:user) { create(:user) }
   let!(:league) { create(:league, users: [user], sync_finished_at: 1.hour.ago) }
 

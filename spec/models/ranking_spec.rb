@@ -1,4 +1,4 @@
 require 'rails_helper'
 
-describe Ranking do
+RSpec.describe Ranking, type: :model do
 end

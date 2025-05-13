@@ -1,4 +1,4 @@
 require 'rails_helper'
 
-describe MatchupTeam do
+RSpec.describe MatchupTeam, type: :model do
 end

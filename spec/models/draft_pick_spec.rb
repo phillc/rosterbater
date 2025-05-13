@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DraftPick do
+RSpec.describe DraftPick, type: :model do
   describe "#yahoo_info" do
     describe "#vs_pick" do
       it "handles lack of player" do
